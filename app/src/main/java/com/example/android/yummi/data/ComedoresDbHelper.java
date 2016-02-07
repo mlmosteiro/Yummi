@@ -17,7 +17,7 @@ import com.example.android.yummi.data.ComedoresContract.TiposMenuEntry;
 public class ComedoresDbHelper extends SQLiteOpenHelper {
 
     //Si se actualiza el esquema, debe incrementarse la versión
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "comedores.db";
 
@@ -41,7 +41,8 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
                 ComedoresEntry.COLUMN_HORA_FIN + " INTEGER NOT NULL, " +
                 ComedoresEntry.COLUMN_NOMBRE + " TEXT UNIQUE NOT NULL, " +
                 ComedoresEntry.COLUMN_NOMBRE_CONTACTO + " TEXT, " +
-                ComedoresEntry.COLUMN_TLFN + " TEXT );";
+                ComedoresEntry.COLUMN_TLFN + " TEXT, " +
+                ComedoresEntry.COLUMN_PROMO + " TEXT NOT NULL);";
         db.execSQL(SQL_CREATE_COMEDORES_TABLE);
 
         // Creamos tabla de tipos de menu
@@ -50,7 +51,6 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
 
                 TiposMenuEntry.COLUMN_COMEDOR + " INTEGER NOT NULL, " +
                 TiposMenuEntry.COLUMN_NOMBRE + " TEXT NOT NULL, " +
-                TiposMenuEntry.COLUMN_DESCRIPCION + " TEXT NOT NULL, " +
                 TiposMenuEntry.COLUMN_PRECIO + " REAL NOT NULL, " +
 
                 " FOREIGN KEY ( " + TiposMenuEntry.COLUMN_COMEDOR + " ) REFERENCES " +
@@ -62,7 +62,8 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
                 PlatosEntry._ID + " INTEGER PRIMARY KEY, " +
 
                 PlatosEntry.COLUMN_NOMBRE + " TEXT NOT NULL, " +
-                PlatosEntry.COLUMN_DESCRIPCION + " TEXT NOT NULL); ";
+                PlatosEntry.COLUMN_DESCRIPCION + " TEXT NOT NULL, " +
+                PlatosEntry.COLUMN_TIPO + " TEXT NOT NULL); ";
         db.execSQL(SQL_CREATE_PLATOS_TABLE);
 
         // Creamos tabla de elementos
@@ -101,7 +102,7 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
                 ElementosEntry.TABLE_NAME + " (" + ElementosEntry._ID + "), " +
                 " FOREIGN KEY (" + TienenEntry.COLUMN_MENU + ") REFERENCES " +
                 TiposMenuEntry.TABLE_NAME + " (" + TiposMenuEntry._ID + ") );";
-        db.execSQL(SQL_CREATE_TENER_TABLE);
+        db.execSQL(SQL_CREATE_TIENEN_TABLE);
 
     }
 
