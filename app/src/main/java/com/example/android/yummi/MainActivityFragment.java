@@ -23,7 +23,7 @@ import java.util.Arrays;
  */
 public class MainActivityFragment extends Fragment {
     private ArrayAdapter<String> comedoresAdapter;
-    private ArrayAdapter<String> aperturaAdapter;
+
 
     public MainActivityFragment() {
     }
