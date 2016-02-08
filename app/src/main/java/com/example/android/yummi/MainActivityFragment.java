@@ -100,7 +100,7 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        //TODO: El segundo textView está actualmente como un string en el XML
+
         return rootView;
     }
 }
