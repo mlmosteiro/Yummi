@@ -3,4 +3,10 @@
     <string name="action_settings">Cambiar cosis</string>
     <string name="action_aboutUs">About us!</string>
     <string name="title_activity_detail">DetailActivity</string>
+
+    <string name="pref_showAll_label">Mostrar abiertos</string>
+    <string name="pref_showAll_summary">Mostrar solo los comedores abiertos ahora</string>
+    <string name="pref_showAll_key" translatable="false">showAll</string>
+
+
 </resources>

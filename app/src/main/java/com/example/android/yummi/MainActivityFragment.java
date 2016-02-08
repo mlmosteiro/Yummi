@@ -1,7 +1,9 @@
 package com.example.android.yummi;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,7 +43,19 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        if( id == R.id.action_settings){
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            boolean valor = prefs.getBoolean(getString(R.string.pref_showAll_key),false);
+
+            //TODO=> implementar para mostrar los todos los comedores o solo los abiertos
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+
     }
 
 
