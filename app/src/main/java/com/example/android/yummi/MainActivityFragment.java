@@ -1,22 +1,87 @@
 package com.example.android.yummi;
 
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+    private ArrayAdapter<String> comedoresAdapter;
+
 
     public MainActivityFragment() {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.mainactivityfragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        String[] comedoresArray = {
+                "Comedor de Mates",
+                "El de Psico",
+                "Solpor ☼",
+                "Condesa",
+                "Piso Yus",
+                "Los demás"
+        };
+
+        final ArrayList<String> comedores = new ArrayList<>(Arrays.asList(comedoresArray));
+
+        comedoresAdapter = new ArrayAdapter<>(
+                getActivity(),
+                R.layout.list_item_comedores,
+                R.id.comedores_textView,
+                comedores);
+
+        ListView listView = (ListView) rootView.findViewById(R.id.listview_comedores);
+        listView.setAdapter(comedoresAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String comedor = comedoresAdapter.getItem(position);
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, comedor);
+                startActivity(intent);
+            }
+        });
+        return rootView;
     }
 }

@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <provider
-            android:authorities="com.example.android.yummi"
             android:name=".data.ComedoresProvider"
+            android:authorities="com.example.android.yummi"
             android:enabled="true"
-            android:exported="false"
-            />
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -27,6 +27,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.yummi.MainActivity" />
+        </activity>
+
+        <activity android:name=".SettingsActivity"
+            android:label="@string/action_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+
     </application>
 
 </manifest>
