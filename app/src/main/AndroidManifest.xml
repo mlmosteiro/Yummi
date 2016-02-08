@@ -27,7 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
@@ -37,15 +36,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.yummi.MainActivity" />
         </activity>
-
-        <activity android:name=".SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
-
+        <activity
+            android:name=".PricesActivity"
+            android:label="@string/title_activity_prices"
+            android:parentActivityName=".SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.yummi.SettingsActivity" />
+        </activity>
     </application>
 
 </manifest>

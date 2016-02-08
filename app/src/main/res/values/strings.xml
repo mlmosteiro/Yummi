@@ -7,6 +7,8 @@
     <string name="pref_showAll_label">Mostrar abiertos</string>
     <string name="pref_showAll_summary">Mostrar solo los comedores abiertos ahora</string>
     <string name="pref_showAll_key" translatable="false">showAll</string>
+    <string name="title_activity_prices">PricesActivity</string>
+    <string name="abiertoAhora_label">Abierto ahora</string>
 
 
 </resources>

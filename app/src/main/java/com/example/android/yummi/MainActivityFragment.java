@@ -23,7 +23,7 @@ import java.util.Arrays;
  */
 public class MainActivityFragment extends Fragment {
     private ArrayAdapter<String> comedoresAdapter;
-
+    private ArrayAdapter<String> aperturaAdapter;
 
     public MainActivityFragment() {
     }
@@ -65,6 +65,9 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+
+        //DUMMY DATA
+
         String[] comedoresArray = {
                 "Comedor de Mates",
                 "El de Psico",
@@ -73,8 +76,8 @@ public class MainActivityFragment extends Fragment {
                 "Piso Yus",
                 "Los demás"
         };
-
         final ArrayList<String> comedores = new ArrayList<>(Arrays.asList(comedoresArray));
+
 
         comedoresAdapter = new ArrayAdapter<>(
                 getActivity(),
@@ -96,6 +99,8 @@ public class MainActivityFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        //TODO: El segundo textView está actualmente como un string en el XML
         return rootView;
     }
 }
