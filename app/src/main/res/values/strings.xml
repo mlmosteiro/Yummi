@@ -8,6 +8,8 @@
     <string name="pref_showAll_label">Mostrar abiertos</string>
     <string name="pref_showAll_summary">Mostrar solo los comedores abiertos ahora</string>
     <string name="pref_showAll_key" translatable="false">showAll</string>
+    <!-- Relacionado con la actualizacion de la lista de comedores -->
+    <string name="pref_ultima_act_comedores" translatable="false">act_comedores</string>
 
     <string name="title_activity_prices">PricesActivity</string>
     <string name="abiertoAhora_label">Abierto ahora</string>
@@ -19,5 +21,4 @@
 
     <!-- Formato para horario de apertura -->
     <string name="formato_horario_apertura">Abierto: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
-
 </resources>

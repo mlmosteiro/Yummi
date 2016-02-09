@@ -56,6 +56,6 @@ public class Utility {
     }
 
     public static String denormalizarHora(long hora) {
-        return new SimpleDateFormat("HH:mm:ss").format(new Date(hora));
+        return new SimpleDateFormat("HH:mm").format(new Date(hora));
     }
 }

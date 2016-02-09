@@ -50,6 +50,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private static final int LOADER_ID = 0;
 
+    private static final long DIA_EN_MILLIS = 24 * 60 * 60 * 1000;
+
     public MainActivityFragment() {
     }
 
@@ -57,6 +59,19 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        //Comprobamos si ha actualizado los comedores este mes
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String lastAct = getActivity().getString(R.string.pref_ultima_act_comedores);
+        long lastSync = prefs.getLong(lastAct, 0);
+        if( (System.currentTimeMillis() - lastSync)/32 >= DIA_EN_MILLIS) {
+            //Si hace un mes que no se actualiza (32 días más bien), actualizamos
+            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_COMEDORES);
+            getActivity().startService(lanzarServicio);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(lastAct, System.currentTimeMillis());
+            editor.commit();
+        }
     }
 
     @Override
