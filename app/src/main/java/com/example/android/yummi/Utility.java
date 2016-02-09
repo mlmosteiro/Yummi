@@ -14,6 +14,18 @@ public class Utility {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
+    }
+
+    public static long fechaAnteayer() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        c.add(Calendar.DAY_OF_YEAR, -2);
         return c.getTimeInMillis();
     }
 
@@ -26,5 +38,20 @@ public class Utility {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public static long normalizarHora(String hora) {
+        try {
+            SimpleDateFormat dF = new SimpleDateFormat("HH:mm:ss");
+            Date date = dF.parse(hora);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static String denormalizarFecha(long fecha) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(new Date(fecha));
     }
 }

@@ -346,20 +346,40 @@ public class ComedoresProvider extends ContentProvider {
                 );
                 break;
             }
+            // Los platos se eliminan con un where que hace referencia a su relación, esto es,
+            // eliminamos todos los platos cuya relación con comedores cumpla el where (y la
+            // relación también)
             case PLATOS: {
+                // platos._id IN (SELECT plato FROM tener WHERE [seleccion] )
+                final String platosDeleteSelection =
+                        ComedoresContract.PlatosEntry.TABLE_NAME + "." + ComedoresContract.PlatosEntry._ID +
+                        " IN (SELECT " + ComedoresContract.TenerEntry.COLUMN_PLATO +
+                                " FROM " + ComedoresContract.TenerEntry.TABLE_NAME +
+                                " WHERE " + selection + " )";
                 num = db.delete(
                         ComedoresContract.PlatosEntry.TABLE_NAME,
-                        selection,
-                        selectionArgs
-                );
+                        platosDeleteSelection, selectionArgs);
+                //Eliminamos de la relación
+                db.delete(ComedoresContract.TenerEntry.TABLE_NAME,
+                        selection, selectionArgs);
                 break;
             }
+            // Eliminar un elemento elimina todas sus relaciones
             case ELEMENTOS: {
+                // elemento IN (SELECT _id FROM elementos WHERE [seleccion] )
+                final String tienenDeleteSelection =
+                        ComedoresContract.TienenEntry.COLUMN_ELEMENTO +
+                        " IN (SELECT " + ComedoresContract.ElementosEntry._ID +
+                        " FROM " + ComedoresContract.ElementosEntry.TABLE_NAME +
+                        " WHERE " + selection + " )";
                 num = db.delete(
                         ComedoresContract.ElementosEntry.TABLE_NAME,
                         selection,
-                        selectionArgs
-                );
+                        selectionArgs);
+                db.delete(
+                        ComedoresContract.TienenEntry.TABLE_NAME,
+                        tienenDeleteSelection,
+                        selectionArgs);
                 break;
             }
             default:
