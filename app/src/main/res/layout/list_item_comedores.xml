@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="0dp">
 
     <!-- Imágen propia correspondiente a cada comedor-->
     <ImageView
         android:id="@+id/list_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:src="@mipmap/ic_launcher"/>
 
 
         <!-- TextView que contendrá el nombre de los comedores-->
     <TextView
-        android:id="@+id/comedores_textView"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
+        android:id="@+id/comedores_titulo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginRight="16dp" />
+        android:layout_marginStart="6dp"
+        android:layout_toEndOf="@id/list_item_icon"
+        android:layout_alignTop="@+id/list_item_icon"
+        />
+
+    <TextView
+        android:id="@+id/comedores_subtitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comedores_titulo"
+        android:layout_alignStart="@id/comedores_titulo"/>
 
     <ImageView
         android:id="@+id/status_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:src="@android:drawable/ic_notification_overlay"/>
+        android:src="@android:drawable/ic_notification_overlay"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
 
-
-
-    <!--<Item-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:icon="@mipmap/ic_launcher"-->
-    <!--android:layout_weight="0"-->
-    <!--android:layout_gravity="center" />-->
-
-
-
-
-</LinearLayout>
+</RelativeLayout>
