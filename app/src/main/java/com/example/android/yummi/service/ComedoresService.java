@@ -1,13 +1,12 @@
 package com.example.android.yummi.service;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.yummi.Utility;
 import com.example.android.yummi.data.ComedoresContract;
@@ -151,6 +150,15 @@ public class ComedoresService extends IntentService {
                 }
             }
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(this, "Iniciado servicio de descarga: " +
+                "tipo=" + intent.getIntExtra(KEY_TIPO, -1) +
+                ", id=" + intent.getLongExtra(KEY_ID, -1) +
+                ", fecha=" + intent.getLongExtra(KEY_FECHA, -1), Toast.LENGTH_SHORT).show();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void obtenerInformacion(int tipo, String jsonStr, long id, long fecha) throws JSONException {
@@ -335,11 +343,11 @@ public class ComedoresService extends IntentService {
         Log.d(LOG_TAG, "Service completado: " + insertados + " platos insertados, " + eliminados + " eliminados.");
     }
 
-    public static class AlarmReceiver extends BroadcastReceiver {
+    /*public static class AlarmReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent intentParaServicio = new Intent(context, ComedoresService.class);
             context.startService(intentParaServicio);
         }
-    }
+    }*/
 }

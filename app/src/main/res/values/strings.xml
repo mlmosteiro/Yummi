@@ -1,4 +1,5 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Ñam!</string>
     <string name="action_settings">Cambiar cosis</string>
     <string name="action_aboutUs">About us!</string>
@@ -7,6 +8,7 @@
     <string name="pref_showAll_label">Mostrar abiertos</string>
     <string name="pref_showAll_summary">Mostrar solo los comedores abiertos ahora</string>
     <string name="pref_showAll_key" translatable="false">showAll</string>
+
     <string name="title_activity_prices">PricesActivity</string>
     <string name="abiertoAhora_label">Abierto ahora</string>
 
@@ -15,5 +17,7 @@
     <string name="informacion_text">Libycosaurus Astrodontaurus Eurolimnornis Riojasaurus Zupaysaurus Sinotyrannus Dyoplosaurus Suchosaurus Scansoriopteryx Becklespinax Cerasinops Saurornitholestes Bugenasaura Wadhurstia Bonatitan.
         Yulong Rahona Rhabdodon Pedopenna Monkonosaurus Sinocalliopteryx Klamelisaurus Willinakaqe Griphosaurus Vitakridrinda Karongasaurus Kundurosaurus Daemonosaurus Eotriceratops Siamodon.</string>
 
+    <!-- Formato para horario de apertura -->
+    <string name="formato_horario_apertura">Abierto: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
 
 </resources>

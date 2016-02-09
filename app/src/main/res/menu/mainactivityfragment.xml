@@ -4,5 +4,7 @@
         <item android:id="@+id/action_aboutUs"
             android:title="@string/action_aboutUs"
             app:showAsAction="never" />
-
+        <item android:id="@+id/action_updateComedores"
+            android:title="Actualizar muy duro"
+            app:showAsAction="never" />
 </menu>

@@ -54,4 +54,8 @@ public class Utility {
     public static String denormalizarFecha(long fecha) {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date(fecha));
     }
+
+    public static String denormalizarHora(long hora) {
+        return new SimpleDateFormat("HH:mm:ss").format(new Date(hora));
+    }
 }
