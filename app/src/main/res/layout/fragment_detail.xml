@@ -47,8 +47,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cardview_segundos"
-        >
+        android:id="@+id/cardview_segundos">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,8 +74,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cardview_postres"
-        >
+        android:id="@+id/cardview_postres">
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -9,15 +9,29 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private boolean twoPane;
+    private static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (findViewById(R.id.detail_container) != null) {
+            twoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction().replace(
+                        R.id.detail_container, new DetailActivityFragment(),
+                        DETAILACTIVITYFRAGMENT_TAG).commit();
+            }
+        } else {
+            twoPane = false;
+        }
     }
 
     @Override

@@ -14,9 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class PricesActivityFragment extends Fragment {
 
 

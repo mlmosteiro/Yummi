@@ -21,9 +21,7 @@ import android.widget.ListView;
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.service.ComedoresService;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private AdapterComedores comedoresAdapter;
 

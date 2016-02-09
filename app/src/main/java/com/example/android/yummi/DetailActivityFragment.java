@@ -21,6 +21,7 @@ public class DetailActivityFragment extends Fragment {
     private ArrayAdapter<String> adapter;
 
     public DetailActivityFragment() {
+        setHasOptionsMenu(true);
     }
 
 
