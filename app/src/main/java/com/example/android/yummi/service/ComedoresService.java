@@ -255,18 +255,19 @@ public class ComedoresService extends IntentService {
         }
         int eliminados = 0;
         int insertados = 0;
+        //Eliminamos de la tabla los comedores sobrantes
+        if(ids.size() > 0) {
+            eliminados = getContentResolver().delete(
+                    ComedoresContract.ComedoresEntry.CONTENT_URI,
+                    ComedoresContract.ComedoresEntry._ID + " NOT IN (" +
+                            TextUtils.join(", ", ids) + ")",
+                    null);
+        }
+        //Insertamos en la tabla de comedores los nuevos
         if(cVList.size() > 0) {
             ContentValues[] cVArray = new ContentValues[cVList.size()];
             cVList.toArray(cVArray);
-            //Eliminamos de la tabla los comedores sobrantes
-            if(ids.size() > 0) {
-                eliminados = getContentResolver().delete(
-                        ComedoresContract.ComedoresEntry.CONTENT_URI,
-                        ComedoresContract.ComedoresEntry._ID + " NOT IN (" +
-                                TextUtils.join(", ", ids) + ")",
-                        null);
-            }
-            //Insertamos en la tabla de comedores los nuevos
+
             insertados = this.getContentResolver().bulkInsert(ComedoresContract.ComedoresEntry.CONTENT_URI, cVArray);
         }
         Log.d(LOG_TAG, "Service completado: " + insertados + " comedores insertados, " + eliminados + " eliminados.");
