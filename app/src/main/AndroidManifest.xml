@@ -44,15 +44,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <!--<activity-->
-            <!--android:name=".PricesActivity"-->
-            <!--android:label="@string/title_activity_prices"-->
-            <!--android:parentActivityName=".SettingsActivity"-->
-            <!--android:theme="@style/AppTheme.NoActionBar" >-->
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value="com.example.android.yummi.SettingsActivity" />-->
-        <!--</activity>-->
+        <activity
+            android:name=".PricesActivity"
+            android:label="@string/title_activity_prices"
+            android:parentActivityName=".SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.yummi.SettingsActivity" />
+        </activity>
     </application>
 
 </manifest>
