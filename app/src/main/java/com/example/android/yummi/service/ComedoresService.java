@@ -3,6 +3,7 @@ package com.example.android.yummi.service;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -184,11 +185,31 @@ public class ComedoresService extends IntentService {
     private void guardarComedores(JSONArray jsonArray) throws JSONException {
         ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
         ArrayList<String> ids = new ArrayList<>(jsonArray.length());
+
+        //Obtenemos los ids que ya están en la base
+        Cursor c = getContentResolver().query(
+                ComedoresContract.ComedoresEntry.CONTENT_URI,
+                new String[]{ComedoresContract.ComedoresEntry._ID},
+                null, null,
+                null);
+        ArrayList<Long> idsExistentes = null;
+        if(c.moveToFirst()) {
+            idsExistentes = new ArrayList<>(c.getCount());
+            while(!c.isAfterLast()) {
+                idsExistentes.add(c.getLong(0));
+                c.moveToNext();
+            }
+        }
+        c.close();
+
         for(int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-            ContentValues nuevaFila = new ContentValues();
+
             long nuevoId = jsonObject.getLong(OWM_ID);
             ids.add(Long.toString(nuevoId));
+            if(idsExistentes != null && idsExistentes.contains(nuevoId)) continue; //No se añade si ya está
+
+            ContentValues nuevaFila = new ContentValues();
             nuevaFila.put(
                     ComedoresContract.ComedoresEntry._ID,
                     nuevoId);
@@ -245,7 +266,7 @@ public class ComedoresService extends IntentService {
                                 TextUtils.join(", ", ids) + ")",
                         null);
             }
-            //Insertamos en la tabla de comedores
+            //Insertamos en la tabla de comedores los nuevos
             insertados = this.getContentResolver().bulkInsert(ComedoresContract.ComedoresEntry.CONTENT_URI, cVArray);
         }
         Log.d(LOG_TAG, "Service completado: " + insertados + " comedores insertados, " + eliminados + " eliminados.");
