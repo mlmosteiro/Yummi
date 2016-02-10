@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * Clase con utilidades de apoyo
- * Created by David Campos Rodríguez <david.campos@rai.usc.es> on 07/02/2016.
+ * Created by David Campos Rodríguez <a href='mailto:david.campos@rai.usc.es'>david.campos@rai.usc.es</a> on 07/02/2016.
  */
 public class Utility {
     public static long fechaHoy() {

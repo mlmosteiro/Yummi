@@ -12,7 +12,7 @@ import com.example.android.yummi.Utility;
 
 /**
  * Proveedor de contenido para la base de datos de la aplicación
- * Created by David Campos Rodríguez <david.campos@rai.usc.es> on 06/02/2016.
+ * Created by David Campos Rodríguez <a href='mailto:david.campos@rai.usc.es'>david.campos@rai.usc.es</a> on 06/02/2016.
  */
 public class ComedoresProvider extends ContentProvider {
 
