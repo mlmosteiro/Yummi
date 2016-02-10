@@ -21,9 +21,7 @@ import android.widget.ListView;
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.service.ComedoresService;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private AdapterComedores comedoresAdapter;
 
@@ -116,13 +114,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 startActivity(intent);
             }
         });
-
-
         return rootView;
     }
 

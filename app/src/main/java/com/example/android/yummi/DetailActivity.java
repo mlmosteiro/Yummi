@@ -26,6 +26,7 @@ public class DetailActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
+
 //        CollapsingToolbarLayout collapser =
 //                (CollapsingToolbarLayout) findViewById(R.id.collapser);
 //

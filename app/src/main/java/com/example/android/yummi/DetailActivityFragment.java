@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.example.android.yummi.data.ComedoresContract;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -32,6 +30,7 @@ public class DetailActivityFragment extends Fragment {
     private ArrayAdapter<String> adapter;
 
     public DetailActivityFragment() {
+        setHasOptionsMenu(true);
     }
 
 
@@ -55,7 +54,12 @@ public class DetailActivityFragment extends Fragment {
         String[] primerosArray = {
                 "Taco 1",
                 "Taco 2",
-                "Taco 3"
+                "Taco 3",
+                "Taco 4",
+                "Taco 5",
+                "Taco 6",
+                "Taco 7",
+
         };
 
         ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(primerosArray));
@@ -71,6 +75,19 @@ public class DetailActivityFragment extends Fragment {
 
         setListViewHeightBasedOnChildren(listView);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    int variableTontiParaElCommit ;
+                    //TODO => Callback y savedInstance
+                }
+
+            }
+        });
 
         return rootView;
     }
@@ -96,4 +113,17 @@ public class DetailActivityFragment extends Fragment {
                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+
+
+
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        //TODO => Implementar interfaz y callback
+    }
+
+
 }
+
