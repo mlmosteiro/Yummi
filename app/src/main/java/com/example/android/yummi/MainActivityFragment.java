@@ -108,8 +108,15 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                startActivity(intent);
+                Cursor c = (Cursor) adapterView.getItemAtPosition(position);
+
+                if(c!=null){
+                    long comedorId = c.getLong(COL_ID);
+                    String comedorName = c.getString(COL_NOMBRE);
+                    ((Callback) getActivity())
+                            .comedorSeleccionado(comedorId, comedorName);
+                }
+
             }
         });
         return rootView;
@@ -139,4 +146,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {comedoresAdapter.swapCursor(null);}
+
+    public interface Callback {
+        void comedorSeleccionado(long comedorId, String comedorName);
+    }
+
 }

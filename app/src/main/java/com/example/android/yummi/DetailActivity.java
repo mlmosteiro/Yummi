@@ -2,6 +2,7 @@ package com.example.android.yummi;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class DetailActivity extends AppCompatActivity {
+
+    public static final String ID_COMEDOR = "id";
+    public static final String NOMBRE_COMEDOR = "nombre";
+    private static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +32,28 @@ public class DetailActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
+        Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
+        if ( comedorId != null){
 
-//        CollapsingToolbarLayout collapser =
-//                (CollapsingToolbarLayout) findViewById(R.id.collapser);
-//
-//        /* Sustituir por el nombre del comedor*/
-//        collapser.setTitle("Nombre del comedor"); // Cambiar título
+            DetailActivityFragment detailFragment = new DetailActivityFragment();
+            Bundle bundle = new Bundle();
+            bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
+            detailFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().add(
+                    R.id.scroll, detailFragment,
+                    DETAILACTIVITYFRAGMENT_TAG).commit();
+        }
+
+        String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
+        if( comedorNombre != null){
+
+            CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
+            collapser.setTitle( comedorNombre );
+        }
 
 //        loadImageParallax(idDrawable);// Cargar Imagen
 
 
-        // Setear escucha al FAB
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(
                 new View.OnClickListener() {

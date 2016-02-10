@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements DetailActivityFragment.Callback {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback  {
 
     //TODO => Implementar la interfaz para el DetailFragment :D
 
@@ -27,9 +27,11 @@ public class MainActivity extends AppCompatActivity implements DetailActivityFra
             twoPane = true;
 
             if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction().replace(
-                        R.id.detail_container, new DetailActivityFragment(),
-                        DETAILACTIVITYFRAGMENT_TAG).commit();
+
+//
+//                getSupportFragmentManager().beginTransaction().replace(
+//                        R.id.detail_container, detailFragment;
+//                        DETAILACTIVITYFRAGMENT_TAG).commit();
             }
         } else {
             twoPane = false;
@@ -62,5 +64,24 @@ public class MainActivity extends AppCompatActivity implements DetailActivityFra
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void comedorSeleccionado(long comedorId, String comedorName) {
+        if (twoPane){
+
+            DetailActivityFragment detailFragment = new DetailActivityFragment();
+            Bundle bundle = new Bundle();
+            bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
+            detailFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(
+                        R.id.detail_container, detailFragment,
+                        DETAILACTIVITYFRAGMENT_TAG).commit();
+        } else {
+            Intent intent = new Intent( this, DetailActivity.class);
+            intent.putExtra(DetailActivity.ID_COMEDOR, comedorId);
+            intent.putExtra(DetailActivity.NOMBRE_COMEDOR, comedorName);
+            startActivity(intent);
+        }
     }
 }

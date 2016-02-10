@@ -221,12 +221,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         listView.setLayoutParams(params);
     }
 
-    public interface Callback {
-        /**
-         * DetailFragmentCallback for when an item has been selected.
-         */
-        //TODO => Implementar interfaz y callback
-    }
 
 }
 
