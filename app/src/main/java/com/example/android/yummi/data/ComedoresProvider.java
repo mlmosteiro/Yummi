@@ -161,10 +161,10 @@ public class ComedoresProvider extends ContentProvider {
 
     private Cursor getPlatosByComedorAndFecha(Uri uri, String[] projection, String sortOrder, long fecha) {
         long idComedor = ComedoresContract.getIdElemento(uri);
-        String tipo = uri.getQueryParameter(ComedoresContract.PlatosEntry.URI_TIPO_KEY);
+        String tipo = uri.getQueryParameter(ComedoresContract.PlatosEntry.URI_PATRON_TIPO_KEY);
         String seleccion = sPlatosByComedorAndFechaSelection;
         if( tipo != null) {
-            seleccion += " AND " + ComedoresContract.PlatosEntry.COLUMN_TIPO + " = " + tipo;
+            seleccion += " AND " + ComedoresContract.PlatosEntry.COLUMN_TIPO + " LIKE " + tipo;
         }
         return mOpenHelper.getReadableDatabase().query(
                 ComedoresContract.PlatosEntry.TABLE_NAME,

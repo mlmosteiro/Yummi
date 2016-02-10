@@ -101,7 +101,7 @@ public class ComedoresContract {
         //Usado para realizar inserciones en la tabla (necesita indicarse el comedor y fecha)
         public static final String URI_COMEDOR_ID_KEY = "comedorId";
         public static final String URI_FECHA_KEY = "fecha";
-        public static final String URI_TIPO_KEY = "tipo";
+        public static final String URI_PATRON_TIPO_KEY = "tipo";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATOS;
@@ -119,6 +119,11 @@ public class ComedoresContract {
 
         public static Uri buildPlatosByComedorAndFechaUri(long idComedor, long fecha){
             return buildPlatosByComedorUri(idComedor).buildUpon().appendEncodedPath(Long.toString(fecha)).build();
+        }
+
+        public static Uri buildPlatosByComedorAndPatronTipoUri(long idComedor, String patronTipo){
+            return buildPlatosByComedorUri(idComedor).buildUpon()
+                    .appendQueryParameter(URI_PATRON_TIPO_KEY, patronTipo).build();
         }
 
         public static Uri buildInsercionUri(long idComedor, long fecha){
