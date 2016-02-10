@@ -91,7 +91,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             boolean valor = prefs.getBoolean(getString(R.string.pref_showAll_key),false);
 
             //TODO=> implementar para mostrar los todos los comedores o solo los abiertos
-
             return true;
         }
 
