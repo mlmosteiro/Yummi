@@ -12,14 +12,11 @@
     tools:context=".DetailActivityFragment"
     android:orientation="vertical">
 
-    <TableLayout
-        android:id="@+id/tablaMenus"
-        android:layout_width="wrap_content"
+    <ListView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="2"
-        android:shrinkColumns="2"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"/>
+        android:id="@+id/menus_listView">
+    </ListView>
 
     <TextView
         android:layout_width="match_parent"
@@ -32,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/informacion_text"
+        android:gravity="center"
         android:layout_gravity="center"
         android:layout_weight="1" />
 

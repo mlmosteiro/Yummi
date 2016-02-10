@@ -57,6 +57,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+
+
         //Comprobamos si ha actualizado los comedores este mes
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String lastAct = getActivity().getString(R.string.pref_ultima_act_comedores);
@@ -85,18 +88,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
             lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_COMEDORES);
             getActivity().startService(lanzarServicio);
-        } else if( id == R.id.action_settings){
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-            boolean valor = prefs.getBoolean(getString(R.string.pref_showAll_key),false);
-
-            //TODO=> implementar para mostrar los todos los comedores o solo los abiertos
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-
-
     }
 
 
