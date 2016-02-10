@@ -16,7 +16,7 @@
     android:focusableInTouchMode="true">
 
 
-    <include layout="@layout/list_item_detalles"/>
+    <include layout="@layout/content_detalles"/>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

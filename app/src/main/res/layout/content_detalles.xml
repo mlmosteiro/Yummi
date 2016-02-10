@@ -59,7 +59,7 @@
             android:text="Contacto:"/>
 
         <TextView
-            android:id="@+id/telefono_textview"
+            android:id="@+id/contacto_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

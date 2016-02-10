@@ -44,8 +44,8 @@ public class AdapterPlatos extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder vH = (ViewHolder) view.getTag();
 
-        vH.platoView.setText(cursor.getString(DetailActivityFragment.COL_NOMBRE));
-        vH.descripcionView.setText(cursor.getString(DetailActivityFragment.COL_DESCRIPCION));
+        vH.platoView.setText(cursor.getString(DetailActivityFragment.COL_PLATO_NOMBRE));
+        vH.descripcionView.setText(cursor.getString(DetailActivityFragment.COL_PLATO_DESCRIPCION));
     }
 
 
