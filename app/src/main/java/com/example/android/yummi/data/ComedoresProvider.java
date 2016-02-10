@@ -80,7 +80,8 @@ public class ComedoresProvider extends ContentProvider {
             }
             // 'comedores/[id]/platos/[fecha]'
             case PLATOS_COMEDOR_FECHA: {
-                retCursor = getPlatosByComedorAndFecha(uri, projection, sortOrder);
+                retCursor = getPlatosByComedorAndFecha(
+                        uri, projection, sortOrder, Long.parseLong(uri.getPathSegments().get(3)));
                 break;
             }
             // 'tiposmenu/'
@@ -158,25 +159,23 @@ public class ComedoresProvider extends ContentProvider {
                     " AND " +
                     ComedoresContract.TenerEntry.COLUMN_FECHA + " = ? )";
 
-    private Cursor getPlatosByComedorAndFecha(Uri uri, String[] projection, String sortOrder) {
+    private Cursor getPlatosByComedorAndFecha(Uri uri, String[] projection, String sortOrder, long fecha) {
         long idComedor = ComedoresContract.getIdElemento(uri);
-        long fecha = Long.parseLong(uri.getPathSegments().get(3));
+        String tipo = uri.getQueryParameter(ComedoresContract.PlatosEntry.URI_TIPO_KEY);
+        String seleccion = sPlatosByComedorAndFechaSelection;
+        if( tipo != null) {
+            seleccion += " AND " + ComedoresContract.PlatosEntry.COLUMN_TIPO + " = " + tipo;
+        }
         return mOpenHelper.getReadableDatabase().query(
                 ComedoresContract.PlatosEntry.TABLE_NAME,
                 projection,
-                sPlatosByComedorAndFechaSelection, new String[]{Long.toString(idComedor), Long.toString(fecha)},
+                seleccion, new String[]{Long.toString(idComedor), Long.toString(fecha)},
                 null, null,
                 sortOrder);
     }
 
     private Cursor getPlatosByComedor(Uri uri, String[] projection, String sortOrder) {
-        long idComedor = ComedoresContract.getIdElemento(uri);
-        return mOpenHelper.getReadableDatabase().query(
-                ComedoresContract.PlatosEntry.TABLE_NAME,
-                projection,
-                sPlatosByComedorAndFechaSelection, new String[]{Long.toString(idComedor), Long.toString(Utility.fechaHoy())},
-                null, null,
-                sortOrder);
+        return getPlatosByComedorAndFecha(uri, projection, sortOrder, Utility.fechaHoy());
     }
 
     private Cursor getMenusByComedor(Uri uri, String[] projection, String sortOrder) {

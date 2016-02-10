@@ -101,6 +101,7 @@ public class ComedoresContract {
         //Usado para realizar inserciones en la tabla (necesita indicarse el comedor y fecha)
         public static final String URI_COMEDOR_ID_KEY = "comedorId";
         public static final String URI_FECHA_KEY = "fecha";
+        public static final String URI_TIPO_KEY = "tipo";
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATOS;

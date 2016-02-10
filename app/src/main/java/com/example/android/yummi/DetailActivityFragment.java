@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.example.android.yummi.data.ComedoresContract;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,6 +19,15 @@ import java.util.Arrays;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment {
+    // Columnas para la consulta de platos al provider
+    public static final String[] COLUMNAS_PLATOS = {
+            ComedoresContract.PlatosEntry.COLUMN_NOMBRE,
+            ComedoresContract.PlatosEntry.COLUMN_DESCRIPCION
+    };
+    // Constantes con los id's de columnas.
+    // Importante: Modificar si se modifica COLUMNAS_PLATOS.
+    public static final int COL_NOMBRE = 0;
+    public static final int COL_DESCRIPCION = 1;
 
     private ArrayAdapter<String> adapter;
 
@@ -59,7 +70,6 @@ public class DetailActivityFragment extends Fragment {
         listView.setAdapter(adapter);
 
         setListViewHeightBasedOnChildren(listView);
-
 
 
         return rootView;
