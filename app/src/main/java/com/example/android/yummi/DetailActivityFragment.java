@@ -1,11 +1,13 @@
 package com.example.android.yummi;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -16,7 +18,7 @@ import java.util.Arrays;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class DetailActivityFragment extends Fragment{
 
     private ArrayAdapter<String> adapter;
 
@@ -33,6 +35,7 @@ public class DetailActivityFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
+
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             String comedorString = intent.getStringExtra(Intent.EXTRA_TEXT);
 
@@ -45,7 +48,12 @@ public class DetailActivityFragment extends Fragment {
         String[] primerosArray = {
                 "Taco 1",
                 "Taco 2",
-                "Taco 3"
+                "Taco 3",
+                "Taco 4",
+                "Taco 5",
+                "Taco 6",
+                "Taco 7",
+
         };
 
         ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(primerosArray));
@@ -61,7 +69,19 @@ public class DetailActivityFragment extends Fragment {
 
         setListViewHeightBasedOnChildren(listView);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    int variableTontiParaElCommit ;
+                    //TODO => Callback y savedInstance
+                }
+
+            }
+        });
 
         return rootView;
     }
@@ -87,4 +107,17 @@ public class DetailActivityFragment extends Fragment {
                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+
+
+
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        //TODO => Implementar interfaz y callback
+    }
+
+
 }
+

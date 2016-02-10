@@ -1,32 +1,20 @@
-
-    <LinearLayout
+ <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:baselineAligned="false"
         android:divider="?android:attr/dividerHorizontal"
-        tools:context="com.example.android.yummi.MainActivity">
-
-        <fragment
-            android:id="@+id/fragment_mainActivity"
-            android:name="com.example.android.yummi.MainActivityFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            tools:layout="@android:layout/list_content"/>
-
-        <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/detail_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="4" />
+        tools:context="com.example.android.yummi.MainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:id="@+id/view"
+            android:layout_alignParentTop="true">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -36,5 +24,29 @@
 
         </android.support.design.widget.AppBarLayout>
 
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="horizontal"
+         android:layout_below="@+id/view"
+         android:layout_alignParentStart="true"
+         android:baselineAligned="false">
 
-    </LinearLayout>
+         <fragment
+             android:id="@+id/fragment_mainActivity"
+             android:name="com.example.android.yummi.MainActivityFragment"
+             android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+             tools:layout="@android:layout/list_content"
+             android:layout_weight="2" />
+
+            <FrameLayout
+                android:id="@+id/detail_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+        </LinearLayout>
+
+</RelativeLayout>

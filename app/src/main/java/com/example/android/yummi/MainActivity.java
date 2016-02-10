@@ -7,7 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DetailActivityFragment.Callback {
+
+    //TODO => Implementar la interfaz para el DetailFragment :D
 
     private boolean twoPane;
     private static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
@@ -55,5 +57,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
