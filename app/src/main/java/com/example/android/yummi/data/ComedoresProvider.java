@@ -27,6 +27,8 @@ public class ComedoresProvider extends ContentProvider {
     static final int ELEMENTOS_MENU = 210;
     static final int PLATOS = 300;
     static final int ELEMENTOS = 400;
+    static final int TENER = 500;
+    static final int TIENEN = 600;
 
     static UriMatcher buildUriMatcher() {
         //La root uri no hace nada
@@ -42,6 +44,9 @@ public class ComedoresProvider extends ContentProvider {
 
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_PLATOS, PLATOS);
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_ELEMENTOS, ELEMENTOS);
+
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, "tener", TENER);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, "tienen", TIENEN);
 
         return nUM;
     }
@@ -71,17 +76,20 @@ public class ComedoresProvider extends ContentProvider {
             // 'comedores/[id]/tiposmenu'
             case MENUS_COMEDOR: {
                 retCursor = getMenusByComedor(uri, projection, sortOrder);
+                uri = ComedoresContract.TiposMenuEntry.CONTENT_URI;
                 break;
             }
             // 'comedores/[id]/platos'
             case PLATOS_COMEDOR: {
                 retCursor = getPlatosByComedor(uri, projection, sortOrder);
+                uri = ComedoresContract.PlatosEntry.CONTENT_URI;
                 break;
             }
             // 'comedores/[id]/platos/[fecha]'
             case PLATOS_COMEDOR_FECHA: {
                 retCursor = getPlatosByComedorAndFecha(
                         uri, projection, sortOrder, Long.parseLong(uri.getPathSegments().get(3)));
+                uri = ComedoresContract.PlatosEntry.CONTENT_URI;
                 break;
             }
             // 'tiposmenu/'
@@ -91,13 +99,13 @@ public class ComedoresProvider extends ContentProvider {
                         projection,
                         selection, selectionArgs,
                         null, null,
-                        sortOrder
-                );
+                        sortOrder);
                 break;
             }
             // 'tiposmenu/[id]/elementos/'
             case ELEMENTOS_MENU: {
                 retCursor = getElementosByMenu(uri, projection, sortOrder);
+                uri = ComedoresContract.TiposMenuEntry.CONTENT_URI;
                 break;
             }
             case PLATOS: {
@@ -106,8 +114,7 @@ public class ComedoresProvider extends ContentProvider {
                         projection,
                         selection, selectionArgs,
                         null, null,
-                        sortOrder
-                );
+                        sortOrder);
                 break;
             }
             case ELEMENTOS: {
@@ -118,6 +125,25 @@ public class ComedoresProvider extends ContentProvider {
                         null, null,
                         sortOrder
                 );
+                break;
+            }
+            case TENER: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        ComedoresContract.TenerEntry.TABLE_NAME,
+                        projection,
+                        selection, selectionArgs,
+                        null, null,
+                        sortOrder);
+                break;
+            }
+
+            case TIENEN: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        ComedoresContract.TienenEntry.TABLE_NAME,
+                        projection,
+                        selection, selectionArgs,
+                        null, null,
+                        sortOrder);
                 break;
             }
             default:
@@ -163,13 +189,17 @@ public class ComedoresProvider extends ContentProvider {
         long idComedor = ComedoresContract.getIdElemento(uri);
         String tipo = uri.getQueryParameter(ComedoresContract.PlatosEntry.URI_PATRON_TIPO_KEY);
         String seleccion = sPlatosByComedorAndFechaSelection;
+        String[] selectionArgs;
         if( tipo != null) {
             seleccion += " AND " + ComedoresContract.PlatosEntry.COLUMN_TIPO + " LIKE ?";
+            selectionArgs = new String[]{Long.toString(idComedor), Long.toString(fecha), tipo};
+        } else {
+            selectionArgs = new String[]{Long.toString(idComedor), Long.toString(fecha)};
         }
         return mOpenHelper.getReadableDatabase().query(
                 ComedoresContract.PlatosEntry.TABLE_NAME,
                 projection,
-                seleccion, new String[]{Long.toString(idComedor), Long.toString(fecha), tipo},
+                seleccion, selectionArgs,
                 null, null,
                 sortOrder);
     }
@@ -273,6 +303,13 @@ public class ComedoresProvider extends ContentProvider {
                 //No existe, lo insertamos, el _id debería ser el mismo, claro
                 _idPlato = db.insert(ComedoresContract.PlatosEntry.TABLE_NAME, null, values);
             }
+            c.close();
+            db.delete(
+                    ComedoresContract.TenerEntry.TABLE_NAME,
+                    ComedoresContract.TenerEntry.COLUMN_COMEDOR + " = ?" +
+                    " AND " + ComedoresContract.TenerEntry.COLUMN_FECHA + " = ?"+
+                    " AND " + ComedoresContract.TenerEntry.COLUMN_PLATO + " = ?",
+                    new String[]{strComedorId, Long.toString(fecha), Long.toString(_idPlato)});
             //Insertamos la relación
             ContentValues valsRelacion = new ContentValues();
             valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_COMEDOR, strComedorId);
@@ -281,7 +318,7 @@ public class ComedoresProvider extends ContentProvider {
             db.insert(ComedoresContract.TenerEntry.TABLE_NAME, null, valsRelacion);
 
             if (_idPlato > 0)
-                return ComedoresContract.PlatosEntry.buildPlatoUri(_idPlato);
+                return ComedoresContract.PlatosEntry.buildPlatoUri(Long.parseLong(strComedorId), _idPlato);
             else
                 throw new android.database.SQLException("Failed to insert row into " + uri);
         } else {
@@ -305,6 +342,7 @@ public class ComedoresProvider extends ContentProvider {
                 //No existe, lo insertamos, el _id debería ser el mismo, claro
                 _idElemento = db.insert(ComedoresContract.ElementosEntry.TABLE_NAME, null, values);
             }
+            c.close();
             //Insertamos la relación
             ContentValues valsRelacion = new ContentValues();
             valsRelacion.put(ComedoresContract.TienenEntry.COLUMN_MENU, strMenuId);

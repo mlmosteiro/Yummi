@@ -24,7 +24,9 @@
     <string name="formato_horario_apertura">Abierto: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
     <string name="horario_apertura_label">Horario de apertura</string>
     <string name="horario_comedor_label">Horario de comedor</string>
-
+    <string name="header_primeros">Primeros</string>
+    <string name="header_segundos">Segundos</string>
+    <string name="header_postres">Postres</string>
 
 
 </resources>

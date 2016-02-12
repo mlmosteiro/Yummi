@@ -19,7 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.yummi.data.ComedoresContract;
-import com.example.android.yummi.service.ComedoresService;
+import com.example.android.yummi.services.ComedoresService;
 
 
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {

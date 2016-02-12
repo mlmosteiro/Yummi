@@ -30,7 +30,11 @@ public class DetailActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
+        CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
+
         Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
+
+
 
         if ( comedorId != null){
 
@@ -41,8 +45,7 @@ public class DetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, detailFragment,
                     DETAILACTIVITYFRAGMENT_TAG).commit();
-        }
-        else{
+        } else{
             NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, notSelectedFragment,
@@ -66,7 +69,6 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
         );
-
     }
 
 
@@ -93,10 +95,6 @@ public class DetailActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 }
 
 

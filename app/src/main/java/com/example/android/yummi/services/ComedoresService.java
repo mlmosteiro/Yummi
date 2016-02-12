@@ -1,4 +1,4 @@
-package com.example.android.yummi.service;
+package com.example.android.yummi.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
@@ -364,12 +364,4 @@ public class ComedoresService extends IntentService {
         }
         Log.d(LOG_TAG, "Service completado: " + insertados + " platos insertados, " + eliminados + " eliminados.");
     }
-
-    /*public static class AlarmReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Intent intentParaServicio = new Intent(context, ComedoresService.class);
-            context.startService(intentParaServicio);
-        }
-    }*/
 }

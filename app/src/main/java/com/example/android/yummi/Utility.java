@@ -1,5 +1,12 @@
 package com.example.android.yummi;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.util.Log;
+
+import com.example.android.yummi.data.ComedoresContract;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,5 +64,47 @@ public class Utility {
 
     public static String denormalizarHora(long hora) {
         return new SimpleDateFormat("HH:mm").format(new Date(hora));
+    }
+
+    public static void logearBase(Context context) {
+        ContentResolver cR = context.getContentResolver();
+        Cursor c = cR.query(ComedoresContract.PlatosEntry.CONTENT_URI,
+                null, null, null, null);
+        Log.d("LOG_BASE", "Num elementos en platos: " + c.getCount());
+        if(c.moveToFirst()) {
+            while(!c.isAfterLast()) {
+                Log.d("LOG_BASE", "Tipo plato: " + c.getString(c.getColumnIndex(ComedoresContract.PlatosEntry.COLUMN_TIPO)));
+                c.moveToNext();
+            }
+        }
+        c.close();
+        c = cR.query(ComedoresContract.ComedoresEntry.CONTENT_URI,
+                null, null, null, null);
+        Log.d("LOG_BASE", "Num elementos en comedores: " + c.getCount());
+        c.close();
+        c = cR.query(ComedoresContract.TiposMenuEntry.CONTENT_URI,
+                null, null, null, null);
+        Log.d("LOG_BASE", "Num elementos en tiposmenu: " + c.getCount());
+        c.close();
+        c = cR.query(ComedoresContract.ElementosEntry.CONTENT_URI,
+                null, null, null, null);
+        Log.d("LOG_BASE", "Num elementos en elementos: " + c.getCount());
+        c.close();
+        c = cR.query(ComedoresContract.TenerEntry.CONSULTA_URI,
+                null, null, null, null);
+        Log.d("LOG_BASE", "Num elementos en tener: " + c.getCount());
+        if(c.moveToFirst()) {
+            while(!c.isAfterLast()) {
+                Log.d("LOG_BASE", "Tener: " + c.getString(c.getColumnIndex(ComedoresContract.TenerEntry.COLUMN_COMEDOR)));
+                Log.d("LOG_BASE", "Tener: " + c.getString(c.getColumnIndex(ComedoresContract.TenerEntry.COLUMN_FECHA)));
+                Log.d("LOG_BASE", "Tener: " + c.getString(c.getColumnIndex(ComedoresContract.TenerEntry.COLUMN_PLATO)));
+                c.moveToNext();
+            }
+        }
+        c.close();
+        c = cR.query(ComedoresContract.TienenEntry.CONSULTA_URI,
+                null, null, null, null);
+        Log.d("LOG_BASE", "Num elementos en tienen: " + c.getCount());
+        c.close();
     }
 }
