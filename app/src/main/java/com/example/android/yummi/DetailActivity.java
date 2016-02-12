@@ -10,12 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.android.yummi.data.ManejadorImagenes;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String ID_COMEDOR = "id";
     public static final String NOMBRE_COMEDOR = "nombre";
     public static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
 
+    private ManejadorImagenes manejadorImagenes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,31 +34,26 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
-
         Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
 
-
-
         if ( comedorId != null){
-
             DetailActivityFragment detailFragment = new DetailActivityFragment();
             Bundle bundle = new Bundle();
-            bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
+            bundle.putLong(DetailActivityFragment.COMEDOR_ID, comedorId);
             detailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, detailFragment,
                     DETAILACTIVITYFRAGMENT_TAG).commit();
+            manejadorImagenes = new ManejadorImagenes(this, collapser, comedorId);
         } else{
             NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, notSelectedFragment,
                     NotSelectedFragment.NOTSELECTED_TAG).commit();
-
         }
 
         String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
         if( comedorNombre != null){
-
             collapser.setTitle( comedorNombre );
         }
 
@@ -70,6 +68,19 @@ public class DetailActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        manejadorImagenes.conseguirImagen();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(manejadorImagenes != null) {
+            manejadorImagenes.shutdown();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
