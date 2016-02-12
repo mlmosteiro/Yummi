@@ -56,7 +56,6 @@ public class DetailActivity extends AppCompatActivity {
         String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
         if( comedorNombre != null){
 
-            CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
             collapser.setTitle( comedorNombre );
         }
 
