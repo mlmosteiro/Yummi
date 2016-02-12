@@ -108,7 +108,7 @@ public class ComedoresContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATOS;
 
-        public static Uri buildPlatoUri(long id) {
+        public static Uri buildPlatoUri(long idComedor, long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
@@ -184,6 +184,10 @@ public class ComedoresContract {
         public static final String COLUMN_COMEDOR = "comedor"; //Id del comedor
         public static final String COLUMN_FECHA = "fecha"; //Fecha en que tuvo el plato
         public static final String COLUMN_PLATO = "plato"; //Id del plato
+
+        //Para debug
+        public static final Uri CONSULTA_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath("tener").build();
     }
 
     /**
@@ -194,6 +198,10 @@ public class ComedoresContract {
 
         public static final String COLUMN_MENU = "menu"; //Id del menu
         public static final String COLUMN_ELEMENTO = "elemento"; //Id del elemento
+
+        //Para debug
+        public static final Uri CONSULTA_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath("tienen").build();
     }
 
     public static long getIdElemento(Uri uri) {

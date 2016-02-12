@@ -56,10 +56,11 @@
         </activity>
 
         <service
-            android:name=".service.ComedoresService"
+            android:name=".services.ComedoresService"
             android:exported="false" />
-        <receiver
-            android:name=".service.ComedoresService$AlarmReceiver" />
+        <service
+            android:name=".services.ImagenesService"
+            android:exported="false" />
     </application>
 
 </manifest>

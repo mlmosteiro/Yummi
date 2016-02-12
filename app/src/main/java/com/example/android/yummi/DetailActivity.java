@@ -30,12 +30,13 @@ public class DetailActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
+        CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
+
         Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
 
 
 
         if ( comedorId != null){
-
             DetailActivityFragment detailFragment = new DetailActivityFragment();
             Bundle bundle = new Bundle();
             bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
@@ -43,8 +44,8 @@ public class DetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, detailFragment,
                     DETAILACTIVITYFRAGMENT_TAG).commit();
-        }
-        else{
+            //ManejadorImagenes.conseguirImagenDetailFondo(collapser, comedorId);
+        } else {
             NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, notSelectedFragment,
@@ -54,8 +55,6 @@ public class DetailActivity extends AppCompatActivity {
 
         String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
         if( comedorNombre != null){
-
-            CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
             collapser.setTitle( comedorNombre );
         }
 
@@ -99,19 +98,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 }
-
-
-//
-//    private void loadImageParallax(int id) {
-//        ImageView image = (ImageView) findViewById(R.id.image_paralax);
-//        // Usando Glide para la carga asíncrona
-//        Glide.with(this)
-//                .load(id)
-//                .centerCrop()
-//                .into(image);
-//    }
-
-
 
 
 
