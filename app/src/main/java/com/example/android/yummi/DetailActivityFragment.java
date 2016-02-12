@@ -2,6 +2,7 @@ package com.example.android.yummi;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.services.ComedoresService;
@@ -124,7 +124,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             case LOADER_PLATOS: {
                 return new CursorLoader(
                         getActivity(),
-                        ComedoresContract.PlatosEntry.buildPlatosByComedorUri(id),
+                        ComedoresContract.PlatosEntry.buildPlatosByComedorUri(mComedorId),
                         COLUMNAS_PLATOS,
                         null, null,
                         null);
@@ -140,11 +140,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 mAdapter.setInfoComedor(data);
                 break;
             case LOADER_PLATOS:
-                if(data.moveToFirst()) {
-                    Log.d("DATA", "Count: " + data.getCount());
-                } else {
-                    Log.d("DATA", "NO DATA");
-                }
                 mAdapter.swapCursor(data);
         }
     }

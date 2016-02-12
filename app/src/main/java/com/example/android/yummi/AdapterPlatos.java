@@ -75,6 +75,7 @@ public class AdapterPlatos extends BaseAdapter {
         }
         mCursor = newCursor;
         if (newCursor != null) {
+            mNumPrimeros = mNumSegundos = 0;
             if (newCursor.moveToFirst()) {
                 while (!newCursor.isAfterLast()) {
                     int tipo = Integer.parseInt(
@@ -160,7 +161,7 @@ public class AdapterPlatos extends BaseAdapter {
             if (posicionEnCursor >= mNumPrimeros) posicionEnCursor--;
             if (posicionEnCursor >= mNumSegundos+mNumPrimeros) posicionEnCursor--;
             if (!mCursor.moveToPosition(posicionEnCursor)) {
-                throw new IllegalStateException("couldn't move cursor to position " + position);
+                throw new IllegalStateException("couldn't move cursor to position " + position + "(" + posicionEnCursor + " relamente)");
             }
         }
 
