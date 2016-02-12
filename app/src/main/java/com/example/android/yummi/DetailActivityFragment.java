@@ -1,11 +1,14 @@
 package com.example.android.yummi;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,9 @@ import com.example.android.yummi.data.ComedoresContract;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private final String LOG_TAG = DetailActivity.class.getSimpleName();
+
+
     // Columnas para la consulta de datos del comedor al provider
     public static final String[] COLUMNAS_COMEDOR = {
             ComedoresContract.ComedoresEntry._ID,
@@ -219,6 +225,20 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         params.height = totalHeight
                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
+    }
+
+
+    public void openLocation (long latitud, long longitud){
+
+        Uri ubicacion = Uri.parse("geo:0,0? q=<" + longitud + ">,<" + latitud + ">");
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(ubicacion);
+
+        if ( intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else{
+            Log.d(LOG_TAG, "Couldn't call (" + latitud + "," + longitud + ") , no receiving apps installed!");
+        }
     }
 
 

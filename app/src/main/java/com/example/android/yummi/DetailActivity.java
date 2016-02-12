@@ -32,8 +32,6 @@ public class DetailActivity extends AppCompatActivity {
 
         Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
 
-
-
         if ( comedorId != null){
 
             DetailActivityFragment detailFragment = new DetailActivityFragment();
@@ -69,8 +67,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
         );
 
-//        loadImageParallax(idDrawable);// Cargar Imagen
-
     }
 
 
@@ -98,18 +94,10 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
+
 }
-
-
-//
-//    private void loadImageParallax(int id) {
-//        ImageView image = (ImageView) findViewById(R.id.image_paralax);
-//        // Usando Glide para la carga asíncrona
-//        Glide.with(this)
-//                .load(id)
-//                .centerCrop()
-//                .into(image);
-//    }
 
 
 

@@ -146,6 +146,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {comedoresAdapter.swapCursor(null);}
 
+
     public interface Callback {
         void comedorSeleccionado(long comedorId, String comedorName);
         void ningunComedorSeleccionado();

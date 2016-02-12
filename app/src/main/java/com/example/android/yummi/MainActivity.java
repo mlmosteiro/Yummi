@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
     }
 
-
     @Override
     public void ningunComedorSeleccionado() {
         NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
