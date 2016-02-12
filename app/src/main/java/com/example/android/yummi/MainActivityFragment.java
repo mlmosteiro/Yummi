@@ -58,8 +58,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-
-
         //Comprobamos si ha actualizado los comedores este mes
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String lastAct = getActivity().getString(R.string.pref_ultima_act_comedores);
@@ -115,8 +113,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                     String comedorName = c.getString(COL_NOMBRE);
                     ((Callback) getActivity())
                             .comedorSeleccionado(comedorId, comedorName);
+                }else{
+                    ((Callback) getActivity()).ningunComedorSeleccionado();
                 }
-
             }
         });
         return rootView;
@@ -149,6 +148,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     public interface Callback {
         void comedorSeleccionado(long comedorId, String comedorName);
+        void ningunComedorSeleccionado();
     }
 
 }

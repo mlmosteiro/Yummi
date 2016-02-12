@@ -1,28 +1,29 @@
  <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    tools:context="com.example.android.yummi.MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.support.design.widget.AppBarLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:baselineAligned="false"
-        android:divider="?android:attr/dividerHorizontal"
-        tools:context="com.example.android.yummi.MainActivity"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:id="@+id/barLayout"
+        android:layout_alignParentTop="true">
 
-        <android.support.design.widget.AppBarLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            android:id="@+id/barLayout"
-            android:layout_alignParentTop="true">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary" />
+    </android.support.design.widget.AppBarLayout>
 
-        </android.support.design.widget.AppBarLayout>
 
      <LinearLayout
          android:layout_width="match_parent"
@@ -30,23 +31,39 @@
          android:orientation="horizontal"
          android:layout_below="@+id/barLayout"
          android:layout_alignParentStart="true"
-         android:baselineAligned="false">
+         android:baselineAligned="false"
+         android:id="@+id/linearLayout">
 
          <fragment
              android:id="@+id/fragment_mainActivity"
              android:name="com.example.android.yummi.MainActivityFragment"
-             android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+             android:layout_width="0dp"
+             android:layout_height="match_parent"
              tools:layout="@android:layout/list_content"
-             android:layout_weight="2" />
+             android:layout_weight="2"
+             android:layout_marginLeft="8dp"
+             android:layout_marginRight="8dp"
+             android:layout_marginTop="4dp"/>
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/detail_container"
-            android:layout_width="wrap_content"
+         <android.support.v4.widget.NestedScrollView
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="3"
+            android:id="@+id/detail_container">
+        </android.support.v4.widget.NestedScrollView>
 
+     </LinearLayout>
+     <!--<android.support.design.widget.FloatingActionButton-->
+         <!--android:id="@+id/fab"-->
+         <!--android:layout_width="wrap_content"-->
+         <!--android:layout_height="match_parent"-->
+         <!--android:layout_margin="@dimen/fab_margin"-->
+         <!--android:src="@android:drawable/ic_dialog_info"-->
+         <!--app:borderWidth="0dp"-->
+         <!--app:elevation="@dimen/fab_elevation"-->
+         <!--app:layout_anchor="@id/app_bar"-->
+         <!--app:layout_anchorGravity="bottom|right|end"-->
+         <!--android:layout_gravity="bottom"-->
+         <!--android:layout_alignParentEnd="true" />-->
 
-        </LinearLayout>
-
-</RelativeLayout>
+ </RelativeLayout>

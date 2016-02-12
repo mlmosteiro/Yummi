@@ -14,7 +14,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String ID_COMEDOR = "id";
     public static final String NOMBRE_COMEDOR = "nombre";
-    private static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
+    public static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
 
 
     @Override
@@ -25,14 +25,15 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-
-
         if (getSupportActionBar() != null) { // Habilitar up button
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
         Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
+
+
+
         if ( comedorId != null){
 
             DetailActivityFragment detailFragment = new DetailActivityFragment();
@@ -40,8 +41,15 @@ public class DetailActivity extends AppCompatActivity {
             bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
             detailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().add(
-                    R.id.scroll, detailFragment,
+                    R.id.detail_container, detailFragment,
                     DETAILACTIVITYFRAGMENT_TAG).commit();
+        }
+        else{
+            NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
+            getSupportFragmentManager().beginTransaction().add(
+                    R.id.detail_container, notSelectedFragment,
+                    NotSelectedFragment.NOTSELECTED_TAG).commit();
+
         }
 
         String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
@@ -50,9 +58,6 @@ public class DetailActivity extends AppCompatActivity {
             CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
             collapser.setTitle( comedorNombre );
         }
-
-//        loadImageParallax(idDrawable);// Cargar Imagen
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(
@@ -63,6 +68,9 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
         );
+
+//        loadImageParallax(idDrawable);// Cargar Imagen
+
     }
 
 

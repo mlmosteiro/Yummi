@@ -7,9 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback  {
-
-    //TODO => Implementar la interfaz para el DetailFragment :D
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
 
     private boolean twoPane;
     private static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
@@ -27,11 +25,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             twoPane = true;
 
             if (savedInstanceState == null) {
-
-//
-//                getSupportFragmentManager().beginTransaction().replace(
-//                        R.id.detail_container, detailFragment;
-//                        DETAILACTIVITYFRAGMENT_TAG).commit();
+               ningunComedorSeleccionado();
             }
         } else {
             twoPane = false;
@@ -83,5 +77,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             intent.putExtra(DetailActivity.NOMBRE_COMEDOR, comedorName);
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void ningunComedorSeleccionado() {
+        NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
+
+        getSupportFragmentManager().beginTransaction().add(
+                R.id.detail_container,notSelectedFragment , NotSelectedFragment.NOTSELECTED_TAG).commit();
+
     }
 }
