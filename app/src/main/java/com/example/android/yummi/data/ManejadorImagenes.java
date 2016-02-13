@@ -43,6 +43,19 @@ public class ManejadorImagenes {
         return URI_BASE_MINI.buildUpon().appendQueryParameter(DESCARGA_PARAMETRO_ID, Long.toString(id)).build();
     }
 
+    public static void borrarImagenesSiExisten(Context context, String idComedor) {
+        String strMini = BASE_NOMBRE_MINIATURA + idComedor + "." + EXTENSION_IMAGEN;
+        String strDetail = BASE_NOMBRE_DETAIL + idComedor + "." + EXTENSION_IMAGEN;
+        File fMini = new File(context.getFilesDir(), strMini);
+        File fDetail = new File(context.getFilesDir(), strDetail);
+        if(fMini.exists()) {
+            fMini.delete();
+        }
+        if(fDetail.exists()) {
+            fDetail.delete();
+        }
+    }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
