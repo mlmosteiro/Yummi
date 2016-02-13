@@ -26,6 +26,7 @@ public class ImagenesService extends IntentService {
     public static final String EVENTO_IMAGEN_DISPONIBLE = "imagen-lista";
     public static final String EXTRA_ID_KEY = "id";
     public static final String ID_KEY = "id";
+    private static final String LOG_TAG = ImagenesService.class.getSimpleName();
 
     public ImagenesService() {
         super("ImagenesService");
