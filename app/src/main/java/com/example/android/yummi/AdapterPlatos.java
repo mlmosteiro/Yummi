@@ -25,7 +25,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private String mDir;
     private Context mContext;
     private Cursor mCursor;
-    private int mRowIDColumn;
 
     private static final int TYPE_INFO = 0;
     private static final int TYPE_HEADER = 1;
@@ -33,7 +32,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
 
     public AdapterPlatos(Context context) {
         mContext = context;
-        mRowIDColumn = -1;
         mNumPrimeros = mNumSegundos = 0;
     }
 
@@ -105,7 +103,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
             }
             Log.d("SWAP", mNumPrimeros + " - " + mNumSegundos);
             Log.d("NUM", "Num " + newCursor.getCount());
-            mRowIDColumn = newCursor.getColumnIndexOrThrow("_id");
             // notify the observers about the new cursor
             notifyDataSetChanged();
         }
