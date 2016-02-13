@@ -22,9 +22,13 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private long mCierre;
     private long mIni;
     private long mFin;
+    private double mLat;
+    private double mLon;
     private String mContacto;
     private String mDir;
+    private String mNombre;
     private Context mContext;
+    private AbridorLocalizacion mAbridor;
     private Cursor mCursor;
     private Boolean mTwoPane;
 
@@ -35,6 +39,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
 
     public AdapterPlatos(Context context, Boolean twoPane, String titulo) {
         mContext = context;
+        mAbridor = abridor;
         mNumPrimeros = mNumSegundos = 0;
         mTwoPane = twoPane;
         mTitulo = titulo;
@@ -114,6 +119,8 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                     newCursor.moveToNext();
                 }
             }
+            Log.d("SWAP", mNumPrimeros + " - " + mNumSegundos);
+            Log.d("NUM", "Num " + newCursor.getCount());
             // notify the observers about the new cursor
             notifyDataSetChanged();
         }
@@ -125,17 +132,19 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
             mCierre = data.getLong(DetailActivityFragment.COL_COMEDOR_CIERRE);
             mIni = data.getLong(DetailActivityFragment.COL_COMEDOR_HORA_INI);
             mFin = data.getLong(DetailActivityFragment.COL_COMEDOR_HORA_FIN);
+            mLat = data.getDouble(DetailActivityFragment.COL_COMEDOR_LAT);
+            mLon = data.getDouble(DetailActivityFragment.COL_COMEDOR_LONG);
             String contacto = data.getString(DetailActivityFragment.COL_COMEDOR_NOMBRE_CONTACTO);
             mContacto = data.getString(DetailActivityFragment.COL_COMEDOR_TLFN) +
                     (!contacto.equals("null") ? " (" + contacto + ")" : "");
             mDir = data.getString(DetailActivityFragment.COL_COMEDOR_DIR);
+            mNombre = data.getString(DetailActivityFragment.COL_COMEDOR_NOMBRE);
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
      View view;
-
         switch(viewType) {
             case TYPE_HEADER: {
                 view = LayoutInflater.from(mContext).inflate(R.layout.content_cabecera, viewGroup, false);
@@ -160,7 +169,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
         }
     }
 
-
     @Override
     public int getItemViewType(int position) {
         if(mTwoPane){
@@ -180,7 +188,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                 return TYPE_PLATO;
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -234,7 +241,13 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                                     Utility.denormalizarHora(mIni),
                                     Utility.denormalizarHora(mFin)));
                     vH.mViewContacto.setText(mContacto);
-                    vH.mViewUbicacion.setText(mDir);
+                    vH.mViewUbicacion.setText(Html.fromHtml("<u>"+mDir+"</u>"));
+                    vH.mViewUbicacion.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAbridor.openLocation(mLat, mLon, mNombre);
+                        }
+                    });
                     break;
                 }
                 case TYPE_TITULO: {
@@ -247,7 +260,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
         }
 
     }
-
 
     private String getHeader(int position) {
         int positionH = position;
@@ -265,5 +277,9 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public interface AbridorLocalizacion {
+        void openLocation (double latitud, double longitud, String label);
     }
 }
