@@ -3,6 +3,7 @@ package com.example.android.yummi;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,17 +22,22 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private long mCierre;
     private long mIni;
     private long mFin;
+    private double mLat;
+    private double mLon;
     private String mContacto;
     private String mDir;
+    private String mNombre;
     private Context mContext;
+    private AbridorLocalizacion mAbridor;
     private Cursor mCursor;
 
     private static final int TYPE_INFO = 0;
     private static final int TYPE_HEADER = 1;
     private static final int TYPE_PLATO = 2;
 
-    public AdapterPlatos(Context context) {
+    public AdapterPlatos(Context context, AbridorLocalizacion abridor) {
         mContext = context;
+        mAbridor = abridor;
         mNumPrimeros = mNumSegundos = 0;
     }
 
@@ -114,10 +120,13 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
             mCierre = data.getLong(DetailActivityFragment.COL_COMEDOR_CIERRE);
             mIni = data.getLong(DetailActivityFragment.COL_COMEDOR_HORA_INI);
             mFin = data.getLong(DetailActivityFragment.COL_COMEDOR_HORA_FIN);
+            mLat = data.getDouble(DetailActivityFragment.COL_COMEDOR_LAT);
+            mLon = data.getDouble(DetailActivityFragment.COL_COMEDOR_LONG);
             String contacto = data.getString(DetailActivityFragment.COL_COMEDOR_NOMBRE_CONTACTO);
             mContacto = data.getString(DetailActivityFragment.COL_COMEDOR_TLFN) +
                     (!contacto.equals("null") ? " (" + contacto + ")" : "");
             mDir = data.getString(DetailActivityFragment.COL_COMEDOR_DIR);
+            mNombre = data.getString(DetailActivityFragment.COL_COMEDOR_NOMBRE);
         }
     }
 
@@ -197,13 +206,18 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                                     Utility.denormalizarHora(mIni),
                                     Utility.denormalizarHora(mFin)));
                     vH.mViewContacto.setText(mContacto);
-                    vH.mViewUbicacion.setText(mDir);
+                    vH.mViewUbicacion.setText(Html.fromHtml("<u>"+mDir+"</u>"));
+                    vH.mViewUbicacion.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAbridor.openLocation(mLat, mLon, mNombre);
+                        }
+                    });
                 }
             }
         }
 
     }
-
 
     private String getHeader(int position) {
         if(position == 1) {
@@ -219,5 +233,9 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public interface AbridorLocalizacion {
+        void openLocation (double latitud, double longitud, String label);
     }
 }

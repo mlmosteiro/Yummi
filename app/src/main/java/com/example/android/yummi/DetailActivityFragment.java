@@ -21,7 +21,8 @@ import com.example.android.yummi.services.ComedoresService;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class DetailActivityFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor>, AdapterPlatos.AbridorLocalizacion {
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
 
@@ -100,7 +101,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.listView_detail));
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        mAdapter = new AdapterPlatos(getActivity());
+        mAdapter = new AdapterPlatos(getActivity(), this);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -152,16 +153,16 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<Cursor> loader) { }
 
-    public void openLocation (long latitud, long longitud){
-
-        Uri ubicacion = Uri.parse("geo:0,0? q=<" + longitud + ">,<" + latitud + ">");
+    public void openLocation (double latitud, double longitud, String label){
+        Uri ubicacion = Uri.parse("geo:0,0").buildUpon()
+                .appendQueryParameter("q", latitud + "," + longitud + "(" + label + ")").build();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(ubicacion);
 
         if ( intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
         } else{
-            Log.d(LOG_TAG, "Couldn't call (" + latitud + "," + longitud + ") , no receiving apps installed!");
+            Log.d(LOG_TAG, "Couldn't call (" + ubicacion.toString() + ") , no receiving apps installed!");
         }
     }
 }
