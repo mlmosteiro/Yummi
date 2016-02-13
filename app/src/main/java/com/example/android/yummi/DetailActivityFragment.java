@@ -8,11 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.services.ComedoresService;
@@ -96,9 +97,12 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.listView_detail));
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(llm);
         mAdapter = new AdapterPlatos(getActivity());
+        recyclerView.setAdapter(mAdapter);
 
-        ((ListView)rootView).setAdapter(mAdapter);
 
         return rootView;
     }
@@ -140,6 +144,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 mAdapter.setInfoComedor(data);
                 break;
             case LOADER_PLATOS:
+                Log.d("FUERA", "LOADER " + data.getCount());
                 mAdapter.swapCursor(data);
         }
     }

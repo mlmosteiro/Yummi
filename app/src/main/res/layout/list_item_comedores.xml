@@ -23,7 +23,7 @@
         android:layout_marginStart="6dp"
         android:layout_toEndOf="@id/list_item_icon"
         android:layout_alignTop="@+id/list_item_icon"
-        />
+        android:paddingTop="10dp" />
 
     <TextView
         android:id="@+id/comedores_subtitulo"
@@ -31,13 +31,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/comedores_titulo"
         android:layout_alignStart="@id/comedores_titulo"/>
-
-    <!--<ImageView
-        android:id="@+id/status_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_notification_overlay"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />-->
 
 </RelativeLayout>
