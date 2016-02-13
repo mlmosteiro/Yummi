@@ -3,6 +3,8 @@ package com.example.android.yummi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.example.android.yummi.data.ComedoresContract;
@@ -106,5 +108,24 @@ public class Utility {
                 null, null, null, null);
         Log.d("LOG_BASE", "Num elementos en tienen: " + c.getCount());
         c.close();
+    }
+
+    public static boolean horaActualEn(long ini, long fin) {
+        Calendar c = Calendar.getInstance();
+        Calendar cIni = Calendar.getInstance();
+        cIni.setTimeInMillis(ini);
+        Calendar cFin = Calendar.getInstance();
+        cFin.setTimeInMillis(fin);
+        return (c.get(Calendar.HOUR) >= cIni.get(Calendar.HOUR) &&
+                c.get(Calendar.HOUR) <= cFin.get(Calendar.HOUR) &&
+                c.get(Calendar.MINUTE) >= cIni.get(Calendar.MINUTE) &&
+                c.get(Calendar.MINUTE) <= cFin.get(Calendar.MINUTE));
+    }
+
+    public static boolean conectadoWifi(Context context) {
+        final ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo infoWifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return infoWifi.isConnectedOrConnecting();
     }
 }

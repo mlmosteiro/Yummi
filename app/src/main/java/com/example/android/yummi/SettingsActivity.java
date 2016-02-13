@@ -18,15 +18,13 @@ public class SettingsActivity extends PreferenceActivity
 
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
-
-
-//        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_showAll_key)));
+        //findPreference(getString(R.string.pref_showAll_key)).setSummary(R.string.pref_showAll_summary);
     }
 
     /**
      * Attaches a listener so the summary is always updated with the preference value.
      * Also fires the listener once, to initialize the summary (so it shows up before the value
-     * is changed.)
+     * is changed)
      */
     private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.

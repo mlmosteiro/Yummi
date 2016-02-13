@@ -108,12 +108,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Cursor c = (Cursor) adapterView.getItemAtPosition(position);
 
-                if(c!=null){
+                if (c != null) {
                     long comedorId = c.getLong(COL_ID);
                     String comedorName = c.getString(COL_NOMBRE);
                     ((Callback) getActivity())
                             .comedorSeleccionado(comedorId, comedorName);
-                }else{
+                } else {
                     ((Callback) getActivity()).ningunComedorSeleccionado();
                 }
             }
@@ -130,6 +130,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = ComedoresContract.ComedoresEntry.COLUMN_NOMBRE + " ASC";
+
         return new CursorLoader(getActivity(),
                 ComedoresContract.ComedoresEntry.CONTENT_URI,
                 COLUMNAS_COMEDORES,

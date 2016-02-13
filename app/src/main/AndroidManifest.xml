@@ -4,6 +4,8 @@
 
     <!-- Permiso necesario para el acceso a internet -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permiso para comprobar estado del wifi -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"

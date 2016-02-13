@@ -5,9 +5,9 @@
     <string name="action_aboutUs">About us!</string>
     <string name="title_activity_detail">DetailActivity</string>
 
-    <string name="pref_showAll_label">Mostrar abiertos</string>
-    <string name="pref_showAll_summary">Mostrar solo los comedores abiertos ahora</string>
-    <string name="pref_showAll_key" translatable="false">showAll</string>
+    <string name="pref_downloadOnWifi_label">Descargar solo en WIFI</string>
+    <string name="pref_downloadOnWifi_summary">Descargar imágenes sólo con red WIFI.</string>
+    <string name="pref_downloadOnWifi_key" translatable="false">downloadImgWifi</string>
 
     <!-- Relacionado con la actualizacion de la lista de comedores -->
     <string name="pref_ultima_act_comedores" translatable="false">act_comedores</string>

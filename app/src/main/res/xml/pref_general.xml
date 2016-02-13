@@ -6,11 +6,11 @@
     android:layout_height="match_parent">
 
     <PreferenceCategory
-        android:title="Visualización" >
+        android:title="Descarga" >
         <CheckBoxPreference
-            android:key="@string/pref_showAll_key"
-            android:summary="@string/pref_showAll_summary"
-            android:title="@string/pref_showAll_label"
+            android:key="@string/pref_downloadOnWifi_key"
+            android:summary="@string/pref_downloadOnWifi_summary"
+            android:title="@string/pref_downloadOnWifi_label"
             android:defaultValue="false"/>
     </PreferenceCategory>
 

@@ -2,7 +2,12 @@ package com.example.android.yummi.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+
+import com.example.android.yummi.R;
+import com.example.android.yummi.Utility;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -22,7 +27,9 @@ public class ImagenesService extends IntentService {
     public static final String EXTRA_ID_KEY = "id";
     public static final String ID_KEY = "id";
 
-    public ImagenesService() {super("ImagenesService");}
+    public ImagenesService() {
+        super("ImagenesService");
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -37,9 +44,17 @@ public class ImagenesService extends IntentService {
             return;
         }
 
-        URL url = null;
-        BufferedOutputStream out = null;
-        InputStream in = null;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String descargarEnWifiKey = this.getString(R.string.pref_downloadOnWifi_key);
+        boolean soloWifi = prefs.getBoolean(descargarEnWifiKey, false);
+
+        if(soloWifi && !Utility.conectadoWifi(this)) {
+            return;
+        }
+
+        URL url;
+        BufferedOutputStream out;
+        InputStream in;
 
         try {
             url = new URL(direccion);

@@ -127,7 +127,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                         ComedoresContract.PlatosEntry.buildPlatosByComedorUri(mComedorId),
                         COLUMNAS_PLATOS,
                         null, null,
-                        null);
+                        ComedoresContract.PlatosEntry.COLUMN_TIPO);
             }
         }
         return null;

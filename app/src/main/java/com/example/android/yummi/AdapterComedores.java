@@ -2,12 +2,15 @@ package com.example.android.yummi;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.yummi.data.ManejadorImagenes;
 
 /**
  * Adapter para la lista de comedores de {@code MainActivityFragment}.
@@ -29,6 +32,11 @@ public class AdapterComedores extends CursorAdapter {
         }
     }
 
+    public static class Tag {
+        public ViewHolder viewHolder;
+        public ManejadorImagenes manejador;
+    }
+
     public AdapterComedores(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
@@ -37,15 +45,29 @@ public class AdapterComedores extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_comedores, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(view);
-        view.setTag(viewHolder);
+        Tag tag = new Tag();
+        tag.viewHolder = new ViewHolder(view);
+        view.setTag(tag);
 
         return view;
     }
 
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView != null && ((Tag)convertView.getTag()).manejador != null) {
+            ((Tag)convertView.getTag()).manejador.shutdown();
+        }
+        return super.getView(position, convertView, parent);
+    }
+
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder vH = (ViewHolder) view.getTag();
+        ViewHolder vH = ((Tag) view.getTag()).viewHolder;
+
+        long ini = cursor.getLong(MainActivityFragment.COL_HORA_INI);
+        long fin = cursor.getLong(MainActivityFragment.COL_HORA_CIERRE);
+        boolean abierto = Utility.horaActualEn(ini, fin);
 
         String titulo = cursor.getString(MainActivityFragment.COL_NOMBRE);
         vH.tituloView.setText(titulo);
@@ -56,6 +78,15 @@ public class AdapterComedores extends CursorAdapter {
                 Utility.denormalizarHora(apertura), Utility.denormalizarHora(cierre));
         vH.subtituloView.setText(textoApertura);
 
-        //TODO: manejarle ahí lo de si está en el horario de comedor
+        ManejadorImagenes miManejador = new ManejadorImagenes(
+                context, vH.iconView, cursor.getLong(MainActivityFragment.COL_ID), true);
+        miManejador.conseguirImagen();
+        ((Tag) view.getTag()).manejador = miManejador;
+
+        if (abierto) {
+            vH.iconView.setBackgroundColor(Color.rgb(200, 240, 160));
+        } else {
+            vH.iconView.setBackgroundColor(Color.rgb(240, 160, 160));
+        }
     }
 }
