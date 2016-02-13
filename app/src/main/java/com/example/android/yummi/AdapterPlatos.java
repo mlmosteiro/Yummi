@@ -17,6 +17,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private int mNumPrimeros;
     private int mNumSegundos;
 
+    private String mTitulo;
     private long mApertura;
     private long mCierre;
     private long mIni;
@@ -25,15 +26,19 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private String mDir;
     private Context mContext;
     private Cursor mCursor;
+    private Boolean mTwoPane;
 
     private static final int TYPE_INFO = 0;
     private static final int TYPE_HEADER = 1;
     private static final int TYPE_PLATO = 2;
+    private static final int TYPE_TITULO = -1;
 
-    public AdapterPlatos(Context context) {
+    public AdapterPlatos(Context context, Boolean twoPane, String titulo) {
         mContext = context;
         mNumPrimeros = mNumSegundos = 0;
-    }
+        mTwoPane = twoPane;
+        mTitulo = titulo;
+        }
 
     /**
      * Cache con los View hijos para un elemento de una lista de platos
@@ -74,6 +79,15 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
         }
     }
 
+    public static class ViewHolderTitulo extends RecyclerView.ViewHolder  {
+        public final TextView tituloView;
+
+        public ViewHolderTitulo(View view){
+            super(view);
+            tituloView = (TextView) view.findViewById(R.id.titulo_text_view);
+        }
+    }
+
     public void swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
             return;
@@ -83,7 +97,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
             mNumPrimeros = mNumSegundos = 0;
             if (newCursor.moveToFirst()) {
                 while (!newCursor.isAfterLast()) {
-                    Log.d("TIPO", newCursor.getString(DetailActivityFragment.COL_PLATO_TIPO));
                     int tipo = Integer.parseInt(
                             newCursor.getString(DetailActivityFragment.COL_PLATO_TIPO)
                                     .substring(0, 1));
@@ -101,8 +114,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                     newCursor.moveToNext();
                 }
             }
-            Log.d("SWAP", mNumPrimeros + " - " + mNumSegundos);
-            Log.d("NUM", "Num " + newCursor.getCount());
             // notify the observers about the new cursor
             notifyDataSetChanged();
         }
@@ -124,6 +135,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
      View view;
+
         switch(viewType) {
             case TYPE_HEADER: {
                 view = LayoutInflater.from(mContext).inflate(R.layout.content_cabecera, viewGroup, false);
@@ -133,28 +145,52 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                 view = LayoutInflater.from(mContext).inflate(R.layout.content_detalles, viewGroup, false);
                 return new ViewHolderInfo(view);
             }
-            default: {
+            case TYPE_PLATO: {
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_platos, viewGroup, false);
+                return new ViewHolderPlatos(view);
+            }
+            case TYPE_TITULO:{
+                view = LayoutInflater.from(mContext).inflate(R.layout.content_titulo, viewGroup, false);
+                return new ViewHolderTitulo(view);
+            }
+            default:{
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_platos, viewGroup, false);
                 return new ViewHolderPlatos(view);
             }
         }
     }
 
+
     @Override
     public int getItemViewType(int position) {
-        if(position == 0) return TYPE_INFO;
-        else if(position == 1 || position == mNumPrimeros + 2 ||
-                position == mNumPrimeros+mNumSegundos+3)
-            return TYPE_HEADER;
-        else
-            return TYPE_PLATO;
+        if(mTwoPane){
+            if (position == 0) return TYPE_TITULO;
+            else if (position == 1) return TYPE_INFO;
+            else if (position == 2 || position == mNumPrimeros + 3 ||
+                    position == mNumPrimeros + mNumSegundos + 4)
+                return TYPE_HEADER;
+            else
+                return TYPE_PLATO;
+        } else {
+            if (position == 0) return TYPE_INFO;
+            else if (position == 1 || position == mNumPrimeros + 2 ||
+                    position == mNumPrimeros + mNumSegundos + 3)
+                return TYPE_HEADER;
+            else
+                return TYPE_PLATO;
+        }
     }
+
 
     @Override
     public int getItemCount() {
-        if(mCursor != null) {
+        if(mCursor != null && mTwoPane) {
+            return mCursor.getCount() + 5;
+        }else if (mCursor != null) {
             return mCursor.getCount() + 4;
-        } else {
+        }else if(mTwoPane) {
+            return 5;
+        }else {
             return 4;
         }
     }
@@ -172,6 +208,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                 case TYPE_PLATO: {
                     ViewHolderPlatos vH = (ViewHolderPlatos)holder;
                     int posicionEnCursor = position-2;
+                    if(mTwoPane) posicionEnCursor --;
                     if (posicionEnCursor >= mNumPrimeros) posicionEnCursor--;
                     if (posicionEnCursor >= mNumSegundos+mNumPrimeros) posicionEnCursor--;
                     if (!mCursor.moveToPosition(posicionEnCursor)) {
@@ -198,6 +235,13 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                                     Utility.denormalizarHora(mFin)));
                     vH.mViewContacto.setText(mContacto);
                     vH.mViewUbicacion.setText(mDir);
+                    break;
+                }
+                case TYPE_TITULO: {
+                    ViewHolderTitulo vH = (ViewHolderTitulo) holder;
+                    Log.d("TITULO", "TITULO : " + mTitulo);
+                    vH.tituloView.setText(mTitulo);
+                    break;
                 }
             }
         }
@@ -206,11 +250,13 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
 
 
     private String getHeader(int position) {
-        if(position == 1) {
+        int positionH = position;
+        if(mTwoPane){ positionH--;}
+        if(positionH == 1) {
             return mContext.getString(R.string.header_primeros);
-        } else if(position == mNumPrimeros + 2) {
+        } else if(positionH == mNumPrimeros + 2) {
             return mContext.getString(R.string.header_segundos);
-        } else if(position == mNumPrimeros+mNumSegundos+3) {
+        } else if(positionH == mNumPrimeros+mNumSegundos+3) {
             return mContext.getString(R.string.header_postres);
         }
         return "No sé";

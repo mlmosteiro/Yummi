@@ -44,55 +44,5 @@ public class PricesActivityFragment extends Fragment {
         return rootView;
     }
 
-
-//    public void initTable(View rootView, ArrayAdapter<String> cursor){
-//
-//        TableLayout tabla = (TableLayout) rootView.findViewById(R.id.tablaMenus);
-//        TableRow.LayoutParams layoutFila = new TableRow.LayoutParams(
-//                TableRow.LayoutParams.WRAP_CONTENT,
-//                TableRow.LayoutParams.WRAP_CONTENT);
-//
-//        TableRow.LayoutParams layoutMenu = new TableRow.LayoutParams(
-//                TableRow.LayoutParams.WRAP_CONTENT,
-//                TableRow.LayoutParams.WRAP_CONTENT);
-//
-////        TableRow.LayoutParams layoutPrecio=new TableRow.LayoutParams(
-//    //           TableRow.LayoutParams.WRAP_CONTENT,
-////               TableRow.LayoutParams.WRAP_CONTENT);
-//
-//        TableRow fila;
-//        TextView txtMenu;
-//        // TextView txtPrecio;
-//
-//        tabla.removeAllViews();
-//
-//        int control = 0;
-//        if (!cursor.isEmpty()) {
-//            do {
-//
-//                fila = new TableRow(getActivity());
-//                fila.setLayoutParams(layoutFila);
-//
-//                txtMenu = new TextView(getActivity());
-////                txtPrecio=new TextView(getActivity());
-//
-//                txtMenu.setText(cursor.getItem(0));
-//                txtMenu.setGravity(Gravity.RIGHT);
-//                txtMenu.setPadding(0, 0, 5, 0);
-//                txtMenu.setLayoutParams(layoutMenu);
-//
-////                txtPrecio.setText(cursor.getItem(1));
-////                txtPrecio.setPadding(0, 0, 5, 0);
-////                txtPrecio.setLayoutParams(layoutPrecio);
-//
-//                fila.addView(txtMenu);
-////                fila.addView(txtPrecio);
-//
-//                tabla.addView(fila);
-//                control++;
-//            } while (control < cursor.getCount());
-//        }
-//    }
-
 }
 

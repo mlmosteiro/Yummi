@@ -67,13 +67,18 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public static final int COL_PLATO_TIPO = 3;
 
     public static final String COMEDOR_ID = "ID";
+    public static final String COMEDOR_NOMBRE = "comedor";
+    public static final String COMEDOR_TWOPANE = "TWOPANE";
 
     private static final int LOADER_PLATOS = 0;
     private static final int LOADER_INFO_COMEDOR = 1;
+    private static final int LOADER_TITULO_COMEDOR = 2;
 
     private AdapterPlatos mAdapter;
 
-    private long mComedorId=-1;
+    private long mComedorId = -1;
+    private String mComedorNombre = "null";
+    private boolean mtwoPane;
 
     public DetailActivityFragment() {
     }
@@ -84,6 +89,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         Bundle arguments = getArguments();
         if (arguments != null) {
             mComedorId = arguments.getLong(COMEDOR_ID);
+            mtwoPane = arguments.getBoolean(COMEDOR_TWOPANE);
+            mComedorNombre = arguments.getString(COMEDOR_NOMBRE);
             Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
             lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_PLATOS);
             lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
@@ -100,22 +107,24 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.listView_detail));
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        mAdapter = new AdapterPlatos(getActivity());
+        mAdapter = new AdapterPlatos(getActivity(), mtwoPane, mComedorNombre);
         recyclerView.setAdapter(mAdapter);
-
 
         return rootView;
     }
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_PLATOS, null, this);
         getLoaderManager().initLoader(LOADER_INFO_COMEDOR, null, this);
+        getLoaderManager().initLoader(LOADER_TITULO_COMEDOR, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch(id) {
+        switch (id) {
             case LOADER_INFO_COMEDOR: {
                 return new CursorLoader(
                         getActivity(),
@@ -144,25 +153,27 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 mAdapter.setInfoComedor(data);
                 break;
             case LOADER_PLATOS:
-                Log.d("FUERA", "LOADER " + data.getCount());
                 mAdapter.swapCursor(data);
+                break;
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) { }
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
 
-    public void openLocation (long latitud, long longitud){
+    public void openLocation(long latitud, long longitud) {
 
         Uri ubicacion = Uri.parse("geo:0,0? q=<" + longitud + ">,<" + latitud + ">");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(ubicacion);
 
-        if ( intent.resolveActivity(getActivity().getPackageManager()) != null) {
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
-        } else{
+        } else {
             Log.d(LOG_TAG, "Couldn't call (" + latitud + "," + longitud + ") , no receiving apps installed!");
         }
     }
+
 }
 

@@ -70,10 +70,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             DetailActivityFragment detailFragment = new DetailActivityFragment();
             Bundle bundle = new Bundle();
             bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
+            bundle.putString(DetailActivityFragment.COMEDOR_NOMBRE, comedorName);
+            bundle.putBoolean(DetailActivityFragment.COMEDOR_TWOPANE, twoPane);
             detailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(
-                        R.id.detail_container, detailFragment,
-                        DETAILACTIVITYFRAGMENT_TAG).commit();
+                    R.id.detail_container, detailFragment,
+                    DETAILACTIVITYFRAGMENT_TAG).commit();
         } else {
             Intent intent = new Intent( this, DetailActivity.class);
             intent.putExtra(DetailActivity.ID_COMEDOR, comedorId);

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -111,9 +112,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 if (c != null) {
                     long comedorId = c.getLong(COL_ID);
                     String comedorName = c.getString(COL_NOMBRE);
+                    Log.d("DETAIL_FRAGMENT", "detailFragment: onItemClick() Comedor seleccionado");
                     ((Callback) getActivity())
                             .comedorSeleccionado(comedorId, comedorName);
                 } else {
+                    Log.d("DETAIL_FRAGMENT", "detailFragment: onItemClick() Ningun comedor seleccionado");
                     ((Callback) getActivity()).ningunComedorSeleccionado();
                 }
             }

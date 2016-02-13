@@ -35,11 +35,13 @@ public class DetailActivity extends AppCompatActivity {
 
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
         Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
+        String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
 
         if ( comedorId != null){
             DetailActivityFragment detailFragment = new DetailActivityFragment();
             Bundle bundle = new Bundle();
             bundle.putLong(DetailActivityFragment.COMEDOR_ID, comedorId);
+            bundle.putString(DetailActivityFragment.COMEDOR_NOMBRE, comedorNombre);
             detailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, detailFragment,
@@ -52,7 +54,6 @@ public class DetailActivity extends AppCompatActivity {
                     NotSelectedFragment.NOTSELECTED_TAG).commit();
         }
 
-        String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
         if( comedorNombre != null){
             collapser.setTitle( comedorNombre );
         }
