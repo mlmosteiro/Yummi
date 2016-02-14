@@ -89,9 +89,9 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                     new String[]{ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT},
                     ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{Long.toString(mComedorId)},
                     null);
-            if(c.moveToFirst()) {
+            if(c != null && c.moveToFirst()) {
                 Long lastSync = c.getLong(0);
-                if (lastSync == null || System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
+                if (System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
                     //Si hace un mes que no se actualiza (32 días más bien), actualizamos
                     Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
                     lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_MENUS);
@@ -117,6 +117,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
         RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.menus_view));
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
+       // if(getActivity().getRequestedOrientation() == )
         mAdapter = new AdapterMenu(getActivity(), mComedorPromo);
         recyclerView.setAdapter(mAdapter);
 
@@ -141,6 +142,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                     null, null,
                     null);
         }
+
     }
 
     @Override

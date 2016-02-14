@@ -35,4 +35,9 @@ public class PricesActivity extends AppCompatActivity {
                 R.id.prices_container, pricesActivityFragment).commit();
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

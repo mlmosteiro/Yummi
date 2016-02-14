@@ -11,35 +11,15 @@
     tools:context=".DetailActivityFragment"
     android:orientation="horizontal">
 
-    <ListView
-        android:layout_width="0dp"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/menus_listView"
-        android:layout_weight="2">
-    </ListView>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:padding="16dp"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:padding = "16dp"
+        tools:showIn="@layout/content_prices"
+        tools:context=".DetailActivityFragment"
+        android:id="@+id/menus_view">
+    </android.support.v7.widget.RecyclerView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/informacion_label"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:id="@+id/textView" />
 
-        <TextView
-            android:id="@+id/info_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/informacion_text"
-            android:gravity="center"
-            android:layout_below="@+id/textView"
-            android:layout_alignParentStart="true"/>
-
-    </RelativeLayout>
 </LinearLayout>
