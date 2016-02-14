@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -80,7 +81,9 @@ public class DetailActivityFragment extends Fragment
 
     private long mComedorId = -1;
     private String mComedorNombre = "null";
+    private String mComedorPromo = "promo";
     private boolean mtwoPane;
+
 
     public DetailActivityFragment() {
     }
@@ -93,11 +96,26 @@ public class DetailActivityFragment extends Fragment
             mComedorId = arguments.getLong(COMEDOR_ID);
             mtwoPane = arguments.getBoolean(COMEDOR_TWOPANE);
             mComedorNombre = arguments.getString(COMEDOR_NOMBRE);
+            mComedorPromo = arguments.getString(COMEDOR_PROMO);
             Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
             lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_PLATOS);
             lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
             lanzarServicio.putExtra(ComedoresService.KEY_FECHA, Utility.fechaHoy());
             getActivity().startService(lanzarServicio);
+        }
+
+        if(mtwoPane) {
+            FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(
+                    new View.OnClickListener() {
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity(), PricesActivity.class);
+                            intent.putExtra(PricesActivity.ID_COMEDOR, mComedorId);
+                            intent.putExtra(PricesActivity.PROMO_COMEDOR, mComedorPromo);
+                            startActivity(intent);
+                        }
+                    });
         }
     }
 
