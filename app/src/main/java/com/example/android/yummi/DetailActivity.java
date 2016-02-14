@@ -16,6 +16,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String ID_COMEDOR = "id";
     public static final String NOMBRE_COMEDOR = "nombre";
+    public static final String PROMO_COMEDOR = "promo";
     public static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
 
     private ManejadorImagenes manejadorImagenes;
@@ -34,8 +35,9 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
-        Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
+        final Long comedorId = (Long) getIntent().getExtras().get(ID_COMEDOR);
         String comedorNombre = (String) getIntent().getExtras().get(NOMBRE_COMEDOR);
+        final String comedorPromo = (String) getIntent().getExtras().get(PROMO_COMEDOR);
 
         if ( comedorId != null){
             DetailActivityFragment detailFragment = new DetailActivityFragment();
@@ -63,6 +65,8 @@ public class DetailActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     public void onClick(View view) {
                         Intent intent = new Intent(DetailActivity.this, PricesActivity.class);
+                        intent.putExtra(PricesActivity.ID_COMEDOR, comedorId);
+                        intent.putExtra(PricesActivity.PROMO_COMEDOR, comedorPromo);
                         startActivity(intent);
                     }
                 }

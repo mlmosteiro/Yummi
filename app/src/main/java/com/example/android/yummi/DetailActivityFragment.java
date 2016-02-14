@@ -69,7 +69,8 @@ public class DetailActivityFragment extends Fragment
 
     public static final String COMEDOR_ID = "ID";
     public static final String COMEDOR_NOMBRE = "comedor";
-    public static final String COMEDOR_TWOPANE = "TWOPANE";
+    public static final String COMEDOR_TWOPANE = "twopane";
+    public static final String COMEDOR_PROMO = "promo";
 
     private static final int LOADER_PLATOS = 0;
     private static final int LOADER_INFO_COMEDOR = 1;
@@ -108,7 +109,7 @@ public class DetailActivityFragment extends Fragment
         RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.listView_detail));
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        mAdapter = new AdapterPlatos(getActivity(), mtwoPane, mComedorNombre);
+        mAdapter = new AdapterPlatos(getActivity(), mtwoPane, mComedorNombre, this);
         recyclerView.setAdapter(mAdapter);
 
         return rootView;

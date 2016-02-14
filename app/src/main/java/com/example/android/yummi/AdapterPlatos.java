@@ -3,7 +3,7 @@ package com.example.android.yummi;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +37,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private static final int TYPE_PLATO = 2;
     private static final int TYPE_TITULO = -1;
 
-    public AdapterPlatos(Context context, Boolean twoPane, String titulo) {
+    public AdapterPlatos(Context context, Boolean twoPane, String titulo, AbridorLocalizacion abridor) {
         mContext = context;
         mAbridor = abridor;
         mNumPrimeros = mNumSegundos = 0;
@@ -119,8 +119,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                     newCursor.moveToNext();
                 }
             }
-            Log.d("SWAP", mNumPrimeros + " - " + mNumSegundos);
-            Log.d("NUM", "Num " + newCursor.getCount());
             // notify the observers about the new cursor
             notifyDataSetChanged();
         }
@@ -241,7 +239,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                                     Utility.denormalizarHora(mIni),
                                     Utility.denormalizarHora(mFin)));
                     vH.mViewContacto.setText(mContacto);
-                    vH.mViewUbicacion.setText(Html.fromHtml("<u>"+mDir+"</u>"));
+                    vH.mViewUbicacion.setText(Html.fromHtml("<u>" + mDir + "</u>"));
                     vH.mViewUbicacion.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -252,7 +250,6 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                 }
                 case TYPE_TITULO: {
                     ViewHolderTitulo vH = (ViewHolderTitulo) holder;
-                    Log.d("TITULO", "TITULO : " + mTitulo);
                     vH.tituloView.setText(mTitulo);
                     break;
                 }

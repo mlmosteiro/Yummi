@@ -6,6 +6,10 @@ import android.support.v7.widget.Toolbar;
 
 public class PricesActivity extends AppCompatActivity {
 
+
+    public static final String PROMO_COMEDOR = "promo";
+    public static final String ID_COMEDOR = "ID";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -13,7 +17,10 @@ public class PricesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+        if (getSupportActionBar() != null) { //
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
+    }
 }

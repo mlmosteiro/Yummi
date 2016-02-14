@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     }
 
     @Override
-    public void comedorSeleccionado(long comedorId, String comedorName) {
+    public void comedorSeleccionado(long comedorId, String comedorName, String promo) {
         if (twoPane){
 
             DetailActivityFragment detailFragment = new DetailActivityFragment();
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
             bundle.putString(DetailActivityFragment.COMEDOR_NOMBRE, comedorName);
             bundle.putBoolean(DetailActivityFragment.COMEDOR_TWOPANE, twoPane);
+            bundle.putString(DetailActivityFragment.COMEDOR_PROMO, promo);
             detailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(
                     R.id.detail_container, detailFragment,

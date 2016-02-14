@@ -10,5 +10,5 @@
     android:layout_height="wrap_content"
     android:background="@color/fondo_detail_activity"
     android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-    <!--android:textAlignment="center"-->
+
 

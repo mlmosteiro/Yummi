@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +34,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             ComedoresContract.ComedoresEntry.COLUMN_HORA_AP_INI,
             ComedoresContract.ComedoresEntry.COLUMN_HORA_AP_FIN,
             ComedoresContract.ComedoresEntry.COLUMN_HORA_INI,
-            ComedoresContract.ComedoresEntry.COLUMN_HORA_FIN
+            ComedoresContract.ComedoresEntry.COLUMN_HORA_FIN,
+            ComedoresContract.ComedoresEntry.COLUMN_PROMO
     };
     // Se nos asegura que serán devueltas en el orden indicado, por tanto estas constantes nos
     // ayudan a ganar algo de eficiencia en tiempo de ejecución
@@ -46,6 +46,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public static final int COL_HORA_CIERRE = 3;
     public static final int COL_HORA_INI = 4;
     public static final int COL_HORA_FIN = 5;
+    public static final int COL_PROMO = 6;
 
     private static final int LOADER_ID = 0;
 
@@ -112,11 +113,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 if (c != null) {
                     long comedorId = c.getLong(COL_ID);
                     String comedorName = c.getString(COL_NOMBRE);
-                    Log.d("DETAIL_FRAGMENT", "detailFragment: onItemClick() Comedor seleccionado");
-                    ((Callback) getActivity())
-                            .comedorSeleccionado(comedorId, comedorName);
+                    String comedorPromo = c.getString(COL_PROMO);
+                        ((Callback) getActivity())
+                            .comedorSeleccionado(comedorId, comedorName, comedorPromo);
                 } else {
-                    Log.d("DETAIL_FRAGMENT", "detailFragment: onItemClick() Ningun comedor seleccionado");
                     ((Callback) getActivity()).ningunComedorSeleccionado();
                 }
             }
@@ -152,7 +152,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
 
     public interface Callback {
-        void comedorSeleccionado(long comedorId, String comedorName);
+        void comedorSeleccionado(long comedorId, String comedorName, String comedorPromo);
         void ningunComedorSeleccionado();
     }
 
