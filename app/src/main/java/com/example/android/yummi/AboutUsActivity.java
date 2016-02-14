@@ -10,6 +10,7 @@ import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -209,6 +210,8 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
 
             Paint paintTitulo = new Paint(Paint.ANTI_ALIAS_FLAG);
             paintTitulo.setColor(COLOR_TEXTO);
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "3Dumb.ttf");
+            paintTitulo.setTypeface(font);
             paintTitulo.setTextAlign(Paint.Align.CENTER);
             paintTitulo.setTextSize(Math.min(percentX(20), percentY(20)));
             paintTitulo.setShadowLayer(Math.min(percentX(2), percentY(2)), 0, 0, Color.rgb(23, 57, 22));
