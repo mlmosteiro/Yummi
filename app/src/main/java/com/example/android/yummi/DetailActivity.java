@@ -106,6 +106,12 @@ public class DetailActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
 
             return true;
+        } else if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (id == R.id.action_aboutUs) {
+            startActivity(new Intent(this, AboutUsActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
