@@ -14,8 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <provider
-            android:authorities="com.example.android.yummi"
             android:name=".data.ComedoresProvider"
+            android:authorities="com.example.android.yummi"
             android:enabled="true"
             android:exported="false" />
 
@@ -46,15 +46,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
         <activity
             android:name=".PricesActivity"
             android:label="@string/title_activity_prices"
-            android:parentActivityName=".SettingsActivity"
+            android:parentActivityName=".DetailActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.yummi.SettingsActivity" />
+                android:value="com.example.android.yummi.DetailActivity" />
         </activity>
 
         <service
@@ -63,6 +62,18 @@
         <service
             android:name=".services.ImagenesService"
             android:exported="false" />
+
+        <activity
+            android:name=".AboutUsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_about_us"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.yummi.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

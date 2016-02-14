@@ -53,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         } else if (id == R.id.action_log_base) {
             Utility.logearBase(this);
             return true;
+        } else if (id == R.id.action_aboutUs) {
+            startActivity(new Intent(this, AboutUsActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -66,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     @Override
     public void comedorSeleccionado(long comedorId, String comedorName, String promo) {
         if (twoPane){
-
             DetailActivityFragment detailFragment = new DetailActivityFragment();
             Bundle bundle = new Bundle();
             bundle.putLong(DetailActivityFragment.COMEDOR_ID,comedorId );
