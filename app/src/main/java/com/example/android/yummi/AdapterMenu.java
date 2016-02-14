@@ -123,7 +123,9 @@ public class AdapterMenu extends RecyclerView.Adapter{
                         }
                         vH.mViewMenuElementos.setText(TextUtils.join(", ", elemList));
                     }
-                    vH.mViewMenuPrecio.setText((mCursor.getString(PricesActivityFragment.COL_MENU_PRECIO)));
+                    vH.mViewMenuPrecio.setText(
+                            mContext.getString(R.string.formato_dinero,
+                            mCursor.getString(PricesActivityFragment.COL_MENU_PRECIO)));
                     break;
                 }
                 case TYPE_TABLE_HEADER: {

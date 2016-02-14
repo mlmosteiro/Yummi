@@ -14,15 +14,13 @@
     <!--Relacionado con la actualización de la lista de menús-->
     <string name="pref_ultima_act_menus">menus_act</string>
 
-    <string name="title_activity_prices">PricesActivity</string>
+    <string name="title_activity_prices">Información comedor</string>
     <string name="abiertoAhora_label">Abierto ahora</string>
 
 
     <string name="informacion_label">Información</string>
     <string name="menu_label">Menú</string>
     <string name="precio_label">Precio</string>
-    <string name="informacion_text">Libycosaurus Astrodontaurus Eurolimnornis Riojasaurus Zupaysaurus Sinotyrannus Dyoplosaurus Suchosaurus Scansoriopteryx Becklespinax Cerasinops Saurornitholestes Bugenasaura Wadhurstia Bonatitan.
-        Yulong Rahona Rhabdodon Pedopenna Monkonosaurus Sinocalliopteryx Klamelisaurus Willinakaqe Griphosaurus Vitakridrinda Karongasaurus Kundurosaurus Daemonosaurus Eotriceratops Siamodon.</string>
 
     <!-- Formato para horario de apertura -->
     <string name="formato_horario_apertura">Abierto: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
@@ -32,8 +30,8 @@
     <string name="header_segundos">Segundos</string>
     <string name="header_postres">Postres</string>
 
+    <string name="formato_dinero"><xliff:g id="val">%1$s</xliff:g>€</string>
+
     <string name="title_activity_about_us">About us!</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>
