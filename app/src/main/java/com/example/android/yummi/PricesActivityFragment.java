@@ -25,7 +25,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     public static final String ID_COMEDOR = "ID";
 
     public static final String[] COLUMNAS_MENU = {
-            ComedoresContract.TiposMenuEntry._ID,
+            ComedoresContract.TiposMenuEntry.TABLE_NAME + "." + ComedoresContract.TiposMenuEntry._ID,
             ComedoresContract.TiposMenuEntry.COLUMN_NOMBRE,
             ComedoresContract.TiposMenuEntry.COLUMN_PRECIO
     };
@@ -47,9 +47,6 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
     private long mComedorId = -1;
     private long mMenuId= -1;
-    private String mMenuNombre;
-    private String mMenuPrecio;
-    private String mElemNombre;
     private String mComedorPromo = "null";
 
 
@@ -83,7 +80,6 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_COLUMNAS_MENU, null, this);
-        getLoaderManager().initLoader(LOADER_COLUMNAS_ELEM, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -130,13 +126,11 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case LOADER_COLUMNAS_MENU:
-                mMenuId = data.getLong(COL_MENU_ID);
-                mMenuNombre = data.getString(COL_MENU_NOMBRE);
-                mMenuPrecio = data.getString(COL_MENU_PRECIO);
+                mAdapter.swapCursor(data);
                 break;
 
             case LOADER_COLUMNAS_ELEM:
-                mElemNombre = data.getString(COL_ELEM_NOMBRE);
+
                 break;
         }
     }

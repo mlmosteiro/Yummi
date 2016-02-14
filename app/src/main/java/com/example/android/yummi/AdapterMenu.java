@@ -60,7 +60,6 @@ public class AdapterMenu extends RecyclerView.Adapter{
                     newCursor.moveToNext();
                 }
             }
-            // notify the observers about the new cursor
             notifyDataSetChanged();
         }
     }

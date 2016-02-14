@@ -22,5 +22,17 @@ public class PricesActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
+        String comedorPromo = (String)  getIntent().getExtras().get(PROMO_COMEDOR);
+        Long comedorID = (Long)  getIntent().getExtras().get(ID_COMEDOR);
+        PricesActivityFragment pricesActivityFragment = new PricesActivityFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putLong(ID_COMEDOR, comedorID);
+        bundle.putString(PROMO_COMEDOR, comedorPromo);
+
+        pricesActivityFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().add(
+                R.id.prices_container, pricesActivityFragment).commit();
+
     }
 }

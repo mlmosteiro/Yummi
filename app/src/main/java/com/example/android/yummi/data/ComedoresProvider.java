@@ -173,7 +173,7 @@ public class ComedoresProvider extends ContentProvider {
 
     // comedores._id = idComedor
     private static final String sByComedorSelection =
-            ComedoresContract.ComedoresEntry.TABLE_NAME + "." + ComedoresContract.ComedoresEntry._ID +
+            ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR+
                     " = ?";
 
     // platos._id IN (SELECT plato FROM tener WHERE comedor = [id] AND fecha = [fecha])
@@ -210,14 +210,9 @@ public class ComedoresProvider extends ContentProvider {
 
     private Cursor getMenusByComedor(Uri uri, String[] projection, String sortOrder) {
         long idComedor = ComedoresContract.getIdElemento(uri);
-        final String tabla = ComedoresContract.ComedoresEntry.TABLE_NAME + " INNER JOIN " +
-                ComedoresContract.TiposMenuEntry.TABLE_NAME +
-                " ON " + ComedoresContract.TiposMenuEntry.TABLE_NAME +
-                "." + ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR +
-                " = " + ComedoresContract.ComedoresEntry.TABLE_NAME +
-                "." + ComedoresContract.ComedoresEntry._ID;
+
         return mOpenHelper.getReadableDatabase().query(
-                tabla,
+                ComedoresContract.TiposMenuEntry.TABLE_NAME,
                 projection,
                 sByComedorSelection, new String[]{Long.toString(idComedor)},
                 null, null,
