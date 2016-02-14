@@ -125,7 +125,8 @@ public class AdapterMenu extends RecyclerView.Adapter{
                             elemList.add(elemCursor.getString(PricesActivityFragment.COL_ELEM_NOMBRE));
                             elemCursor.moveToNext();
                         }
-                        vH.mViewMenuElementos.setText(TextUtils.join(", ", elemList));
+                        String elems = TextUtils.join(", ", elemList);
+                        vH.mViewMenuElementos.setText(Character.toUpperCase(elems.charAt(0)) + elems.substring(1));
                     }
                     vH.mViewMenuPrecio.setText(
                             mContext.getString(R.string.formato_dinero,
