@@ -19,6 +19,8 @@ import java.util.Date;
  * Created by David Campos Rodríguez <a href='mailto:david.campos@rai.usc.es'>david.campos@rai.usc.es</a> on 07/02/2016.
  */
 public class Utility {
+    public static final long MES_EN_MILLIS = 32L * 24L * 60L * 60L * 1000L;
+
     public static long fechaHoy() {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 0);

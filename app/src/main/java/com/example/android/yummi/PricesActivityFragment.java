@@ -1,5 +1,6 @@
 package com.example.android.yummi;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.yummi.data.ComedoresContract;
+import com.example.android.yummi.services.ComedoresService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PricesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String LOG_TAG = PricesActivityFragment.class.getSimpleName();
     private LinearLayout linearLayout;
 
     public static final String PROMO_COMEDOR = "promo";
@@ -51,7 +58,10 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
 
     private static final int LOADER_COLUMNAS_MENU = 0;
-    private static final int LOADER_COLUMNAS_ELEM = 1;
+    private static final int DEMAS_LOADERS_BASE = 1;
+    private int mDemasLoaders = DEMAS_LOADERS_BASE;
+
+    private List<Long> mIdsMenus;
 
     public PricesActivityFragment() {
     }
@@ -74,6 +84,22 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
         if (arguments != null) {
             mComedorId = arguments.getLong(ID_COMEDOR);
             mComedorPromo = arguments.getString(PROMO_COMEDOR);
+            //Comprobamos si ha actualizado los comedores este mes
+            Cursor c = getActivity().getContentResolver().query(
+                    ComedoresContract.ComedoresEntry.CONTENT_URI,
+                    new String[]{ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT},
+                    ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{Long.toString(mComedorId)},
+                    null);
+            if(c.moveToFirst()) {
+                Long lastSync = c.getLong(0);
+                if (lastSync == null || System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
+                    //Si hace un mes que no se actualiza (32 días más bien), actualizamos
+                    Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+                    lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_MENUS);
+                    lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
+                    getActivity().startService(lanzarServicio);
+                }
+            }
         }
     }
 
@@ -101,37 +127,50 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case LOADER_COLUMNAS_MENU: {
-                return new CursorLoader(
-                        getActivity(),
-                        ComedoresContract.TiposMenuEntry.buildTipoMenuByComedorUri(mComedorId),
-                        COLUMNAS_MENU,
-                        null, null,
-                        null);
-            }
-            case LOADER_COLUMNAS_ELEM: {
-                return new CursorLoader(
-                        getActivity(),
-                        ComedoresContract.ElementosEntry.buildElementosByMenuUri(mMenuId),
-                        COLUMNAS_ELEMENTOS,
-                        null, null,
-                        null);
-            }
+        if (id == LOADER_COLUMNAS_MENU) {
+            return new CursorLoader(
+                    getActivity(),
+                    ComedoresContract.TiposMenuEntry.buildTipoMenuByComedorUri(mComedorId),
+                    COLUMNAS_MENU,
+                    null, null,
+                    null);
+        } else {
+            return new CursorLoader(
+                    getActivity(),
+                    ComedoresContract.ElementosEntry.buildElementosByMenuUri(mIdsMenus.get(id-DEMAS_LOADERS_BASE)),
+                    COLUMNAS_ELEMENTOS,
+                    null, null,
+                    null);
         }
-        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case LOADER_COLUMNAS_MENU:
-                mAdapter.swapCursor(data);
-                break;
+        if (loader.getId() == LOADER_COLUMNAS_MENU) {
+            if (data.moveToFirst()) {
+                mIdsMenus = new ArrayList<>(data.getCount());
+                while (!data.isAfterLast()) {
+                    long idMenu = data.getLong(COL_MENU_ID);
 
-            case LOADER_COLUMNAS_ELEM:
+                    // Iniciamos servicio para descargar sus elementos
+                    Intent serv = new Intent(getActivity(), ComedoresService.class);
+                    serv.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_ELEMENTOS);
+                    serv.putExtra(ComedoresService.KEY_ID, idMenu);
+                    getActivity().startService(serv);
 
-                break;
+                    //Iniciamos loader para cargar sus elementos
+                    mIdsMenus.add(idMenu);
+                    Log.d(LOG_TAG, "Iniciado loader " + mDemasLoaders + ", idMenu= " + idMenu);
+                    getLoaderManager().initLoader(mDemasLoaders++, null, this);
+                    data.moveToNext();
+                }
+            }
+            mAdapter.swapCursor(data);
+        } else {
+            Log.d(LOG_TAG, "Load elementos finalizado: recibidos " + data.getCount());
+            mAdapter.setElementosMenu(
+                    mIdsMenus.get(loader.getId() - DEMAS_LOADERS_BASE),
+                    data);
         }
     }
 

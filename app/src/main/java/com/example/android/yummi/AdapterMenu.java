@@ -3,10 +3,15 @@ package com.example.android.yummi;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class AdapterMenu extends RecyclerView.Adapter{
@@ -18,11 +23,13 @@ public class AdapterMenu extends RecyclerView.Adapter{
     private Context mContext;
     private Cursor mCursor;
     private String mPromo;
+    Map<Long, Cursor> cursoresElementos;
 
 
     public AdapterMenu(Context context, String promo) {
         mContext = context;
         mPromo = promo;
+        cursoresElementos = new HashMap<>();
     }
 
     public static class ViewHolderPromo extends RecyclerView.ViewHolder {
@@ -45,6 +52,11 @@ public class AdapterMenu extends RecyclerView.Adapter{
             mViewMenuPrecio = (TextView) view.findViewById(R.id.menu_price);
             mViewMenuElementos = (TextView) view.findViewById(R.id.menu_elements);
         }
+    }
+
+    public void setElementosMenu(long id, Cursor c) {
+        cursoresElementos.put(id, c);
+        notifyDataSetChanged();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -96,7 +108,21 @@ public class AdapterMenu extends RecyclerView.Adapter{
             switch (type) {
                 case TYPE_MENU: {
                     ViewHolderMenuItem vH = (ViewHolderMenuItem) holder;
+                    int posicionEnCursor = position-1;
+                    if (!mCursor.moveToPosition(posicionEnCursor)) {
+                        throw new IllegalStateException("couldn't move cursor to position " + position + "(" + posicionEnCursor + " relamente)");
+                    }
                     vH.mViewMenuNombre.setText(mCursor.getString(PricesActivityFragment.COL_MENU_NOMBRE));
+                    long id = mCursor.getLong(PricesActivityFragment.COL_MENU_ID);
+                    Cursor elemCursor = cursoresElementos.get(id);
+                    if(elemCursor != null && elemCursor.moveToFirst()) {
+                        ArrayList<String> elemList = new ArrayList<>(elemCursor.getCount());
+                        while(!elemCursor.isAfterLast()) {
+                            elemList.add(elemCursor.getString(PricesActivityFragment.COL_ELEM_NOMBRE));
+                            elemCursor.moveToNext();
+                        }
+                        vH.mViewMenuElementos.setText(TextUtils.join(", ", elemList));
+                    }
                     vH.mViewMenuPrecio.setText((mCursor.getString(PricesActivityFragment.COL_MENU_PRECIO)));
                     break;
                 }
@@ -119,7 +145,7 @@ public class AdapterMenu extends RecyclerView.Adapter{
     public int getItemViewType(int position) {
         if (position == 0){
             return TYPE_TABLE_HEADER;
-        } else if (position< mNumMenus)
+        } else if (position <= mNumMenus)
             return TYPE_MENU;
         else
             return TYPE_PROMO;

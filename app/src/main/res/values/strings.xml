@@ -11,6 +11,8 @@
 
     <!-- Relacionado con la actualizacion de la lista de comedores -->
     <string name="pref_ultima_act_comedores" translatable="false">act_comedores</string>
+    <!--Relacionado con la actualización de la lista de menús-->
+    <string name="pref_ultima_act_menus">menus_act</string>
 
     <string name="title_activity_prices">PricesActivity</string>
     <string name="abiertoAhora_label">Abierto ahora</string>
@@ -33,6 +35,5 @@
     <string name="title_activity_about_us">About us!</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-
 
 </resources>

@@ -3,12 +3,15 @@ package com.example.android.yummi.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.yummi.R;
 import com.example.android.yummi.Utility;
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.data.ManejadorImagenes;
@@ -274,16 +277,40 @@ public class ComedoresService extends IntentService {
 
             insertados = this.getContentResolver().bulkInsert(ComedoresContract.ComedoresEntry.CONTENT_URI, cVArray);
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(getString(R.string.pref_ultima_act_comedores), System.currentTimeMillis());
+        editor.commit();
         Log.d(LOG_TAG, "Service completado: " + insertados + " comedores insertados, " + eliminados + " eliminados.");
     }
 
     private void guardarElementos(JSONArray jsonArray, long id) throws JSONException {
         ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
+        ArrayList<String> ids = new ArrayList<>(jsonArray.length());
+
+        //Obtenemos los ids que ya están asociados a este menú
+        Cursor c = getContentResolver().query(
+                ComedoresContract.TienenEntry.CONTENT_URI,
+                new String[]{ComedoresContract.TienenEntry._ID},
+                ComedoresContract.TienenEntry.COLUMN_MENU + " = ?", new String[]{Long.toString(id)},
+                null);
+        ArrayList<Long> idsExistentes = null;
+        if(c.moveToFirst()) {
+            idsExistentes = new ArrayList<>(c.getCount());
+            while(!c.isAfterLast()) {
+                idsExistentes.add(c.getLong(0));
+                c.moveToNext();
+            }
+        }
+        c.close();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
             ContentValues nuevaFila = new ContentValues();
+            long idElemento = jsonObject.getLong(OWM_ID);
+            if(idsExistentes.contains(idElemento)) continue;
+
             nuevaFila.put(ComedoresContract.ElementosEntry._ID,
-                    jsonObject.getLong(OWM_ID));
+                    idElemento);
             nuevaFila.put(ComedoresContract.ElementosEntry.COLUMN_NOMBRE,
                     jsonObject.getString(OWM_ELEMENTOS_NOMBRE));
             nuevaFila.put(ComedoresContract.ElementosEntry.COLUMN_TIPO,
@@ -332,6 +359,13 @@ public class ComedoresService extends IntentService {
             insertados = this.getContentResolver().bulkInsert(
                     ComedoresContract.TiposMenuEntry.CONTENT_URI, cVArray);
         }
+        ContentValues values = new ContentValues();
+        values.put(ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT, System.currentTimeMillis());
+        this.getContentResolver().update(
+                ComedoresContract.ComedoresEntry.CONTENT_URI,
+                values,
+                ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{Long.toString(id)}
+        );
         Log.d(LOG_TAG, "Service completado, " + insertados + " menus insertados.");
     }
 

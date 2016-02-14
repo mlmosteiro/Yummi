@@ -17,7 +17,7 @@ import com.example.android.yummi.data.ComedoresContract.TiposMenuEntry;
 public class ComedoresDbHelper extends SQLiteOpenHelper {
 
     //Si se actualiza el esquema, debe incrementarse la versión
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String DATABASE_NAME = "comedores.db";
 
@@ -42,7 +42,8 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
                 ComedoresEntry.COLUMN_NOMBRE + " TEXT UNIQUE NOT NULL, " +
                 ComedoresEntry.COLUMN_NOMBRE_CONTACTO + " TEXT, " +
                 ComedoresEntry.COLUMN_TLFN + " TEXT, " +
-                ComedoresEntry.COLUMN_PROMO + " TEXT NOT NULL);";
+                ComedoresEntry.COLUMN_PROMO + " TEXT NOT NULL, " +
+                ComedoresEntry.COLUMN_LAST_ACT + " REAL);";
         db.execSQL(SQL_CREATE_COMEDORES_TABLE);
 
         // Creamos tabla de tipos de menu

@@ -20,6 +20,8 @@ public class ComedoresContract {
     public static final String PATH_TIPOSMENU = "tiposmenu";
     public static final String PATH_PLATOS = "platos";
     public static final String PATH_ELEMENTOS = "elementos";
+    public static final String PATH_TIENEN = "tienen";
+    public static final String PATH_TENER = "tener";
 
     /**
      * Tabla de Comedores
@@ -42,6 +44,8 @@ public class ComedoresContract {
         public static final String COLUMN_TLFN = "tlfn";
         public static final String COLUMN_DIR = "direccion";
         public static final String COLUMN_PROMO = "promocion";
+        //Datos de actualización de datos de menú
+        public static final String COLUMN_LAST_ACT = "ultimaActualizacion";
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMEDORES).build();
@@ -187,7 +191,7 @@ public class ComedoresContract {
 
         //Para debug
         public static final Uri CONSULTA_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath("tener").build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_TENER).build();
     }
 
     /**
@@ -202,6 +206,8 @@ public class ComedoresContract {
         //Para debug
         public static final Uri CONSULTA_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath("tienen").build();
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TIENEN).build();
     }
 
     public static long getIdElemento(Uri uri) {

@@ -45,8 +45,8 @@ public class ComedoresProvider extends ContentProvider {
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_PLATOS, PLATOS);
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_ELEMENTOS, ELEMENTOS);
 
-        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, "tener", TENER);
-        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, "tienen", TIENEN);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_TENER, TENER);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_TIENEN, TIENEN);
 
         return nUM;
     }
@@ -105,7 +105,7 @@ public class ComedoresProvider extends ContentProvider {
             // 'tiposmenu/[id]/elementos/'
             case ELEMENTOS_MENU: {
                 retCursor = getElementosByMenu(uri, projection, sortOrder);
-                uri = ComedoresContract.TiposMenuEntry.CONTENT_URI;
+                uri = ComedoresContract.ElementosEntry.CONTENT_URI;
                 break;
             }
             case PLATOS: {
@@ -136,7 +136,6 @@ public class ComedoresProvider extends ContentProvider {
                         sortOrder);
                 break;
             }
-
             case TIENEN: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         ComedoresContract.TienenEntry.TABLE_NAME,
@@ -412,6 +411,14 @@ public class ComedoresProvider extends ContentProvider {
                         ComedoresContract.TienenEntry.TABLE_NAME,
                         tienenDeleteSelection,
                         selectionArgs);
+                break;
+            }
+            case TIENEN: {
+                num = db.delete(
+                        ComedoresContract.TienenEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
                 break;
             }
             default:
