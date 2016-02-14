@@ -36,7 +36,6 @@
             android:id="@+id/info_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/informacion_text"
             android:gravity="center"
             android:layout_below="@+id/textView"
             android:layout_alignParentStart="true"/>

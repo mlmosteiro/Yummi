@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             Intent intent = new Intent( this, DetailActivity.class);
             intent.putExtra(DetailActivity.ID_COMEDOR, comedorId);
             intent.putExtra(DetailActivity.NOMBRE_COMEDOR, comedorName);
+            intent.putExtra(DetailActivityFragment.COMEDOR_PROMO, promo);
             startActivity(intent);
         }
     }

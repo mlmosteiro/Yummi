@@ -21,8 +21,6 @@
     <string name="informacion_label">Información</string>
     <string name="menu_label">Menú</string>
     <string name="precio_label">Precio</string>
-    <string name="informacion_text">Libycosaurus Astrodontaurus Eurolimnornis Riojasaurus Zupaysaurus Sinotyrannus Dyoplosaurus Suchosaurus Scansoriopteryx Becklespinax Cerasinops Saurornitholestes Bugenasaura Wadhurstia Bonatitan.
-        Yulong Rahona Rhabdodon Pedopenna Monkonosaurus Sinocalliopteryx Klamelisaurus Willinakaqe Griphosaurus Vitakridrinda Karongasaurus Kundurosaurus Daemonosaurus Eotriceratops Siamodon.</string>
 
     <!-- Formato para horario de apertura -->
     <string name="formato_horario_apertura">Abierto: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
