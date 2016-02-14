@@ -23,13 +23,17 @@
         android:layout_marginStart="6dp"
         android:layout_toEndOf="@id/list_item_icon"
         android:layout_alignTop="@+id/list_item_icon"
-        android:paddingTop="10dp" />
+        android:paddingTop="10dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        />
 
     <TextView
         android:id="@+id/comedores_subtitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/comedores_titulo"
-        android:layout_alignStart="@id/comedores_titulo"/>
+        android:layout_alignStart="@id/comedores_titulo"
+        android:textAppearance="?android:textAppearanceSmall"/>
 
 </RelativeLayout>

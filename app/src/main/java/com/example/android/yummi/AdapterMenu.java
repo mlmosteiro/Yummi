@@ -2,6 +2,8 @@ package com.example.android.yummi;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -45,12 +47,14 @@ public class AdapterMenu extends RecyclerView.Adapter{
         public TextView mViewMenuNombre;
         public  TextView mViewMenuPrecio;
         public  TextView mViewMenuElementos;
+        public View mGeneralView;
 
         public ViewHolderMenuItem(View view){
             super(view);
             mViewMenuNombre = (TextView) view.findViewById(R.id.menu_name);
             mViewMenuPrecio = (TextView) view.findViewById(R.id.menu_price);
             mViewMenuElementos = (TextView) view.findViewById(R.id.menu_elements);
+            mGeneralView = view;
         }
     }
 
@@ -126,12 +130,25 @@ public class AdapterMenu extends RecyclerView.Adapter{
                     vH.mViewMenuPrecio.setText(
                             mContext.getString(R.string.formato_dinero,
                             mCursor.getString(PricesActivityFragment.COL_MENU_PRECIO)));
+
+                    if(position%2 == 0) {
+                        vH.mGeneralView.setBackgroundColor(Color.parseColor("#e5e4e5"));
+                    } else{
+                        vH.mGeneralView.setBackgroundColor(Color.parseColor("#c1bfc1"));
+                    }
                     break;
                 }
                 case TYPE_TABLE_HEADER: {
                     ViewHolderMenuItem vH = (ViewHolderMenuItem) holder;
                     vH.mViewMenuNombre.setText(R.string.menu_label);
                     vH.mViewMenuPrecio.setText(R.string.precio_label);
+                    vH.mViewMenuPrecio.setTextSize(20);
+                    vH.mViewMenuNombre.setTextSize(20);
+                    vH.mViewMenuNombre.setPadding(0,0,0,0);
+                    vH.mViewMenuPrecio.setPadding(0,0,0,0);
+                    vH.mViewMenuPrecio.setTypeface(null, Typeface.BOLD);
+                    vH.mViewMenuNombre.setTextSize(20);
+
                     break;
                 }
                 case TYPE_PROMO: {

@@ -50,9 +50,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
-        } else if (id == R.id.action_log_base) {
-            Utility.logearBase(this);
-            return true;
+//        } else if (id == R.id.action_log_base) {
+//            Utility.logearBase(this);
+//            return true;
         } else if (id == R.id.action_aboutUs) {
             startActivity(new Intent(this, AboutUsActivity.class));
             return true;

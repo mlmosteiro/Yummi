@@ -145,7 +145,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
      View view;
         switch(viewType) {
             case TYPE_HEADER: {
-                view = LayoutInflater.from(mContext).inflate(R.layout.content_cabecera, viewGroup, false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.list_item_cabecera, viewGroup, false);
                 return new ViewHolderHeader(view);
             }
             case TYPE_INFO: {

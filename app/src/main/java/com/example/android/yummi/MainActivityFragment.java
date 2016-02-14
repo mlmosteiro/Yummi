@@ -79,12 +79,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if( id == R.id.action_updateComedores) {
-            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
-            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_COMEDORES);
-            getActivity().startService(lanzarServicio);
-            return true;
-        }
+//        if( id == R.id.action_updateComedores) {
+//            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+//            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_COMEDORES);
+//            getActivity().startService(lanzarServicio);
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 

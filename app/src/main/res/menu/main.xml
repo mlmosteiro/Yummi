@@ -11,8 +11,8 @@
             android:id="@+id/action_aboutUs"
         android:title="@string/action_aboutUs"
         app:showAsAction="never" />
-        <item
-            android:id="@+id/action_log_base"
-            android:title="Logear base"
-            app:showAsAction="never" />
+        <!--<item-->
+            <!--android:id="@+id/action_log_base"-->
+            <!--android:title="Logear base"-->
+            <!--app:showAsAction="never" />-->
 </menu>

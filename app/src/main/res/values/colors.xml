@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3FB155</color>
+    <color name="colorPrimary">#3fb145</color>
     <color name="colorPrimaryDark">#309F3F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FFA000</color>
     <color name="black_overlay">#66000000</color>
     <color name="fondo_detail_activity">#e5e4e5</color>
+    <color name="fondo_menu1">#e5e4e5</color>
+    <color name="fondo_menu2">#c1bfc1</color>
     <color name="negro">#bb000000</color>
-    <color name="link">#3F51B5</color>
+    <color name="link">#ff7b00</color>
 </resources>

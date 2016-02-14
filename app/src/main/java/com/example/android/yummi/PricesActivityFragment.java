@@ -160,7 +160,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                     getActivity().startService(serv);
 
                     //Iniciamos loader para cargar sus elementos
-                    mIdsMenus.add(idMenu);
+                    mIdsMenus.add(mDemasLoaders-DEMAS_LOADERS_BASE, idMenu);
                     getLoaderManager().initLoader(mDemasLoaders++, null, this);
                     data.moveToNext();
                 }
