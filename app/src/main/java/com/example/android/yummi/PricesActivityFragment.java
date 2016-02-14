@@ -9,7 +9,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,14 +159,12 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
                     //Iniciamos loader para cargar sus elementos
                     mIdsMenus.add(idMenu);
-                    Log.d(LOG_TAG, "Iniciado loader " + mDemasLoaders + ", idMenu= " + idMenu);
                     getLoaderManager().initLoader(mDemasLoaders++, null, this);
                     data.moveToNext();
                 }
             }
             mAdapter.swapCursor(data);
         } else {
-            Log.d(LOG_TAG, "Load elementos finalizado: recibidos " + data.getCount());
             mAdapter.setElementosMenu(
                     mIdsMenus.get(loader.getId() - DEMAS_LOADERS_BASE),
                     data);

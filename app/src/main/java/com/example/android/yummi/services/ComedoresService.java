@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.android.yummi.R;
 import com.example.android.yummi.Utility;
@@ -157,15 +156,6 @@ public class ComedoresService extends IntentService {
         }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Iniciado servicio de descarga: " +
-                "tipo=" + intent.getIntExtra(KEY_TIPO, -1) +
-                ", id=" + intent.getLongExtra(KEY_ID, -1) +
-                ", fecha=" + intent.getLongExtra(KEY_FECHA, -1), Toast.LENGTH_SHORT).show();
-        return super.onStartCommand(intent, flags, startId);
-    }
-
     private void obtenerInformacion(int tipo, String jsonStr, long id, long fecha) throws JSONException {
         JSONArray listaJson = new JSONArray(jsonStr);
         switch(tipo) {
@@ -307,7 +297,7 @@ public class ComedoresService extends IntentService {
             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
             ContentValues nuevaFila = new ContentValues();
             long idElemento = jsonObject.getLong(OWM_ID);
-            if(idsExistentes.contains(idElemento)) continue;
+            if (idsExistentes != null && idsExistentes.contains(idElemento)) continue;
 
             nuevaFila.put(ComedoresContract.ElementosEntry._ID,
                     idElemento);
