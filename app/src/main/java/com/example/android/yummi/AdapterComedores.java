@@ -66,7 +66,7 @@ public class AdapterComedores extends CursorAdapter {
         ViewHolder vH = ((Tag) view.getTag()).viewHolder;
 
         long ini = cursor.getLong(MainActivityFragment.COL_HORA_INI);
-        long fin = cursor.getLong(MainActivityFragment.COL_HORA_CIERRE);
+        long fin = cursor.getLong(MainActivityFragment.COL_HORA_FIN);
         boolean abierto = Utility.horaActualEn(ini, fin);
 
         String titulo = cursor.getString(MainActivityFragment.COL_NOMBRE);

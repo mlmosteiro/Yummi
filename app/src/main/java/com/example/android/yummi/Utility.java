@@ -118,10 +118,9 @@ public class Utility {
         cIni.setTimeInMillis(ini);
         Calendar cFin = Calendar.getInstance();
         cFin.setTimeInMillis(fin);
-        return (c.get(Calendar.HOUR) >= cIni.get(Calendar.HOUR) &&
-                c.get(Calendar.HOUR) <= cFin.get(Calendar.HOUR) &&
-                c.get(Calendar.MINUTE) >= cIni.get(Calendar.MINUTE) &&
-                c.get(Calendar.MINUTE) <= cFin.get(Calendar.MINUTE));
+        int minutosActuales = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
+        return ( minutosActuales >= cIni.get(Calendar.HOUR_OF_DAY) * 60 + cIni.get(Calendar.MINUTE) &&
+                 minutosActuales <= cFin.get(Calendar.HOUR_OF_DAY) * 60 + cFin.get(Calendar.MINUTE));
     }
 
     public static boolean conectadoWifi(Context context) {
