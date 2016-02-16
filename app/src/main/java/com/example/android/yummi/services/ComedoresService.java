@@ -276,7 +276,6 @@ public class ComedoresService extends IntentService {
 
     private void guardarElementos(JSONArray jsonArray, long id) throws JSONException {
         ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
-        ArrayList<String> ids = new ArrayList<>(jsonArray.length());
 
         //Obtenemos los ids que ya están asociados a este menú
         Cursor c = getContentResolver().query(
@@ -321,11 +320,34 @@ public class ComedoresService extends IntentService {
 
     private void guardarMenus(JSONArray jsonArray, long id) throws JSONException {
         ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
+        ArrayList<String> ids = new ArrayList<>(jsonArray.length());
+
+        //Obtenemos los ids que ya están asociados a este comedor
+        Cursor c = getContentResolver().query(
+                ComedoresContract.TiposMenuEntry.CONTENT_URI,
+                new String[]{ComedoresContract.TiposMenuEntry._ID},
+                ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR + " = ?", new String[]{Long.toString(id)},
+                null);
+        ArrayList<Long> idsExistentes = null;
+        if(c.moveToFirst()) {
+            idsExistentes = new ArrayList<>(c.getCount());
+            while(!c.isAfterLast()) {
+                idsExistentes.add(c.getLong(0));
+                c.moveToNext();
+            }
+        }
+        c.close();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
             ContentValues nuevaFila = new ContentValues();
+            long idTipoMenu = jsonObject.getLong(OWM_ID);
+
+            ids.add(Long.toString(idTipoMenu));
+            //No añadimos los ya existentes
+            if(idsExistentes != null && idsExistentes.contains(idTipoMenu)) continue;
+
             nuevaFila.put(ComedoresContract.TiposMenuEntry._ID,
-                    jsonObject.getLong(OWM_ID));
+                    idTipoMenu);
             nuevaFila.put(ComedoresContract.TiposMenuEntry.COLUMN_NOMBRE,
                     jsonObject.getString(OWM_MENU_NOMBRE));
             nuevaFila.put(ComedoresContract.TiposMenuEntry.COLUMN_PRECIO,
@@ -335,15 +357,23 @@ public class ComedoresService extends IntentService {
             cVList.add(nuevaFila);
         }
         int insertados = 0;
+        int eliminados = 0;
+        //Eliminamos de la tabla los menús de este comedor sobrantes
+        if(ids.size() > 0) {
+            for(String idAborrar : ids) {
+                ManejadorImagenes.borrarImagenesSiExisten(this, idAborrar);
+            }
+            eliminados = getContentResolver().delete(
+                    ComedoresContract.TiposMenuEntry.CONTENT_URI,
+                    ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR + " = ?" +
+                            " AND " +
+                    ComedoresContract.TiposMenuEntry._ID + " NOT IN (" +
+                            TextUtils.join(", ", ids) + ")",
+                    new String[]{Long.toString(id)});
+        }
         if(cVList.size() > 0) {
             ContentValues[] cVArray = new ContentValues[cVList.size()];
             cVList.toArray(cVArray);
-
-            //Eliminamos de la tabla de menus los que tenía este comedor
-            int eliminados = getContentResolver().delete(
-                    ComedoresContract.TiposMenuEntry.CONTENT_URI,
-                    ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR +  " = ?",
-                    new String[]{Long.toString(id)});
 
             //Insertamos en la tabla de menus
             insertados = this.getContentResolver().bulkInsert(
@@ -356,7 +386,8 @@ public class ComedoresService extends IntentService {
                 values,
                 ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{Long.toString(id)}
         );
-        Log.d(LOG_TAG, "Service completado, " + insertados + " menus insertados.");
+        Log.d(LOG_TAG, "Service completado, " + insertados + " menus insertados, " +
+                eliminados + " eliminados.");
     }
 
     private void guardarPlatos(JSONArray jsonArray, long id, long fecha) throws JSONException {

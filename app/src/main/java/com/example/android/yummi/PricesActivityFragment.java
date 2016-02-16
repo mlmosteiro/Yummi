@@ -12,8 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.services.ComedoresService;
@@ -25,7 +23,6 @@ import java.util.Map;
 public class PricesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = PricesActivityFragment.class.getSimpleName();
-    private LinearLayout linearLayout;
 
     public static final String PROMO_COMEDOR = "promo";
     public static final String ID_COMEDOR = "ID";
@@ -54,7 +51,6 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     private  AdapterMenu mAdapter;
 
     private long mComedorId = -1;
-    private long mMenuId= -1;
     private String mComedorPromo = "null";
 
 
@@ -64,18 +60,6 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
     public PricesActivityFragment() {
         mIdsMenus = new HashMap<>();
-    }
-
-    public static class ViewHolderMenuItem {
-        public  TextView mViewMenuNombre;
-        public  TextView mViewMenuPrecio;
-        public  TextView mViewMenuElementos;
-
-        public ViewHolderMenuItem(View view){
-            mViewMenuNombre = (TextView) view.findViewById(R.id.menu_name);
-            mViewMenuPrecio = (TextView) view.findViewById(R.id.menu_price);
-            mViewMenuElementos = (TextView) view.findViewById(R.id.menu_elements);
-        }
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -90,15 +74,18 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                     new String[]{ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT},
                     ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{Long.toString(mComedorId)},
                     null);
-            if(c != null && c.moveToFirst()) {
-                Long lastSync = c.getLong(0);
-                if (System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
-                    //Si hace un mes que no se actualiza (32 días más bien), actualizamos
-                    Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
-                    lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_MENUS);
-                    lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
-                    getActivity().startService(lanzarServicio);
+            if(c != null){
+                if(c.moveToFirst()) {
+                    Long lastSync = c.getLong(0);
+                    if (System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
+                        //Si hace un mes que no se actualiza (32 días más bien), actualizamos
+                        Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+                        lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_MENUS);
+                        lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
+                        getActivity().startService(lanzarServicio);
+                    }
                 }
+                c.close();
             }
         }
     }
