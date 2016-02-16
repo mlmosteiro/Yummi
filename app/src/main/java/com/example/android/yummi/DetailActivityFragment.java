@@ -26,6 +26,7 @@ public class DetailActivityFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>, AdapterPlatos.AbridorLocalizacion {
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
+    // TODO: Hacer que esta actividad permita mostrar los platos del día anterior!
 
     // Columnas para la consulta de datos del comedor al provider
     public static final String[] COLUMNAS_COMEDOR = {

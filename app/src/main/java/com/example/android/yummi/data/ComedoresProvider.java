@@ -296,6 +296,14 @@ public class ComedoresProvider extends ContentProvider {
             if(!c.moveToFirst()) {
                 //No existe, lo insertamos, el _id debería ser el mismo, claro
                 _idPlato = db.insert(ComedoresContract.PlatosEntry.TABLE_NAME, null, values);
+            } else {
+                //Si existe, lo actualizamos
+                values.remove(ComedoresContract.PlatosEntry._ID);
+                db.update(
+                        ComedoresContract.PlatosEntry.TABLE_NAME,
+                        values,
+                        ComedoresContract.PlatosEntry._ID + " = ?",
+                        new String[]{Long.toString(_idPlato)});
             }
             c.close();
             db.delete(

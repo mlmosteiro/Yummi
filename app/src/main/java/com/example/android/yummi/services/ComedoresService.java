@@ -177,7 +177,8 @@ public class ComedoresService extends IntentService {
     }
 
     private void guardarComedores(JSONArray jsonArray) throws JSONException {
-        ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
+        ArrayList<ContentValues> cVListInsertar = new ArrayList<>(jsonArray.length());
+        ArrayList<ContentValues> cVListActualizar = new ArrayList<>(jsonArray.length());
         ArrayList<String> ids = new ArrayList<>(jsonArray.length());
 
         //Obtenemos los ids que ya están en la base
@@ -201,7 +202,6 @@ public class ComedoresService extends IntentService {
 
             long nuevoId = jsonObject.getLong(OWM_ID);
             ids.add(Long.toString(nuevoId));
-            if(idsExistentes != null && idsExistentes.contains(nuevoId)) continue; //No se añade si ya está
 
             ContentValues nuevaFila = new ContentValues();
             nuevaFila.put(
@@ -245,10 +245,15 @@ public class ComedoresService extends IntentService {
                     ComedoresContract.ComedoresEntry.COLUMN_PROMO,
                     jsonObject.getString(OWM_COMEDORES_PROMOCION));
 
-            cVList.add(nuevaFila);
+            if(idsExistentes != null && idsExistentes.contains(nuevoId)) {
+                cVListActualizar.add(nuevaFila);
+            } else {
+                cVListInsertar.add(nuevaFila);
+            }
         }
         int eliminados = 0;
         int insertados = 0;
+        int actualizados = 0;
         //Eliminamos de la tabla los comedores sobrantes
         if(ids.size() > 0) {
             for(String idAborrar : ids) {
@@ -261,17 +266,29 @@ public class ComedoresService extends IntentService {
                     null);
         }
         //Insertamos en la tabla de comedores los nuevos
-        if(cVList.size() > 0) {
-            ContentValues[] cVArray = new ContentValues[cVList.size()];
-            cVList.toArray(cVArray);
+        if(cVListInsertar.size() > 0) {
+            ContentValues[] cVArray = new ContentValues[cVListInsertar.size()];
+            cVListInsertar.toArray(cVArray);
 
             insertados = this.getContentResolver().bulkInsert(ComedoresContract.ComedoresEntry.CONTENT_URI, cVArray);
+        }
+        //Actualizamos los comedores que ya estaban
+        if(cVListActualizar.size() > 0) {
+            for(ContentValues cv : cVListActualizar) {
+                String idComedor = cv.getAsString(ComedoresContract.ComedoresEntry._ID);
+                cv.remove(ComedoresContract.ComedoresEntry._ID);
+                actualizados += this.getContentResolver().update(
+                        ComedoresContract.ComedoresEntry.CONTENT_URI,
+                        cv,
+                        ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{idComedor});
+            }
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(getString(R.string.pref_ultima_act_comedores), System.currentTimeMillis());
         editor.commit();
-        Log.d(LOG_TAG, "Service completado: " + insertados + " comedores insertados, " + eliminados + " eliminados.");
+        Log.d(LOG_TAG, "Service completado: " + insertados + " comedores insertados, "
+                + eliminados + " eliminados, " + actualizados + " actualizados.");
     }
 
     private void guardarElementos(JSONArray jsonArray, long id) throws JSONException {
@@ -320,6 +337,7 @@ public class ComedoresService extends IntentService {
 
     private void guardarMenus(JSONArray jsonArray, long id) throws JSONException {
         ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
+        ArrayList<ContentValues> cVListActualizar = new ArrayList<>(jsonArray.length());
         ArrayList<String> ids = new ArrayList<>(jsonArray.length());
 
         //Obtenemos los ids que ya están asociados a este comedor
@@ -343,8 +361,6 @@ public class ComedoresService extends IntentService {
             long idTipoMenu = jsonObject.getLong(OWM_ID);
 
             ids.add(Long.toString(idTipoMenu));
-            //No añadimos los ya existentes
-            if(idsExistentes != null && idsExistentes.contains(idTipoMenu)) continue;
 
             nuevaFila.put(ComedoresContract.TiposMenuEntry._ID,
                     idTipoMenu);
@@ -354,10 +370,16 @@ public class ComedoresService extends IntentService {
                     jsonObject.getDouble(OWM_MENU_PRECIO));
             nuevaFila.put(ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR,
                     id);
-            cVList.add(nuevaFila);
+
+            if(idsExistentes != null && idsExistentes.contains(idTipoMenu)) {
+                cVListActualizar.add(nuevaFila);
+            } else {
+                cVList.add(nuevaFila);
+            }
         }
         int insertados = 0;
         int eliminados = 0;
+        int actualizados = 0;
         //Eliminamos de la tabla los menús de este comedor sobrantes
         if(ids.size() > 0) {
             for(String idAborrar : ids) {
@@ -379,6 +401,18 @@ public class ComedoresService extends IntentService {
             insertados = this.getContentResolver().bulkInsert(
                     ComedoresContract.TiposMenuEntry.CONTENT_URI, cVArray);
         }
+        //Actualizamos los menús que ya estaban
+        if(cVListActualizar.size() > 0) {
+            for(ContentValues cv : cVListActualizar) {
+                String idMenu = cv.getAsString(ComedoresContract.TiposMenuEntry._ID);
+                cv.remove(ComedoresContract.TiposMenuEntry._ID);
+                actualizados += this.getContentResolver().update(
+                        ComedoresContract.TiposMenuEntry.CONTENT_URI,
+                        cv,
+                        ComedoresContract.TiposMenuEntry._ID + " = ?", new String[]{idMenu});
+            }
+        }
+        // Guardamos la fecha de última actualización de los menús de este comedor
         ContentValues values = new ContentValues();
         values.put(ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT, System.currentTimeMillis());
         this.getContentResolver().update(
@@ -387,7 +421,7 @@ public class ComedoresService extends IntentService {
                 ComedoresContract.ComedoresEntry._ID + " = ?", new String[]{Long.toString(id)}
         );
         Log.d(LOG_TAG, "Service completado, " + insertados + " menus insertados, " +
-                eliminados + " eliminados.");
+                eliminados + " eliminados, " + actualizados + " actualizados.");
     }
 
     private void guardarPlatos(JSONArray jsonArray, long id, long fecha) throws JSONException {
@@ -421,6 +455,6 @@ public class ComedoresService extends IntentService {
                     ComedoresContract.TenerEntry.COLUMN_FECHA + " <= ?",
                     new String[]{Long.toString(Utility.fechaAnteayer())});
         }
-        Log.d(LOG_TAG, "Service completado: " + insertados + " platos insertados, " + eliminados + " eliminados.");
+        Log.d(LOG_TAG, "Service completado: " + insertados + " platos insertados/actualizados, " + eliminados + " eliminados.");
     }
 }
