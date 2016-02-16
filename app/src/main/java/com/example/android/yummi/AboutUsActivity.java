@@ -141,9 +141,9 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
         boolean haySensores = mGiroscopio != null && mAcelerometro != null && mMagnetometro != null;
         // Esto sólo funciona si dispones de los tres sensores
         if(haySensores) {
-            mSensorManager.registerListener(this, mGiroscopio, SensorManager.SENSOR_DELAY_UI);
-            mSensorManager.registerListener(this, mAcelerometro, SensorManager.SENSOR_DELAY_UI);
-            mSensorManager.registerListener(this, mMagnetometro, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(this, mGiroscopio, SensorManager.SENSOR_DELAY_GAME);
+            mSensorManager.registerListener(this, mAcelerometro, SensorManager.SENSOR_DELAY_GAME);
+            mSensorManager.registerListener(this, mMagnetometro, SensorManager.SENSOR_DELAY_GAME);
 
             // Esperar un segundo a que la información del acelerómetro/magnetómetro
             // y el giroscopio esté inicializada, después iniciar la tarea de filtrado
@@ -467,6 +467,8 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
 
             final float coef_aceleracion = 0.5f;
             final float coef_rozamiento = 0.05f;
+            final float bolaR = Math.min(percentX(10), percentY(10));
+
 
             // Create a Surface for the SurfaceTexture.
             Surface surface;
@@ -508,9 +510,10 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
             float bolaY = mHeight/2;
             float velX = 0;
             float velY = 0;
+            float velZ = 0;
             float aceX;
             float aceY;
-            float bolaR = Math.min(percentX(10), percentY(10));
+            float aceZ;
             float anguloLuz = 0;
 
             RadialGradient rg = new RadialGradient(
@@ -542,12 +545,12 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                     if(!mHaySensores) {
                         canvas.drawText("No tienes giroscopio, acelerómetro\no magnetómetro D:", mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
                     }
-//                    else {
-//                        canvas.drawText(
-//                                String.format("(z, y, x) = (%3.2f, %3.2f,%3.2f)",
-//                                        fusedOrientation[0], fusedOrientation[1], fusedOrientation[2]),
-//                                mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
-//                    }
+                    else {
+                        canvas.drawText(
+                                String.format("(z, y, x) = (%3.2f; %3.2f; %3.2f)",
+                                        fusedOrientation[0], fusedOrientation[1], fusedOrientation[2]),
+                                mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
+                    }
                 } finally {
                     // If the SurfaceTexture has been destroyed, this will throw an exception.
                     try {
@@ -560,16 +563,18 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
 
                 aceX = 0;
                 aceY = 0;
+                aceZ = 0;
                 // La inclinación determina la aceleración
                 if(iniciado) {
                     aceX = coef_aceleracion * fusedOrientation[2];
                     aceY = -coef_aceleracion * fusedOrientation[1];
-                    anguloLuz = fusedOrientation[0] * 180;
+                    anguloLuz = (float) -(180 * fusedOrientation[0] / Math.PI);
                 }
 
                 // La velocidad varía con la aceleración
                 velX += aceX;
                 velY += aceY;
+                velZ += aceZ;
 
                 // Simulamos rozamiento
                 if(velX > coef_rozamiento) {
@@ -588,12 +593,20 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                     velY /= 2;
                 }
 
+                if(velZ > coef_rozamiento) {
+                    velZ -= coef_rozamiento;
+                } else if(velZ < -coef_rozamiento){
+                    velZ += coef_rozamiento;
+                } else {
+                    velZ /= 2;
+                }
+
                 // Sumamos velocidad a la posicion
                 bolaX += velX;
                 bolaY += velY;
 
                 // Rebotes
-                if(bolaX < bolaR){
+                if(bolaX < bolaR) {
                     bolaX = bolaR;
                     velX*=-1;
                 }
