@@ -545,12 +545,12 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                     if(!mHaySensores) {
                         canvas.drawText("No tienes giroscopio, acelerómetro\no magnetómetro D:", mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
                     }
-                    else {
-                        canvas.drawText(
-                                String.format("(z, y, x) = (%3.2f; %3.2f; %3.2f)",
-                                        fusedOrientation[0], fusedOrientation[1], fusedOrientation[2]),
-                                mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
-                    }
+//                    else {
+//                        canvas.drawText(
+//                                String.format("(z, y, x) = (%3.2f; %3.2f; %3.2f)",
+//                                        fusedOrientation[0], fusedOrientation[1], fusedOrientation[2]),
+//                                mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
+//                    }
                 } finally {
                     // If the SurfaceTexture has been destroyed, this will throw an exception.
                     try {
