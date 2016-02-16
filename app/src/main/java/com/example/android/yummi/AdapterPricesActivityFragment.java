@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class AdapterMenu extends RecyclerView.Adapter{
+public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
     private static final int TYPE_TABLE_HEADER = 0;
     private static final int TYPE_MENU = 1;
     private static final int TYPE_PROMO = 2;
@@ -28,7 +28,7 @@ public class AdapterMenu extends RecyclerView.Adapter{
     Map<Long, Cursor> cursoresElementos;
 
 
-    public AdapterMenu(Context context, String promo) {
+    public AdapterPricesActivityFragment(Context context, String promo) {
         mContext = context;
         mPromo = promo;
         cursoresElementos = new HashMap<>();

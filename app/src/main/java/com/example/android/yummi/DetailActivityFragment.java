@@ -23,7 +23,7 @@ import com.example.android.yummi.services.ComedoresService;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, AdapterPlatos.AbridorLocalizacion {
+        implements LoaderManager.LoaderCallbacks<Cursor>, AdapterDetailActivityFragment.AbridorLocalizacion {
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     // TODO: Hacer que esta actividad permita mostrar los platos del día anterior!
@@ -78,7 +78,7 @@ public class DetailActivityFragment extends Fragment
     private static final int LOADER_INFO_COMEDOR = 1;
     private static final int LOADER_TITULO_COMEDOR = 2;
 
-    private AdapterPlatos mAdapter;
+    private AdapterDetailActivityFragment mAdapter;
 
     private long mComedorId = -1;
     private String mComedorNombre = "null";
@@ -128,7 +128,7 @@ public class DetailActivityFragment extends Fragment
         RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.listView_detail));
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        mAdapter = new AdapterPlatos(getActivity(), mtwoPane, mComedorNombre, this);
+        mAdapter = new AdapterDetailActivityFragment(getActivity(), mtwoPane, mComedorNombre, this);
         recyclerView.setAdapter(mAdapter);
 
         return rootView;

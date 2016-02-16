@@ -48,7 +48,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     public static final int COL_ELEM_TIPO = 0;
     public static final int COL_ELEM_NOMBRE = 1;
 
-    private  AdapterMenu mAdapter;
+    private AdapterPricesActivityFragment mAdapter;
 
     private long mComedorId = -1;
     private String mComedorPromo = "null";
@@ -106,7 +106,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
        // if(getActivity().getRequestedOrientation() == )
-        mAdapter = new AdapterMenu(getActivity(), mComedorPromo);
+        mAdapter = new AdapterPricesActivityFragment(getActivity(), mComedorPromo);
         recyclerView.setAdapter(mAdapter);
 
         return rootView;

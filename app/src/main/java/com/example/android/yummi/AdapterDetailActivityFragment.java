@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
- * Adapter para las listas de platos de {@code DetailActivityFragment}
+ * Adapter para el RecyclerView de {@code DetailActivityFragment}
  * Created by David Campos Rodríguez <a href='mailto:david.campos@rai.usc.es'>david.campos@rai.usc.es</a> on 10/02/2016.
  */
-public class AdapterPlatos extends  RecyclerView.Adapter{
+public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
     private int mNumPrimeros;
     private int mNumSegundos;
 
@@ -38,7 +38,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private static final int TYPE_PLATO = 2;
     private static final int TYPE_TITULO = -1;
 
-    public AdapterPlatos(Context context, Boolean twoPane, String titulo, AbridorLocalizacion abridor) {
+    public AdapterDetailActivityFragment(Context context, Boolean twoPane, String titulo, AbridorLocalizacion abridor) {
         mContext = context;
         mAbridor = abridor;
         mNumPrimeros = mNumSegundos = 0;
