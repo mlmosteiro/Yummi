@@ -306,18 +306,26 @@ public class ComedoresProvider extends ContentProvider {
                         new String[]{Long.toString(_idPlato)});
             }
             c.close();
-            db.delete(
+
+            //Comprobamos si la relación existe
+            c = db.query(
                     ComedoresContract.TenerEntry.TABLE_NAME,
+                    null,
                     ComedoresContract.TenerEntry.COLUMN_COMEDOR + " = ?" +
-                    " AND " + ComedoresContract.TenerEntry.COLUMN_FECHA + " = ?"+
+                    " AND " + ComedoresContract.TenerEntry.COLUMN_FECHA + " = ?" +
                     " AND " + ComedoresContract.TenerEntry.COLUMN_PLATO + " = ?",
-                    new String[]{strComedorId, Long.toString(fecha), Long.toString(_idPlato)});
-            //Insertamos la relación
-            ContentValues valsRelacion = new ContentValues();
-            valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_COMEDOR, strComedorId);
-            valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_FECHA, fecha);
-            valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_PLATO, _idPlato);
-            db.insert(ComedoresContract.TenerEntry.TABLE_NAME, null, valsRelacion);
+                    new String[]{strComedorId, Long.toString(fecha), Long.toString(_idPlato)},
+                    null, null, null);
+            //Si no existe, la insertamos
+            if(!c.moveToFirst()) {
+                //Insertamos la relación
+                ContentValues valsRelacion = new ContentValues();
+                valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_COMEDOR, strComedorId);
+                valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_FECHA, fecha);
+                valsRelacion.put(ComedoresContract.TenerEntry.COLUMN_PLATO, _idPlato);
+                db.insert(ComedoresContract.TenerEntry.TABLE_NAME, null, valsRelacion);
+            }
+            c.close();
 
             if (_idPlato > 0)
                 return ComedoresContract.PlatosEntry.buildPlatoUri(Long.parseLong(strComedorId), _idPlato);
