@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    tools:showIn="@layout/content_prices"
     tools:context=".DetailActivityFragment"
     android:id="@+id/menus_view">
 

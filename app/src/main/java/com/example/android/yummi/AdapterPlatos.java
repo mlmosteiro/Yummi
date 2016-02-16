@@ -31,6 +31,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
     private AbridorLocalizacion mAbridor;
     private Cursor mCursor;
     private Boolean mTwoPane;
+    private boolean mInfoComedorValida;
 
     private static final int TYPE_INFO = 0;
     private static final int TYPE_HEADER = 1;
@@ -43,6 +44,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
         mNumPrimeros = mNumSegundos = 0;
         mTwoPane = twoPane;
         mTitulo = titulo;
+        mInfoComedorValida = false;
         }
 
     /**
@@ -137,6 +139,7 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                     (!contacto.equals("null") ? " (" + contacto + ")" : "");
             mDir = data.getString(DetailActivityFragment.COL_COMEDOR_DIR);
             mNombre = data.getString(DetailActivityFragment.COL_COMEDOR_NOMBRE);
+            mInfoComedorValida = true;
         }
     }
 
@@ -230,22 +233,26 @@ public class AdapterPlatos extends  RecyclerView.Adapter{
                 }
                 case TYPE_INFO: {
                     ViewHolderInfo vH = (ViewHolderInfo)holder;
-                    vH.mViewHoraApertura.setText(
-                            mContext.getString(R.string.formato_horario_apertura,
-                                    Utility.denormalizarHora(mApertura),
-                                    Utility.denormalizarHora(mCierre)));
-                    vH.mViewHoraComida.setText(
-                            mContext.getString(R.string.formato_horario_apertura,
-                                    Utility.denormalizarHora(mIni),
-                                    Utility.denormalizarHora(mFin)));
-                    vH.mViewContacto.setText(mContacto);
-                    vH.mViewUbicacion.setText(Html.fromHtml("<u>" + mDir + "</u>"));
-                    vH.mViewUbicacion.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mAbridor.openLocation(mLat, mLon, mNombre);
-                        }
-                    });
+                    if( mInfoComedorValida ) {
+                        vH.mViewHoraApertura.setText(
+                                mContext.getString(R.string.formato_horario_apertura,
+                                        Utility.denormalizarHora(mApertura),
+                                        Utility.denormalizarHora(mCierre)));
+                        vH.mViewHoraComida.setText(
+                                mContext.getString(R.string.formato_horario_apertura,
+                                        Utility.denormalizarHora(mIni),
+                                        Utility.denormalizarHora(mFin)));
+                        vH.mViewContacto.setText(mContacto);
+                        vH.mViewUbicacion.setText(Html.fromHtml("<u>" + mDir + "</u>"));
+                        vH.mViewUbicacion.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mAbridor.openLocation(mLat, mLon, mNombre);
+                            }
+                        });
+                    } else {
+                        vH.mViewContacto.setText(R.string.cargando_info);
+                    }
                     break;
                 }
                 case TYPE_TITULO: {

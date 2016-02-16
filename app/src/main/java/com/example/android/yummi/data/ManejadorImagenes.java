@@ -109,10 +109,12 @@ public class ManejadorImagenes {
         if(imagen.exists()) {
             if(esMini) {
                 Bitmap bImage = BitmapFactory.decodeFile(imagen.toString());
-                Drawable d = new BitmapDrawable(
-                        mContext.getResources(),
-                        Bitmap.createScaledBitmap(bImage, 100, 100, true));
-                ((ImageView) view).setImageDrawable(d);
+                if(bImage != null) {
+                    Drawable d = new BitmapDrawable(
+                            mContext.getResources(),
+                            Bitmap.createScaledBitmap(bImage, 100, 100, true));
+                    ((ImageView) view).setImageDrawable(d);
+                }
             } else {
                 Drawable nuevoDraw = Drawable.createFromPath(imagen.toString());
                 view.setBackground(nuevoDraw);

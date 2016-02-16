@@ -33,5 +33,6 @@
     <string name="formato_dinero"><xliff:g id="val">%1$s</xliff:g>€</string>
 
     <string name="title_activity_about_us">About us!</string>
+    <string name="cargando_info">Cargando información...</string>
 
 </resources>

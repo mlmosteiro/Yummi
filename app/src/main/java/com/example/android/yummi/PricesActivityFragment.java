@@ -18,8 +18,8 @@ import android.widget.TextView;
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.services.ComedoresService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class PricesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -29,6 +29,8 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
     public static final String PROMO_COMEDOR = "promo";
     public static final String ID_COMEDOR = "ID";
+
+    private static final String ARGS_MENU_ID_KEY = "menuId";
 
     public static final String[] COLUMNAS_MENU = {
             ComedoresContract.TiposMenuEntry.TABLE_NAME + "." + ComedoresContract.TiposMenuEntry._ID,
@@ -57,12 +59,11 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
 
     private static final int LOADER_COLUMNAS_MENU = 0;
-    private static final int DEMAS_LOADERS_BASE = 1;
-    private int mDemasLoaders = DEMAS_LOADERS_BASE;
-
-    private List<Long> mIdsMenus;
+    private int siguienteIdLoader = 1;
+    private Map<Integer, Long> mIdsMenus;
 
     public PricesActivityFragment() {
+        mIdsMenus = new HashMap<>();
     }
 
     public static class ViewHolderMenuItem {
@@ -135,9 +136,11 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                     null, null,
                     null);
         } else {
+            long idMenu = args.getLong(ARGS_MENU_ID_KEY);
+            mIdsMenus.put(id, idMenu);
             return new CursorLoader(
                     getActivity(),
-                    ComedoresContract.ElementosEntry.buildElementosByMenuUri(mIdsMenus.get(id-DEMAS_LOADERS_BASE)),
+                    ComedoresContract.ElementosEntry.buildElementosByMenuUri(idMenu),
                     COLUMNAS_ELEMENTOS,
                     null, null,
                     null);
@@ -149,7 +152,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == LOADER_COLUMNAS_MENU) {
             if (data.moveToFirst()) {
-                mIdsMenus = new ArrayList<>(data.getCount());
+                //Este loader se elimina con la primera información válida que obtenga
                 while (!data.isAfterLast()) {
                     long idMenu = data.getLong(COL_MENU_ID);
 
@@ -160,15 +163,16 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                     getActivity().startService(serv);
 
                     //Iniciamos loader para cargar sus elementos
-                    mIdsMenus.add(mDemasLoaders-DEMAS_LOADERS_BASE, idMenu);
-                    getLoaderManager().initLoader(mDemasLoaders++, null, this);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(ARGS_MENU_ID_KEY, idMenu);
+                    getLoaderManager().initLoader(siguienteIdLoader++, bundle, this);
                     data.moveToNext();
                 }
             }
             mAdapter.swapCursor(data);
         } else {
             mAdapter.setElementosMenu(
-                    mIdsMenus.get(loader.getId() - DEMAS_LOADERS_BASE),
+                    mIdsMenus.get(loader.getId()),
                     data);
         }
     }
