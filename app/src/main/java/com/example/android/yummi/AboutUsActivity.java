@@ -42,6 +42,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -90,8 +91,7 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
     public static final float FILTER_COEFFICIENT = 0.98f;
     private Timer fuseTimer = new Timer();
 
-    // The following members are only for displaying the sensor output.
-
+    private boolean pausado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,14 +119,12 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
         gyroMatrix[3] = 0.0f; gyroMatrix[4] = 1.0f; gyroMatrix[5] = 0.0f;
         gyroMatrix[6] = 0.0f; gyroMatrix[7] = 0.0f; gyroMatrix[8] = 1.0f;
 
-//        mTextureView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                vectorPos[0] = 0;
-//                vectorPos[1] = 0;
-//                vectorPos[2] = 0;
-//            }
-//        });
+        mTextureView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pausado = !pausado;
+            }
+        });
     }
 
     @Override
@@ -465,10 +463,11 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
         private void doAnimation() {
             final int COLOR_TEXTO = Color.rgb(227, 230, 229);
 
-            final float coef_aceleracion = 0.5f;
-            final float coef_rozamiento = 0.05f;
-            final float bolaR = Math.min(percentX(10), percentY(10));
-
+            final float gravedad = 0.5f; // gravedad en píxeles*frame^-2
+            final float gravedad_z = 0.01f; // gravedad para lo de aumentar y disminuir bola
+            final float rozamiento = 0.005f; //desaceleración por rozamiento
+            final float bolaR = Math.min(percentX(15), percentY(15));
+            final float min_bolaR = Math.min(percentX(10), percentY(10));
 
             // Create a Surface for the SurfaceTexture.
             Surface surface;
@@ -495,6 +494,7 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
             paintSubtitulo.setColor(COLOR_TEXTO);
             paintSubtitulo.setTextAlign(Paint.Align.CENTER);
             paintSubtitulo.setTextSize(Math.min(percentX(5), percentY(5)));
+            paintSubtitulo.setShadowLayer(Math.min(percentX(0.5f), percentY(0.5f)), 0, 0, Color.BLACK);
 
             LinearGradient lg = new LinearGradient(
                     0, 0,
@@ -506,8 +506,13 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
             degr.setDither(true);
             degr.setShader(lg);
 
+            /* SONIDOS DE REBOTE*/
+            MediaPlayer mp;
+            mp = MediaPlayer.create(mContext, R.raw.rebote);
+
             float bolaX = mWidth/2;
             float bolaY = mHeight/2;
+            float bolaZ = (min_bolaR + bolaR) / 2.0f;
             float velX = 0;
             float velY = 0;
             float velZ = 0;
@@ -523,7 +528,100 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
 
             while (true) {
                 Rect dirty = null;
+
+                if(pausado)
+                    continue;
+
                 Canvas canvas = surface.lockCanvas(dirty);
+
+                aceX = 0;
+                aceY = 0;
+                aceZ = 0;
+                // La inclinación determina la aceleración
+                if(iniciado) {
+                    aceX = gravedad * (float) Math.sin(fusedOrientation[2]);
+                    aceY = -gravedad * (float) Math.sin(fusedOrientation[1]);
+                    if(Math.PI - Math.abs(fusedOrientation[2]) <= 0.1) {
+                        aceZ = gravedad_z;
+                    } else if(Math.abs(fusedOrientation[2]) <= 0.1) {
+                        aceZ = -gravedad_z;
+                    }
+                }
+
+                // La velocidad varía con la aceleración
+                velX += aceX;
+                velY += aceY;
+                velZ += aceZ;
+
+                // Simulamos rozamiento
+                if(velX >= rozamiento) {
+                    velX -= rozamiento;
+                } else if(velX <= -rozamiento) {
+                    velX += rozamiento;
+                } else {
+                    velX /= 2;
+                }
+
+                if(velY >= rozamiento) {
+                    velY -= rozamiento;
+                } else if(velY <= -rozamiento){
+                    velY += rozamiento;
+                } else {
+                    velY /= 2;
+                }
+
+                // Sumamos velocidad a la posicion
+                bolaX += velX;
+                bolaY += velY;
+                bolaZ += velZ;
+
+                // Rebotes
+                if(bolaX < bolaZ) {
+                    bolaX = bolaZ;
+                    velX*=-0.75;
+                    if(Math.abs(velX) > 0.5) {
+                        mp.seekTo(0);
+                        mp.setVolume(1.0f, 0.0f);
+                        mp.start();
+                    }
+                }
+                if(bolaX > mWidth-bolaZ) {
+                    bolaX = mWidth-bolaZ;
+                    velX*=-0.75;
+                    if(Math.abs(velX) > 0.5) {
+                        mp.seekTo(0);
+                        mp.setVolume(0.0f, 1.0f);
+                        mp.start();
+                    }
+                }
+                if(bolaY < bolaZ) {
+                    bolaY = bolaZ;
+                    velY*=-0.75;
+                    if(Math.abs(velY) > 0.5) {
+                        mp.seekTo(0);
+                        mp.setVolume(0.5f, 0.5f);
+                        mp.start();
+                    }
+                }
+                if(bolaY > mHeight-bolaZ) {
+                    bolaY = mHeight-bolaZ;
+                    velY*=-0.75;
+                    if(Math.abs(velY) > 0.5) {
+                        mp.seekTo(0);
+                        mp.setVolume(0.5f, 0.5f);
+                        mp.start();
+                    }
+                }
+
+                if(bolaZ > bolaR) {
+                    bolaZ = bolaR;
+                    velZ = 0;
+                } else if(bolaZ < min_bolaR) {
+                    bolaZ = min_bolaR;
+                    velZ = 0;
+                }
+
+                anguloLuz = (float) Math.atan2(bolaY, bolaX);
 
                 try {
                     // just curious
@@ -534,16 +632,19 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                     canvas.drawPaint(degr);
 
                     canvas.drawText("David C. y Mary Luz M.", mWidth / 2, mHeight / 2 + 50, paintSubtitulo);
+                    canvas.drawText("david.campos@rai.usc.es", mWidth / 2, mHeight / 2 + 100, paintSubtitulo);
+                    canvas.drawText("marialuz.mosteiro@rai.usc.es", mWidth / 2, mHeight / 2 + 150, paintSubtitulo);
+
 
                     canvas.translate(bolaX, bolaY);
                     canvas.rotate(anguloLuz);
-                    canvas.drawCircle(0, 0, bolaR, paintBola);
+                    canvas.drawCircle(0, 0, bolaZ, paintBola);
                     canvas.rotate(-anguloLuz);
                     canvas.translate(-bolaX, -bolaY);
 
                     canvas.drawText("Ñam!", mWidth / 2, mHeight / 2 - 50, paintTitulo);
                     if(!mHaySensores) {
-                        canvas.drawText("No tienes giroscopio, acelerómetro\no magnetómetro D:", mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
+                        canvas.drawText("No tienes giroscopio/acelerómetro/magnetómetro D:", mWidth / 2, mHeight / 2 + 200, paintSubtitulo);
                     }
 //                    else {
 //                        canvas.drawText(
@@ -561,70 +662,14 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                     }
                 }
 
-                aceX = 0;
-                aceY = 0;
-                aceZ = 0;
-                // La inclinación determina la aceleración
-                if(iniciado) {
-                    aceX = coef_aceleracion * fusedOrientation[2];
-                    aceY = -coef_aceleracion * fusedOrientation[1];
-                    anguloLuz = (float) -(180 * fusedOrientation[0] / Math.PI);
-                }
-
-                // La velocidad varía con la aceleración
-                velX += aceX;
-                velY += aceY;
-                velZ += aceZ;
-
-                // Simulamos rozamiento
-                if(velX > coef_rozamiento) {
-                    velX -= coef_rozamiento;
-                } else if(velX < -coef_rozamiento) {
-                    velX += coef_rozamiento;
-                } else {
-                    velX /= 2;
-                }
-
-                if(velY > coef_rozamiento) {
-                    velY -= coef_rozamiento;
-                } else if(velY < -coef_rozamiento){
-                    velY += coef_rozamiento;
-                } else {
-                    velY /= 2;
-                }
-
-                if(velZ > coef_rozamiento) {
-                    velZ -= coef_rozamiento;
-                } else if(velZ < -coef_rozamiento){
-                    velZ += coef_rozamiento;
-                } else {
-                    velZ /= 2;
-                }
-
-                // Sumamos velocidad a la posicion
-                bolaX += velX;
-                bolaY += velY;
-
-                // Rebotes
-                if(bolaX < bolaR) {
-                    bolaX = bolaR;
-                    velX*=-1;
-                }
-                if(bolaX > mWidth-bolaR) {
-                    bolaX = mWidth-bolaR;
-                    velX*=-1;
-                }
-                if(bolaY < bolaR) {
-                    bolaY = bolaR;
-                    velY*=-1;
-                }
-                if(bolaY > mHeight-bolaR) {
-                    bolaY = mHeight-bolaR;
-                    velY*=-1;
-                }
                 if(mDone) break;
             }
             Log.d(TAG, "Fin de animación");
+
+            //Sonido
+            mp.reset();
+            mp.release();
+
             surface.release();
         }
 
