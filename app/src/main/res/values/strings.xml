@@ -34,5 +34,7 @@
 
     <string name="title_activity_about_us">About us!</string>
     <string name="cargando_info">Cargando información...</string>
+    <string name="cargando_comedores_label">Cargando la lista de comedores...</string>
+    <string name="cargando_comedores_subtitle">¡Tus comedores favoritos pronto estarán aquí!</string>
 
 </resources>
