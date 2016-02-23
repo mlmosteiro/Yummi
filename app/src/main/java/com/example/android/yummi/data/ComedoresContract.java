@@ -165,11 +165,8 @@ public class ComedoresContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildInsercionUri(long idMenu){
-            return CONTENT_URI.buildUpon()
-                    .appendQueryParameter(
-                            URI_MENU_ID_KEY,
-                            Long.toString(idMenu)).build();
+        public static Uri buildInsercionUri(){
+            return CONTENT_URI;
         }
 
         public static Uri buildElementosByMenuUri(long idMenu){

@@ -272,11 +272,24 @@ public class ComedoresProvider extends ContentProvider {
                 returnUri = insertarElementos(db, uri, values);
                 break;
             }
+            case TIENEN: {
+                returnUri = insertarTienen(db, uri, values);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
+    }
+
+    private Uri insertarTienen(SQLiteDatabase db, Uri uri, ContentValues values) {
+        Long id = db.insertWithOnConflict(
+                ComedoresContract.TienenEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        if(id > 0)
+            return ComedoresContract.ElementosEntry.buildElementoUri(values.getAsLong(ComedoresContract.TienenEntry.COLUMN_ELEMENTO));
+        else
+            throw new android.database.SQLException("Failed to insert row into " + uri);
     }
 
     private Uri insertarPlatos(SQLiteDatabase db, Uri uri, ContentValues values){
@@ -337,10 +350,9 @@ public class ComedoresProvider extends ContentProvider {
     }
 
     private Uri insertarElementos(SQLiteDatabase db, Uri uri, ContentValues values) {
-        String strMenuId = uri.getQueryParameter(ComedoresContract.ElementosEntry.URI_MENU_ID_KEY);
         Long _idElemento= values.getAsLong(ComedoresContract.PlatosEntry._ID);
 
-        if(strMenuId != null && _idElemento != null) {
+        if(_idElemento != null) {
             //Comprobamos si ya existe
             Cursor c = db.query(
                     ComedoresContract.ElementosEntry.TABLE_NAME,
@@ -353,12 +365,6 @@ public class ComedoresProvider extends ContentProvider {
                 _idElemento = db.insert(ComedoresContract.ElementosEntry.TABLE_NAME, null, values);
             }
             c.close();
-            //Insertamos la relación
-            ContentValues valsRelacion = new ContentValues();
-            valsRelacion.put(ComedoresContract.TienenEntry.COLUMN_MENU, strMenuId);
-            valsRelacion.put(ComedoresContract.TienenEntry.COLUMN_ELEMENTO, _idElemento);
-            db.insert(ComedoresContract.TienenEntry.TABLE_NAME, null, valsRelacion);
-
             if (_idElemento > 0)
                 return ComedoresContract.ElementosEntry.buildElementoUri(_idElemento);
             else

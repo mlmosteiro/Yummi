@@ -68,7 +68,7 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
         if (arguments != null) {
             mComedorId = arguments.getLong(ID_COMEDOR);
             mComedorPromo = arguments.getString(PROMO_COMEDOR);
-            //Comprobamos si ha actualizado los comedores este mes
+            //Comprobamos si ha actualizado el comedor este mes
             Cursor c = getActivity().getContentResolver().query(
                     ComedoresContract.ComedoresEntry.CONTENT_URI,
                     new String[]{ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT},
@@ -83,6 +83,12 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                         lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_MENUS);
                         lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
                         getActivity().startService(lanzarServicio);
+
+                        // Los elementos se actualizan tambien
+                        Intent serv = new Intent(getActivity(), ComedoresService.class);
+                        serv.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_ELEMENTOS);
+                        serv.putExtra(ComedoresService.KEY_ID, mComedorId);
+                        getActivity().startService(serv);
                     }
                 }
                 c.close();
@@ -142,12 +148,6 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
                 //Este loader se elimina con la primera información válida que obtenga
                 while (!data.isAfterLast()) {
                     long idMenu = data.getLong(COL_MENU_ID);
-
-                    // Iniciamos servicio para descargar sus elementos
-                    Intent serv = new Intent(getActivity(), ComedoresService.class);
-                    serv.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_ELEMENTOS);
-                    serv.putExtra(ComedoresService.KEY_ID, idMenu);
-                    getActivity().startService(serv);
 
                     //Iniciamos loader para cargar sus elementos
                     Bundle bundle = new Bundle();

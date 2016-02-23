@@ -49,7 +49,7 @@ public class ComedoresService extends IntentService {
     /**
      * Valor para el campo 'tipo' para una consulta por los elementos que conforman un tipo de menú dado
      */
-    public static final int TIPO_CONSULTA_ELEMENTOS = 1;
+    public static final int TIPO_CONSULTA_ELEMENTOS = 4; //4 = nueva forma de obtenerlos
     /**
      * Valor para el campo 'tipo' para una consulta por los menús disponibles en un comedor dado
      */
@@ -80,6 +80,8 @@ public class ComedoresService extends IntentService {
     //Campos de elementos
     private static final String OWM_ELEMENTOS_NOMBRE = "nombre";
     private static final String OWM_ELEMENTOS_TIPO = "tipo";
+    private static final String OWM_ELEMENTOS_ARRAY = "elementos";
+    private static final String OWM_ELEMENTOS_RELACIONES = "relaciones";
     //Campos de menus
     private static final String OWM_MENU_NOMBRE = "nombre";
     private static final String OWM_MENU_PRECIO = "precio";
@@ -136,7 +138,7 @@ public class ComedoresService extends IntentService {
 
             //Hacemos el substring porque usamos un hosting gratuito, que añade código de
             //análisis al final ^^' se podrá eliminar cuando tengamos server propio
-            obtenerInformacion(tipo, jsonStr.substring(0, jsonStr.lastIndexOf(']') + 1), id, fecha);
+            obtenerInformacion(tipo, jsonStr.substring(0, jsonStr.lastIndexOf("<!--FIN-->") + 1), id, fecha);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
         } catch (JSONException e) {
@@ -157,20 +159,27 @@ public class ComedoresService extends IntentService {
     }
 
     private void obtenerInformacion(int tipo, String jsonStr, long id, long fecha) throws JSONException {
-        JSONArray listaJson = new JSONArray(jsonStr);
         switch(tipo) {
-            case TIPO_CONSULTA_COMEDORES:
+            case TIPO_CONSULTA_COMEDORES: {
+                JSONArray listaJson = new JSONArray(jsonStr);
                 guardarComedores(listaJson);
                 break;
-            case TIPO_CONSULTA_ELEMENTOS:
-                guardarElementos(listaJson, id);
+            }
+            case TIPO_CONSULTA_ELEMENTOS: {
+                JSONObject objetoJson = new JSONObject(jsonStr);
+                guardarElementos(objetoJson, id);
                 break;
-            case TIPO_CONSULTA_MENUS:
+            }
+            case TIPO_CONSULTA_MENUS: {
+                JSONArray listaJson = new JSONArray(jsonStr);
                 guardarMenus(listaJson, id);
                 break;
-            case TIPO_CONSULTA_PLATOS:
+            }
+            case TIPO_CONSULTA_PLATOS: {
+                JSONArray listaJson = new JSONArray(jsonStr);
                 guardarPlatos(listaJson, id, fecha);
                 break;
+            }
             default:
                 throw new IllegalArgumentException("Tipo de consulta no válido");
         }
@@ -291,29 +300,16 @@ public class ComedoresService extends IntentService {
                 + eliminados + " eliminados, " + actualizados + " actualizados.");
     }
 
-    private void guardarElementos(JSONArray jsonArray, long id) throws JSONException {
-        ArrayList<ContentValues> cVList = new ArrayList<>(jsonArray.length());
+    private void guardarElementos(JSONObject jsonObjeto, long id) throws JSONException {
+        // Lista para guardar los contenValues de los elementos a añadir
+        JSONArray jsonElementos = jsonObjeto.getJSONArray(OWM_ELEMENTOS_ARRAY);
 
-        //Obtenemos los ids que ya están asociados a este menú
-        Cursor c = getContentResolver().query(
-                ComedoresContract.TienenEntry.CONTENT_URI,
-                new String[]{ComedoresContract.TienenEntry._ID},
-                ComedoresContract.TienenEntry.COLUMN_MENU + " = ?", new String[]{Long.toString(id)},
-                null);
-        ArrayList<Long> idsExistentes = null;
-        if(c.moveToFirst()) {
-            idsExistentes = new ArrayList<>(c.getCount());
-            while(!c.isAfterLast()) {
-                idsExistentes.add(c.getLong(0));
-                c.moveToNext();
-            }
-        }
-        c.close();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+        ArrayList<ContentValues> cVElementos = new ArrayList<>(jsonElementos.length());
+        // Recorremos los elementos y los guardamos
+        for (int i = 0; i < jsonElementos.length(); i++) {
+            JSONObject jsonObject = (JSONObject) jsonElementos.get(i);
             ContentValues nuevaFila = new ContentValues();
             long idElemento = jsonObject.getLong(OWM_ID);
-            if (idsExistentes != null && idsExistentes.contains(idElemento)) continue;
 
             nuevaFila.put(ComedoresContract.ElementosEntry._ID,
                     idElemento);
@@ -321,18 +317,49 @@ public class ComedoresService extends IntentService {
                     jsonObject.getString(OWM_ELEMENTOS_NOMBRE));
             nuevaFila.put(ComedoresContract.ElementosEntry.COLUMN_TIPO,
                     jsonObject.getString(OWM_ELEMENTOS_TIPO));
-            cVList.add(nuevaFila);
+            cVElementos.add(nuevaFila);
         }
         int insertados = 0;
-        if(cVList.size() > 0) {
-            ContentValues[] cVArray = new ContentValues[cVList.size()];
-            cVList.toArray(cVArray);
+        if (cVElementos.size() > 0) {
+            ContentValues[] cVArray = new ContentValues[cVElementos.size()];
+            cVElementos.toArray(cVArray);
 
-            //Insertamos en la tabla de elementos, con el menu asociado correspondiente
+            //Insertamos en la tabla de elementos
             insertados = this.getContentResolver().bulkInsert(
-                    ComedoresContract.ElementosEntry.buildInsercionUri(id), cVArray);
+                    ComedoresContract.ElementosEntry.buildInsercionUri(), cVArray);
         }
-        Log.d(LOG_TAG, "Service completado, " + insertados + " elementos insertados.");
+
+        //Asociamos elementos y menús
+        JSONObject jsonRelaciones = jsonObjeto.getJSONObject(OWM_ELEMENTOS_RELACIONES);
+        JSONArray jsonMenus = jsonRelaciones.names();
+
+        //Suponemos que todos los menus se asocien con todos los elementos, por poner un límite y no
+        //redimensionar luego el array.
+        ArrayList<ContentValues> cVTienen = new ArrayList<>(jsonMenus.length() * jsonElementos.length());
+
+        // Relaciones es un objeto json que contiene objetos del tipo {idMenu: arrayDeIdsDeElementos}
+        for(int menuIndx=0; menuIndx < jsonMenus.length(); menuIndx++) {
+            //Obtenemos el array de ids de elementos
+            JSONArray jsonMenu = jsonRelaciones.getJSONArray(jsonMenus.getString(menuIndx));
+
+            for(int elementoIdx=0; elementoIdx < jsonMenu.length(); elementoIdx++ ) {
+                ContentValues nuevoCV = new ContentValues();
+                nuevoCV.put(ComedoresContract.TienenEntry.COLUMN_MENU, jsonMenus.getLong(menuIndx));
+                nuevoCV.put(ComedoresContract.TienenEntry.COLUMN_ELEMENTO, jsonMenu.getLong(elementoIdx));
+
+                cVTienen.add(nuevoCV);
+            }
+        }
+        int asociados = 0;
+        if (cVTienen.size() > 0) {
+            ContentValues[] cVArray = new ContentValues[cVTienen.size()];
+            cVTienen.toArray(cVArray);
+
+            //Insertamos en la tabla de asociaciones, con el menu asociado correspondiente
+            asociados = this.getContentResolver().bulkInsert(
+                    ComedoresContract.TienenEntry.CONTENT_URI, cVArray);
+        }
+        Log.d(LOG_TAG, "Service completado, " + insertados + " elementos insertados y " + asociados + " asociados.");
     }
 
     private void guardarMenus(JSONArray jsonArray, long id) throws JSONException {
