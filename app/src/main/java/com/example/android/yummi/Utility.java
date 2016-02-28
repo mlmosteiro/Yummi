@@ -129,4 +129,11 @@ public class Utility {
         NetworkInfo infoWifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return infoWifi.isConnectedOrConnecting();
     }
+
+    public static boolean conectado(Context context) {
+        final ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connMgr.getActiveNetworkInfo();
+        return (info != null && info.isConnectedOrConnecting());
+    }
 }

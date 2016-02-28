@@ -1,14 +1,19 @@
 package com.example.android.yummi;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -85,8 +90,22 @@ public class DetailActivityFragment extends Fragment
     private String mComedorPromo = "promo";
     private boolean mtwoPane;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Platos desactualizados, comprueba tu conexion a internet", Snackbar.LENGTH_LONG)
+                    .show();
+        }
+    };
 
     public DetailActivityFragment() {
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -98,11 +117,6 @@ public class DetailActivityFragment extends Fragment
             mtwoPane = arguments.getBoolean(COMEDOR_TWOPANE);
             mComedorNombre = arguments.getString(COMEDOR_NOMBRE);
             mComedorPromo = arguments.getString(COMEDOR_PROMO);
-            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
-            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_PLATOS);
-            lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
-            lanzarServicio.putExtra(ComedoresService.KEY_FECHA, Utility.fechaHoy());
-            getActivity().startService(lanzarServicio);
         }
 
         if(mtwoPane) {
@@ -118,6 +132,21 @@ public class DetailActivityFragment extends Fragment
                         }
                     });
         }
+    }
+
+    @Override
+    public void onResume() {
+        //Lanzamos el servicio de actualización de la lista de platos
+        Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+        lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_PLATOS);
+        lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
+        lanzarServicio.putExtra(ComedoresService.KEY_FECHA, Utility.fechaHoy());
+        getActivity().startService(lanzarServicio);
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                mReceiver, new IntentFilter(ComedoresService.EVENTO_SIN_CONEXION));
+        
+        super.onResume();
     }
 
     @Override

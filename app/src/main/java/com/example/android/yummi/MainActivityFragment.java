@@ -1,14 +1,19 @@
 package com.example.android.yummi;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +29,19 @@ import com.example.android.yummi.services.ComedoresService;
 
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private AdapterComedores comedoresAdapter;
+
+    private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if( comedoresAdapter != null)
+                comedoresAdapter.sinConexion(true);
+            Snackbar.make( getActivity().findViewById(android.R.id.content),
+                    "Comedores desactualizados, comprueba tu conexion a internet", Snackbar.LENGTH_LONG)
+                    .show();
+        }
+    };
 
     /**
      * Columnas que serán consultadas para rellenar el ListView de este fragment
@@ -88,6 +106,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                mReceiver, new IntentFilter(ComedoresService.EVENTO_SIN_CONEXION));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

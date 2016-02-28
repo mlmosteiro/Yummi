@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 public class ComedoresService extends IntentService {
 
     private static final String LOG_TAG = ComedoresService.class.getSimpleName();
+
+    public static final String EVENTO_SIN_CONEXION = "sin-conexion";
 
     public ComedoresService() {
         super("ComedoresService");
@@ -140,6 +143,10 @@ public class ComedoresService extends IntentService {
             //análisis al final ^^' se podrá eliminar cuando tengamos server propio
             obtenerInformacion(tipo, jsonStr.substring(0, jsonStr.lastIndexOf("<!--FIN-->") + 1), id, fecha);
         } catch (IOException e) {
+            if(!Utility.conectado(this)) {
+                Intent sinConexion = new Intent(EVENTO_SIN_CONEXION);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(sinConexion);
+            }
             Log.e(LOG_TAG, "Error ", e);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);

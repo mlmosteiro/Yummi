@@ -28,6 +28,11 @@ public class AdapterComedores extends CursorAdapter {
      */
     final Random r = new Random();
 
+    public void sinConexion(boolean value) {
+        mConexion = !value;
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder {
         public final ImageView iconView;
         public final TextView tituloView;
@@ -46,6 +51,7 @@ public class AdapterComedores extends CursorAdapter {
     }
 
     private Context mContext;
+    private boolean mConexion = true;
 
     public AdapterComedores(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -140,9 +146,14 @@ public class AdapterComedores extends CursorAdapter {
             }
         } else {
             //Si el super.getCount da 0 y estamos aquí... es que hay que mostrar  que se está cargando
-            //cursor será null
-            vH.tituloView.setText(R.string.cargando_comedores_label);
-            vH.subtituloView.setText(R.string.cargando_comedores_subtitle);
+            //o que no hay conexion, cursor será null
+            if(mConexion) {
+                vH.tituloView.setText(R.string.cargando_comedores_label);
+                vH.subtituloView.setText(R.string.cargando_comedores_subtitle);
+            } else {
+                vH.tituloView.setText(R.string.load_not_possible);
+                vH.subtituloView.setText(R.string.check_connection);
+            }
             vH.iconView.setImageDrawable(null);
         }
     }

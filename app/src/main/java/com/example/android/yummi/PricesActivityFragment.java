@@ -1,12 +1,17 @@
 package com.example.android.yummi;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,8 +63,30 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     private int siguienteIdLoader = 1;
     private Map<Integer, Long> mIdsMenus;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Información desactualizada, comprueba tu conexion a internet", Snackbar.LENGTH_LONG)
+                    .show();
+        }
+    };
+
     public PricesActivityFragment() {
         mIdsMenus = new HashMap<>();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                mReceiver, new IntentFilter(ComedoresService.EVENTO_SIN_CONEXION));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
     }
 
     public void onCreate(Bundle savedInstanceState) {

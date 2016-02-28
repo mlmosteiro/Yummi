@@ -36,5 +36,7 @@
     <string name="cargando_info">Cargando información...</string>
     <string name="cargando_comedores_label">Cargando la lista de comedores...</string>
     <string name="cargando_comedores_subtitle">¡Tus comedores favoritos pronto estarán aquí!</string>
+    <string name="load_not_possible">No se ha podido cargar :c</string>
+    <string name="check_connection">Comprueba tu conexión a internet</string>
 
 </resources>

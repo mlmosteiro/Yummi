@@ -251,7 +251,11 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
                             }
                         });
                     } else {
+                        vH.mViewHoraApertura.setText(R.string.cargando_info);
+                        vH.mViewHoraComida.setText(R.string.cargando_info);
                         vH.mViewContacto.setText(R.string.cargando_info);
+                        vH.mViewUbicacion.setText(R.string.cargando_info);
+                        vH.mViewUbicacion.setOnClickListener(null);
                     }
                     break;
                 }
