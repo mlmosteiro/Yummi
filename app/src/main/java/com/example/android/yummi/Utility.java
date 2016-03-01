@@ -62,12 +62,38 @@ public class Utility {
         return -1;
     }
 
+    public static Integer normalizarDiaSemana(String dia) {
+        switch(dia.toLowerCase()) {
+            case "lunes": return 0;
+            case "martes": return 1;
+            case "miercoles": return 2;
+            case "jueves": return 3;
+            case "viernes": return 4;
+            case "sabado": return 5;
+            case "domingo": return 6;
+            default: return -1;
+        }
+    }
+
     public static String denormalizarFecha(long fecha) {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date(fecha));
     }
 
     public static String denormalizarHora(long hora) {
         return new SimpleDateFormat("HH:mm").format(new Date(hora));
+    }
+
+    public static String denormalizarDiaSemana(Context context, Integer dia) {
+        switch(dia) {
+            case 0: return context.getString(R.string.lunes);
+            case 1: return context.getString(R.string.martes);
+            case 2: return context.getString(R.string.miercoles);
+            case 3: return context.getString(R.string.jueves);
+            case 4: return context.getString(R.string.viernes);
+            case 5: return context.getString(R.string.sabado);
+            case 6: return context.getString(R.string.domingo);
+            default: return context.getString(R.string.dia_desconocido);
+        }
     }
 
     public static void logearBase(Context context) {

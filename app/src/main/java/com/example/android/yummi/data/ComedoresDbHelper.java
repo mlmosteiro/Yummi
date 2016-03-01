@@ -17,7 +17,7 @@ import com.example.android.yummi.data.ComedoresContract.TiposMenuEntry;
 public class ComedoresDbHelper extends SQLiteOpenHelper {
 
     //Si se actualiza el esquema, debe incrementarse la versión
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String DATABASE_NAME = "comedores.db";
 
@@ -28,7 +28,7 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // Creamos tabla de comedores
+        // Creamos tabla de COMEDORES
         final String SQL_CREATE_COMEDORES_TABLE = "CREATE TABLE " + ComedoresEntry.TABLE_NAME + " (" +
                 ComedoresEntry._ID + " INTEGER PRIMARY KEY, " +
 
@@ -37,16 +37,19 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
                 ComedoresEntry.COLUMN_DIR + " TEXT NOT NULL, " +
                 ComedoresEntry.COLUMN_HORA_AP_INI + " INTEGER NOT NULL, " +
                 ComedoresEntry.COLUMN_HORA_AP_FIN + " INTEGER NOT NULL, " +
+                ComedoresEntry.COLUMN_DIA_INI_AP + " INTEGER NOT NULL, " +
+                ComedoresEntry.COLUMN_DIA_FIN_AP + " INTEGER NOT NULL, " +
                 ComedoresEntry.COLUMN_HORA_INI + " INTEGER NOT NULL, " +
                 ComedoresEntry.COLUMN_HORA_FIN + " INTEGER NOT NULL, " +
                 ComedoresEntry.COLUMN_NOMBRE + " TEXT UNIQUE NOT NULL, " +
                 ComedoresEntry.COLUMN_NOMBRE_CONTACTO + " TEXT, " +
                 ComedoresEntry.COLUMN_TLFN + " TEXT, " +
                 ComedoresEntry.COLUMN_PROMO + " TEXT NOT NULL, " +
+                ComedoresEntry.COLUMN_VECES_CONSULTADO + " INTEGER NOT NULL DEFAULT 0, " +
                 ComedoresEntry.COLUMN_LAST_ACT + " REAL);";
         db.execSQL(SQL_CREATE_COMEDORES_TABLE);
 
-        // Creamos tabla de tipos de menu
+        // Creamos tabla de tipos de MENU
         final String SQL_CREATE_TIPOS_MENU = "CREATE TABLE " + TiposMenuEntry.TABLE_NAME + " (" +
                 TiposMenuEntry._ID + " INTEGER PRIMARY KEY, " +
 
@@ -64,7 +67,8 @@ public class ComedoresDbHelper extends SQLiteOpenHelper {
 
                 PlatosEntry.COLUMN_NOMBRE + " TEXT NOT NULL, " +
                 PlatosEntry.COLUMN_DESCRIPCION + " TEXT NOT NULL, " +
-                PlatosEntry.COLUMN_TIPO + " TEXT NOT NULL); ";
+                PlatosEntry.COLUMN_TIPO + " TEXT NOT NULL, " +
+                PlatosEntry.COLUMN_AGOTADO +  " INTEGER NOT NULL DEFAULT 0);";
         db.execSQL(SQL_CREATE_PLATOS_TABLE);
 
         // Creamos tabla de elementos

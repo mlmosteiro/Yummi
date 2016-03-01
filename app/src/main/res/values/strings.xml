@@ -38,5 +38,13 @@
     <string name="cargando_comedores_subtitle">¡Tus comedores favoritos pronto estarán aquí!</string>
     <string name="load_not_possible">No se ha podido cargar :c</string>
     <string name="check_connection">Comprueba tu conexión a internet</string>
+    <string name="lunes">lunes</string>
+    <string name="martes">martes</string>
+    <string name="miercoles">miercoles</string>
+    <string name="jueves">jueves</string>
+    <string name="viernes">viernes</string>
+    <string name="sabado">sabado</string>
+    <string name="domingo">domingo</string>
+    <string name="dia_desconocido">desconocido</string>
 
 </resources>

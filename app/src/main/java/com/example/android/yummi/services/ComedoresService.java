@@ -80,6 +80,8 @@ public class ComedoresService extends IntentService {
     private static final String OWM_COMEDORES_APERTURA = "hAperturaIni";
     private static final String OWM_COMEDORES_CIERRE = "hAperturaFin";
     private static final String OWM_COMEDORES_PROMOCION = "promocion";
+    private static final String OWM_COMEDORES_DIA_APERT = "diaInicioApertura";
+    private static final String OWM_COMEDORES_DIA_CIERR = "diaFinApertura";
     //Campos de elementos
     private static final String OWM_ELEMENTOS_NOMBRE = "nombre";
     private static final String OWM_ELEMENTOS_TIPO = "tipo";
@@ -92,6 +94,7 @@ public class ComedoresService extends IntentService {
     private static final String OWM_PLATOS_NOMBRE = "nombre";
     private static final String OWM_PLATOS_DESCRIPCION = "descripcion";
     private static final String OWM_PLATOS_TIPO = "tipo";
+    private static final String OWM_PLATOS_AGOTADO = "agotado";
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -257,6 +260,16 @@ public class ComedoresService extends IntentService {
                     ComedoresContract.ComedoresEntry.COLUMN_HORA_AP_FIN,
                     Utility.normalizarHora(
                             jsonObject.getString(OWM_COMEDORES_CIERRE)));
+            //Dias de apertura y cierre
+            String  diaA = jsonObject.getString(OWM_COMEDORES_DIA_APERT);
+            String diaC = jsonObject.getString(OWM_COMEDORES_DIA_CIERR);
+            nuevaFila.put(
+                    ComedoresContract.ComedoresEntry.COLUMN_DIA_INI_AP,
+                    Utility.normalizarDiaSemana(diaA));
+            nuevaFila.put(
+                    ComedoresContract.ComedoresEntry.COLUMN_DIA_FIN_AP,
+                    Utility.normalizarDiaSemana(diaC));
+            //Promo
             nuevaFila.put(
                     ComedoresContract.ComedoresEntry.COLUMN_PROMO,
                     jsonObject.getString(OWM_COMEDORES_PROMOCION));
@@ -471,6 +484,8 @@ public class ComedoresService extends IntentService {
                     jsonObject.getString(OWM_PLATOS_DESCRIPCION));
             nuevaFila.put(ComedoresContract.PlatosEntry.COLUMN_TIPO,
                     jsonObject.getString(OWM_PLATOS_TIPO));
+            nuevaFila.put(ComedoresContract.PlatosEntry.COLUMN_AGOTADO,
+                    jsonObject.getInt(OWM_PLATOS_AGOTADO));
             cVList.add(nuevaFila);
         }
         int insertados = 0;

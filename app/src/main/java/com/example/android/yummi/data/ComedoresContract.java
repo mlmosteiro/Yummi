@@ -35,6 +35,8 @@ public class ComedoresContract {
         //Horarios de apertura y cierre
         public static final String COLUMN_HORA_AP_INI = "horaApIni";
         public static final String COLUMN_HORA_AP_FIN = "horaApFin";
+        public static final String COLUMN_DIA_INI_AP = "diaApIni";
+        public static final String COLUMN_DIA_FIN_AP = "diaApFin";
         //Coordenadas (ubicación)
         public static final String COLUMN_COORD_LAT = "latitude";
         public static final String COLUMN_COORD_LONG = "longitude";
@@ -44,6 +46,8 @@ public class ComedoresContract {
         public static final String COLUMN_TLFN = "tlfn";
         public static final String COLUMN_DIR = "direccion";
         public static final String COLUMN_PROMO = "promocion";
+        //Información para localizar comedor más común
+        public static final String COLUMN_VECES_CONSULTADO = "vecesCons";
         //Datos de actualización de datos de menú
         public static final String COLUMN_LAST_ACT = "ultimaActualizacion";
 
@@ -98,6 +102,7 @@ public class ComedoresContract {
         public static final String COLUMN_DESCRIPCION = "descripcion";
         public static final String COLUMN_NOMBRE = "nombre";
         public static final String COLUMN_TIPO = "tipo";
+        public static final String COLUMN_AGOTADO = "agotado";
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATOS).build();
