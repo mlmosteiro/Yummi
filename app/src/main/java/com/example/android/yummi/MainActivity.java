@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.yummi.data.ComedoresContract;
+
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
 
     private boolean twoPane;
@@ -68,6 +70,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     @Override
     public void comedorSeleccionado(long comedorId, String comedorName, String promo) {
+        //Registramos un click más en el comedor
+        getContentResolver().update(
+                ComedoresContract.ComedoresEntry.crearClickUri(),
+                null,
+                ComedoresContract.ComedoresEntry._ID + " = ?",
+                new String[]{Long.toString(comedorId)});
+        //Abrimos el comedor
         if (twoPane){
             DetailActivityFragment detailFragment = new DetailActivityFragment();
             Bundle bundle = new Bundle();

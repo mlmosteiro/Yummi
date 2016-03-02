@@ -50,6 +50,7 @@ public class ComedoresContract {
         public static final String COLUMN_VECES_CONSULTADO = "vecesCons";
         //Datos de actualización de datos de menú
         public static final String COLUMN_LAST_ACT = "ultimaActualizacion";
+        public static final String CLICK_PATH = "click";
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMEDORES).build();
@@ -61,6 +62,10 @@ public class ComedoresContract {
 
         public static Uri buildComedorUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri crearClickUri() {
+            return CONTENT_URI.buildUpon().appendPath(CLICK_PATH).build();
         }
     }
 

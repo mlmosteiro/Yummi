@@ -23,6 +23,7 @@ public class ComedoresProvider extends ContentProvider {
     static final int MENUS_COMEDOR = 110;
     static final int PLATOS_COMEDOR = 120;
     static final int PLATOS_COMEDOR_FECHA = 121;
+    static final int CLICK_COMEDOR = 130;
     static final int TIPOSMENU = 200;
     static final int ELEMENTOS_MENU = 210;
     static final int PLATOS = 300;
@@ -35,9 +36,14 @@ public class ComedoresProvider extends ContentProvider {
         UriMatcher nUM = new UriMatcher(UriMatcher.NO_MATCH);
 
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES, COMEDORES);
-        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES + "/#/tiposmenu/", MENUS_COMEDOR);
-        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES + "/#/platos/", PLATOS_COMEDOR);
-        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES + "/#/platos/#", PLATOS_COMEDOR_FECHA);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES +
+                "/#/tiposmenu/", MENUS_COMEDOR);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES +
+                "/#/platos/", PLATOS_COMEDOR);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES +
+                "/#/platos/#", PLATOS_COMEDOR_FECHA);
+        nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_COMEDORES +
+                "/" + ComedoresContract.ComedoresEntry.CLICK_PATH + "/", CLICK_COMEDOR);
 
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_TIPOSMENU, TIPOSMENU);
         nUM.addURI(ComedoresContract.CONTENT_AUTHORITY, ComedoresContract.PATH_TIPOSMENU + "/#/elementos/", ELEMENTOS_MENU);
@@ -467,6 +473,62 @@ public class ComedoresProvider extends ContentProvider {
                         selection,
                         selectionArgs
                 );
+                break;
+            }
+            case CLICK_COMEDOR: {
+                int valorActual;
+                Cursor c = db.query(
+                        ComedoresContract.ComedoresEntry.TABLE_NAME,
+                        new String[]{ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO},
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        null);
+                if( c.moveToFirst() ) {
+                    valorActual = c.getInt(0);
+                    c.close();
+                } else {
+                    c.close();
+                    throw new IllegalStateException("El comedor 'clickado' no existe.");
+                }
+
+                ContentValues cv = new ContentValues();
+                cv.put(ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO, valorActual+1);
+                num = db.update(
+                        ComedoresContract.ComedoresEntry.TABLE_NAME,
+                        cv,
+                        selection,
+                        selectionArgs);
+
+                // Decrementamos todos los comedores que tenían más o los mismos clicks un click
+                // el valor de clicks tiende a crecer siempre más y más, no creo que eso sea bueno
+                c = db.query(
+                        ComedoresContract.ComedoresEntry.TABLE_NAME,
+                        new String[]{ComedoresContract.ComedoresEntry._ID, ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO},
+                        "NOT ("+selection+")",
+                        selectionArgs,
+                        null,
+                        null,
+                        null);
+                if( c.moveToFirst() ) {
+                    while(!c.isAfterLast()) {
+                        int otroValorActual = c.getInt(1);
+                        if(otroValorActual >= valorActual+1) {
+                            long id = c.getLong(0);
+                            cv = new ContentValues();
+                            cv.put(ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO, otroValorActual - 1);
+                            db.update(
+                                    ComedoresContract.ComedoresEntry.TABLE_NAME,
+                                    cv,
+                                    ComedoresContract.ComedoresEntry._ID + " = ?",
+                                    new String[]{Long.toString(id)}
+                            );
+                        }
+                        c.moveToNext();
+                    }
+                }
+                c.close();
                 break;
             }
             case TIPOSMENU: {

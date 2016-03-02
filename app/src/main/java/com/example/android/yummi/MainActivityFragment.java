@@ -14,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,7 +54,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             ComedoresContract.ComedoresEntry.COLUMN_HORA_AP_FIN,
             ComedoresContract.ComedoresEntry.COLUMN_HORA_INI,
             ComedoresContract.ComedoresEntry.COLUMN_HORA_FIN,
-            ComedoresContract.ComedoresEntry.COLUMN_PROMO
+            ComedoresContract.ComedoresEntry.COLUMN_PROMO,
+            ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO
     };
     // Se nos asegura que serán devueltas en el orden indicado, por tanto estas constantes nos
     // ayudan a ganar algo de eficiencia en tiempo de ejecución
@@ -65,8 +67,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public static final int COL_HORA_INI = 4;
     public static final int COL_HORA_FIN = 5;
     public static final int COL_PROMO = 6;
+    public static final int COL_VECES = 7;
 
     private static final int LOADER_ID = 0;
+
+    private boolean mPrimerLoad = true;
 
     public MainActivityFragment() {
     }
@@ -90,7 +95,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.mainactivityfragment,menu);
+        inflater.inflate(R.menu.mainactivityfragment, menu);
     }
 
     @Override
@@ -134,12 +139,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Cursor c = (Cursor) adapterView.getItemAtPosition(position);
-
                 if (c != null) {
                     long comedorId = c.getLong(COL_ID);
                     String comedorName = c.getString(COL_NOMBRE);
                     String comedorPromo = c.getString(COL_PROMO);
-                        ((Callback) getActivity())
+                    ((Callback) getActivity())
                             .comedorSeleccionado(comedorId, comedorName, comedorPromo);
                 } else {
                     ((Callback) getActivity()).ningunComedorSeleccionado();
@@ -170,6 +174,36 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         comedoresAdapter.swapCursor(data);
+        if( mPrimerLoad ) {
+            prepararMasVisitado(data);
+        }
+        mPrimerLoad = false;
+    }
+
+    private void prepararMasVisitado(Cursor data) {
+        if(data.moveToFirst()) {
+            int max=-1;
+            long idMaximo=1;
+            int filasConMax=0;
+            while( !data.isAfterLast() ){
+                int veces = data.getInt(COL_VECES);
+                if( veces > max ) {
+                    max = veces;
+                    idMaximo = data.getLong(COL_ID);
+                    filasConMax = 1;
+                } else if( veces == max )
+                    filasConMax++;
+                data.moveToNext();
+            }
+            if(filasConMax == 1) {
+                Log.v(LOG_TAG, "Predescargando comedor " + idMaximo + " ( " + max + " veces clickado recientemente) ");
+                Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+                lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_PLATOS);
+                lanzarServicio.putExtra(ComedoresService.KEY_ID, idMaximo);
+                lanzarServicio.putExtra(ComedoresService.KEY_FECHA, Utility.fechaHoy());
+                getActivity().startService(lanzarServicio);
+            }
+        }
     }
 
     @Override
