@@ -60,7 +60,6 @@ public class AdapterComedores extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        //Tener en cuenta que cursor puede ser null cuando se muestra el texto de descarga
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_comedores, parent, false);
 
         Tag tag = new Tag();
@@ -72,12 +71,7 @@ public class AdapterComedores extends CursorAdapter {
 
     @Override
     public int getCount() {
-        int count = super.getCount();
-        if(count > 0) {
-            return super.getCount();
-        } else {
-            return 1;
-        }
+        return super.getCount();
     }
 
     @Override
@@ -85,76 +79,52 @@ public class AdapterComedores extends CursorAdapter {
         if(convertView != null && ((Tag)convertView.getTag()).manejador != null) {
             ((Tag)convertView.getTag()).manejador.shutdown();
         }
-        if(super.getCount() > 0)
-            return super.getView(position, convertView, parent);
-        else {
-            View v;
-            if (convertView == null) {
-                v = newView(mContext, null, parent);
-            } else {
-                v = convertView;
-            }
-            bindView(v, mContext, null);
-            return v;
-        }
+        return super.getView(position, convertView, parent);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder vH = ((Tag) view.getTag()).viewHolder;
 
-        if(super.getCount() > 0) {
-            long ini = cursor.getLong(MainActivityFragment.COL_HORA_INI);
-            long fin = cursor.getLong(MainActivityFragment.COL_HORA_FIN);
-            boolean abierto = Utility.horaActualEn(ini, fin);
+        long ini = cursor.getLong(MainActivityFragment.COL_HORA_INI);
+        long fin = cursor.getLong(MainActivityFragment.COL_HORA_FIN);
+        boolean abierto = Utility.horaActualEn(ini, fin);
 
-            String titulo = cursor.getString(MainActivityFragment.COL_NOMBRE);
-            vH.tituloView.setText(titulo);
+        String titulo = cursor.getString(MainActivityFragment.COL_NOMBRE);
+        vH.tituloView.setText(titulo);
 
-            long apertura = cursor.getLong(MainActivityFragment.COL_HORA_APERTURA);
-            long cierre = cursor.getLong(MainActivityFragment.COL_HORA_CIERRE);
-            String textoApertura = context.getString(R.string.formato_horario_apertura,
-                    Utility.denormalizarHora(apertura), Utility.denormalizarHora(cierre));
-            vH.subtituloView.setText(textoApertura);
+        long apertura = cursor.getLong(MainActivityFragment.COL_HORA_APERTURA);
+        long cierre = cursor.getLong(MainActivityFragment.COL_HORA_CIERRE);
+        String textoApertura = context.getString(R.string.formato_horario_apertura,
+                Utility.denormalizarHora(apertura), Utility.denormalizarHora(cierre));
+        vH.subtituloView.setText(textoApertura);
 
-            ShapeDrawable sD = new ShapeDrawable(new OvalShape());
+        ShapeDrawable sD = new ShapeDrawable(new OvalShape());
 
-            int red = (int)Math.round(r.nextFloat()*155)+100;
-            int gre = (int)Math.round(r.nextFloat()*155)+100;
-            int blu = (int)Math.round(r.nextFloat()*155)+100;
+        int red = (int)Math.round(r.nextFloat()*155)+100;
+        int gre = (int)Math.round(r.nextFloat()*155)+100;
+        int blu = (int)Math.round(r.nextFloat()*155)+100;
 
-            LinearGradient lg = new LinearGradient(
-                    0, 0,
-                    100, 100,
-                    Color.rgb(red,gre, blu),
-                    Color.rgb(red-100, gre-100, blu-100),
-                    Shader.TileMode.CLAMP);
-            sD.getPaint().setDither(true);
-            sD.getPaint().setShader(lg);
-            sD.setIntrinsicHeight(100);
-            sD.setIntrinsicWidth(100);
-            vH.iconView.setImageDrawable(sD);
-            ManejadorImagenes miManejador = new ManejadorImagenes(
-                    context, vH.iconView, cursor.getLong(MainActivityFragment.COL_ID), true);
-            miManejador.conseguirImagen();
-            ((Tag) view.getTag()).manejador = miManejador;
+        LinearGradient lg = new LinearGradient(
+                0, 0,
+                100, 100,
+                Color.rgb(red,gre, blu),
+                Color.rgb(red-100, gre-100, blu-100),
+                Shader.TileMode.CLAMP);
+        sD.getPaint().setDither(true);
+        sD.getPaint().setShader(lg);
+        sD.setIntrinsicHeight(100);
+        sD.setIntrinsicWidth(100);
+        vH.iconView.setImageDrawable(sD);
+        ManejadorImagenes miManejador = new ManejadorImagenes(
+                context, vH.iconView, cursor.getLong(MainActivityFragment.COL_ID), true);
+        miManejador.conseguirImagen();
+        ((Tag) view.getTag()).manejador = miManejador;
 
-            if (abierto) {
-                vH.iconView.setBackgroundColor(Color.rgb(200, 240, 160));
-            } else {
-                vH.iconView.setBackgroundColor(Color.rgb(240, 160, 160));
-            }
+        if (abierto) {
+            vH.iconView.setBackgroundColor(Color.rgb(200, 240, 160));
         } else {
-            //Si el super.getCount da 0 y estamos aquí... es que hay que mostrar  que se está cargando
-            //o que no hay conexion, cursor será null
-            if(mConexion) {
-                vH.tituloView.setText(R.string.cargando_comedores_label);
-                vH.subtituloView.setText(R.string.cargando_comedores_subtitle);
-            } else {
-                vH.tituloView.setText(R.string.load_not_possible);
-                vH.subtituloView.setText(R.string.check_connection);
-            }
-            vH.iconView.setImageDrawable(null);
+            vH.iconView.setBackgroundColor(Color.rgb(240, 160, 160));
         }
     }
 }

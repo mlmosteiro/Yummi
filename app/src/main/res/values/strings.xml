@@ -46,5 +46,6 @@
     <string name="sabado">sabado</string>
     <string name="domingo">domingo</string>
     <string name="dia_desconocido">desconocido</string>
+    <string name="comedores_desactualizados">Comedores desactualizados, comprueba tu conexion a internet</string>
 
 </resources>

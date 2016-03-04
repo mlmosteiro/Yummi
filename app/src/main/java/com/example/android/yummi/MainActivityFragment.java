@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.services.ComedoresService;
@@ -36,11 +38,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if( comedoresAdapter != null)
-                comedoresAdapter.sinConexion(true);
-            Snackbar.make( getActivity().findViewById(android.R.id.content),
-                    "Comedores desactualizados, comprueba tu conexion a internet", Snackbar.LENGTH_LONG)
-                    .show();
+            View view = getView();
+            if ( view != null ) {
+                TextView emptyTitle = (TextView) view.findViewById(R.id.empty_label);
+                TextView emptySubtitle = (TextView) view.findViewById(R.id.empty_subtitle);
+                ProgressBar emptyPgb = (ProgressBar) view.findViewById(R.id.empty_pgb);
+                emptyTitle.setText(R.string.load_not_possible);
+                emptySubtitle.setText(R.string.check_connection);
+                emptyPgb.setVisibility(View.GONE);
+                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                        R.string.comedores_desactualizados, Snackbar.LENGTH_LONG)
+                        .show();
+            }
         }
     };
 
@@ -134,6 +143,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_comedores);
         listView.setAdapter(comedoresAdapter);
+
+        View empty = rootView.findViewById(android.R.id.empty);
+        listView.setEmptyView(empty);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
