@@ -65,7 +65,8 @@ public class DetailActivityFragment extends Fragment
             ComedoresContract.PlatosEntry._ID,
             ComedoresContract.PlatosEntry.COLUMN_NOMBRE,
             ComedoresContract.PlatosEntry.COLUMN_DESCRIPCION,
-            ComedoresContract.PlatosEntry.COLUMN_TIPO
+            ComedoresContract.PlatosEntry.COLUMN_TIPO,
+            ComedoresContract.PlatosEntry.COLUMN_AGOTADO
     };
     // Constantes con los id's de columnas.
     // Importante: Modificar si se modifica COLUMNAS_PLATOS.
@@ -73,6 +74,7 @@ public class DetailActivityFragment extends Fragment
     public static final int COL_PLATO_NOMBRE = 1;
     public static final int COL_PLATO_DESCRIPCION = 2;
     public static final int COL_PLATO_TIPO = 3;
+    public static final int COL_PLATO_AGOTADO = 4;
 
     public static final String COMEDOR_ID = "ID";
     public static final String COMEDOR_NOMBRE = "comedor";

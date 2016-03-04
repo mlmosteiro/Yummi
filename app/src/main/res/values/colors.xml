@@ -8,4 +8,5 @@
     <color name="fondo_menu2">#c1bfc1</color>
     <color name="negro">#bb000000</color>
     <color name="link">#ff7b00</color>
+    <color name="plato_agotado">#b01313</color>
 </resources>

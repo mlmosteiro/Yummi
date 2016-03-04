@@ -222,8 +222,21 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
                     if (!mCursor.moveToPosition(posicionEnCursor)) {
                         throw new IllegalStateException("couldn't move cursor to position " + position + "(" + posicionEnCursor + " relamente)");
                     }
-                    vH.platoView.setText(mCursor.getString(DetailActivityFragment.COL_PLATO_NOMBRE));
-                    vH.descripcionView.setText(mCursor.getString(DetailActivityFragment.COL_PLATO_DESCRIPCION));
+
+                    String nombre = mCursor.getString(DetailActivityFragment.COL_PLATO_NOMBRE);
+                    String descripcion = mCursor.getString(DetailActivityFragment.COL_PLATO_DESCRIPCION);
+                    if(mCursor.getInt(DetailActivityFragment.COL_PLATO_AGOTADO) == 1) {
+                        vH.platoView.setTextColor(mContext.getResources().getColor(R.color.plato_agotado));
+                        vH.descripcionView.setTextColor(mContext.getResources().getColor(R.color.plato_agotado));
+
+                        vH.platoView.setText(nombre + mContext.getString(R.string.plato_agotado));
+                    } else {
+                        vH.platoView.setTextColor(mContext.getResources().getColor(android.R.color.primary_text_light));
+                        vH.descripcionView.setTextColor(mContext.getResources().getColor(android.R.color.primary_text_light));
+
+                        vH.platoView.setText(nombre);
+                    }
+                    vH.descripcionView.setText(descripcion);
                     break;
                 }
                 case TYPE_HEADER: {
