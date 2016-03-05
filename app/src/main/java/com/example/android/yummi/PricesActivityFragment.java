@@ -86,6 +86,9 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onPause() {
         super.onPause();
+        for( int loader = siguienteIdLoader; loader > LOADER_COLUMNAS_MENU; loader--) {
+            getLoaderManager().destroyLoader(loader);
+        }
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
     }
 
