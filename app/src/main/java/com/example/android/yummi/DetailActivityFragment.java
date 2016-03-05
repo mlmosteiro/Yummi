@@ -45,7 +45,9 @@ public class DetailActivityFragment extends Fragment
             ComedoresContract.ComedoresEntry.COLUMN_NOMBRE_CONTACTO,
             ComedoresContract.ComedoresEntry.COLUMN_COORD_LAT,
             ComedoresContract.ComedoresEntry.COLUMN_COORD_LONG,
-            ComedoresContract.ComedoresEntry.COLUMN_DIR
+            ComedoresContract.ComedoresEntry.COLUMN_DIR,
+            ComedoresContract.ComedoresEntry.COLUMN_DIA_INI_AP,
+            ComedoresContract.ComedoresEntry.COLUMN_DIA_FIN_AP
     };
 
     public static final int COL_COMEDOR_ID = 0;
@@ -59,6 +61,8 @@ public class DetailActivityFragment extends Fragment
     public static final int COL_COMEDOR_LAT = 8;
     public static final int COL_COMEDOR_LONG = 9;
     public static final int COL_COMEDOR_DIR = 10;
+    public static final int COL_COMEDOR_DIA_APERTURA = 11;
+    public static final int COL_COMEDOR_DIA_CIERRE = 12;
 
     // Columnas para la consulta de platos al provider
     public static final String[] COLUMNAS_PLATOS = {

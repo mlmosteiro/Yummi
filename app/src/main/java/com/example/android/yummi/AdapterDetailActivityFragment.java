@@ -18,6 +18,8 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
     private int mNumSegundos;
 
     private String mTitulo;
+    private int mDiaAp;
+    private int mDiaCie;
     private long mApertura;
     private long mCierre;
     private long mIni;
@@ -61,6 +63,7 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
     }
 
     public static class ViewHolderInfo extends RecyclerView.ViewHolder {
+        public TextView mViewDiaApertura;
         public TextView mViewHoraApertura;
         public TextView mViewHoraComida;
         public TextView mViewContacto;
@@ -68,6 +71,7 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
 
         public ViewHolderInfo(View view) {
             super(view);
+            this.mViewDiaApertura = (TextView) view.findViewById(R.id.dias_apertura_textview);
             this.mViewHoraApertura = (TextView) view.findViewById(R.id.hora_apertura_textview);
             this.mViewHoraComida =  (TextView) view.findViewById(R.id.hora_comidas_textview);
             this.mViewContacto =  (TextView) view.findViewById(R.id.contacto_textview);
@@ -128,6 +132,8 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
 
     public void setInfoComedor(Cursor data) {
         if(data.moveToFirst()) {
+            mDiaAp = data.getInt(DetailActivityFragment.COL_COMEDOR_DIA_APERTURA);
+            mDiaCie = data.getInt(DetailActivityFragment.COL_COMEDOR_DIA_CIERRE);
             mApertura = data.getLong(DetailActivityFragment.COL_COMEDOR_APERTURA);
             mCierre = data.getLong(DetailActivityFragment.COL_COMEDOR_CIERRE);
             mIni = data.getLong(DetailActivityFragment.COL_COMEDOR_HORA_INI);
@@ -247,6 +253,11 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
                 case TYPE_INFO: {
                     ViewHolderInfo vH = (ViewHolderInfo)holder;
                     if( mInfoComedorValida ) {
+                        // TODO: cambiar esto por unos iconitos, o letras, que sean de cada día de la semana y marquen si ese día abre o no
+                        vH.mViewDiaApertura.setText(
+                                mContext.getString(R.string.formato_dias_apertura,
+                                        Utility.denormalizarDiaSemana(mContext, mDiaAp),
+                                        Utility.denormalizarDiaSemana(mContext, mDiaCie)));
                         vH.mViewHoraApertura.setText(
                                 mContext.getString(R.string.formato_horario_apertura,
                                         Utility.denormalizarHora(mApertura),

@@ -22,6 +22,8 @@
     <string name="menu_label">Menú</string>
     <string name="precio_label">Precio</string>
 
+    <!-- Formato para los dias de apertura -->
+    <string name="formato_dias_apertura">Días: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
     <!-- Formato para horario de apertura -->
     <string name="formato_horario_apertura">Apertura: <xliff:g id="apertura">%1$s</xliff:g> - <xliff:g id="cierre">%2$s</xliff:g></string>
     <string name="horario_apertura_label">Horario de apertura</string>
@@ -40,10 +42,10 @@
     <string name="check_connection">Comprueba tu conexión a internet</string>
     <string name="lunes">lunes</string>
     <string name="martes">martes</string>
-    <string name="miercoles">miercoles</string>
+    <string name="miercoles">miércoles</string>
     <string name="jueves">jueves</string>
     <string name="viernes">viernes</string>
-    <string name="sabado">sabado</string>
+    <string name="sabado">sábado</string>
     <string name="domingo">domingo</string>
     <string name="dia_desconocido">desconocido</string>
     <string name="comedores_desactualizados">Comedores desactualizados, comprueba tu conexion a internet</string>
