@@ -162,4 +162,17 @@ public class Utility {
         NetworkInfo info = connMgr.getActiveNetworkInfo();
         return (info != null && info.isConnectedOrConnecting());
     }
+
+    public static boolean diaActualEn(int diaIni, int diaFin) {
+        Calendar c = Calendar.getInstance();
+        // Nuestros días van de lunes=0 a domingo=6
+        // Los de calendar van de domingo=1 a sabado=7,
+        // le sumamos 5 y le hacemos módulo 7
+        int dia = (c.get(Calendar.DAY_OF_WEEK) + 5)%7;
+        if( diaFin >= diaIni ) {
+            return diaIni <= dia && dia <= diaFin;
+        } else {
+            return dia <= diaIni || dia >= diaFin;
+        }
+    }
 }

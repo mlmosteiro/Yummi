@@ -64,7 +64,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             ComedoresContract.ComedoresEntry.COLUMN_HORA_INI,
             ComedoresContract.ComedoresEntry.COLUMN_HORA_FIN,
             ComedoresContract.ComedoresEntry.COLUMN_PROMO,
-            ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO
+            ComedoresContract.ComedoresEntry.COLUMN_VECES_CONSULTADO,
+            ComedoresContract.ComedoresEntry.COLUMN_DIA_INI_AP,
+            ComedoresContract.ComedoresEntry.COLUMN_DIA_FIN_AP
     };
     // Se nos asegura que serán devueltas en el orden indicado, por tanto estas constantes nos
     // ayudan a ganar algo de eficiencia en tiempo de ejecución
@@ -77,6 +79,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public static final int COL_HORA_FIN = 5;
     public static final int COL_PROMO = 6;
     public static final int COL_VECES = 7;
+    public static final int COL_DIA_INI = 8;
+    public static final int COL_DIA_FIN = 9;
 
     private static final int LOADER_ID = 0;
 

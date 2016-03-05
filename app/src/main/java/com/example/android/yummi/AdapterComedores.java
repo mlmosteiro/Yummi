@@ -88,7 +88,9 @@ public class AdapterComedores extends CursorAdapter {
 
         long ini = cursor.getLong(MainActivityFragment.COL_HORA_INI);
         long fin = cursor.getLong(MainActivityFragment.COL_HORA_FIN);
-        boolean abierto = Utility.horaActualEn(ini, fin);
+        int diaIni = cursor.getInt(MainActivityFragment.COL_DIA_INI);
+        int diaFin = cursor.getInt(MainActivityFragment.COL_DIA_FIN);
+        boolean abierto = Utility.horaActualEn(ini, fin) && Utility.diaActualEn(diaIni, diaFin);
 
         String titulo = cursor.getString(MainActivityFragment.COL_NOMBRE);
         vH.tituloView.setText(titulo);
@@ -101,9 +103,9 @@ public class AdapterComedores extends CursorAdapter {
 
         ShapeDrawable sD = new ShapeDrawable(new OvalShape());
 
-        int red = (int)Math.round(r.nextFloat()*155)+100;
-        int gre = (int)Math.round(r.nextFloat()*155)+100;
-        int blu = (int)Math.round(r.nextFloat()*155)+100;
+        int red = Math.round(r.nextFloat()*155)+100;
+        int gre = Math.round(r.nextFloat()*155)+100;
+        int blu = Math.round(r.nextFloat()*155)+100;
 
         LinearGradient lg = new LinearGradient(
                 0, 0,
@@ -116,6 +118,7 @@ public class AdapterComedores extends CursorAdapter {
         sD.setIntrinsicHeight(100);
         sD.setIntrinsicWidth(100);
         vH.iconView.setImageDrawable(sD);
+
         ManejadorImagenes miManejador = new ManejadorImagenes(
                 context, vH.iconView, cursor.getLong(MainActivityFragment.COL_ID), true);
         miManejador.conseguirImagen();
