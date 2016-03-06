@@ -528,108 +528,109 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
 
             while (true) {
                 Rect dirty = null;
-
-                if(pausado)
-                    continue;
-
                 Canvas canvas = surface.lockCanvas(dirty);
 
-                aceX = 0;
-                aceY = 0;
-                aceZ = 0;
-                // La inclinación determina la aceleración
-                if(iniciado) {
-                    aceX = gravedad * (float) Math.sin(fusedOrientation[2]);
-                    aceY = -gravedad * (float) Math.sin(fusedOrientation[1]);
-                    if(Math.PI - Math.abs(fusedOrientation[2]) <= 0.1) {
-                        aceZ = gravedad_z;
-                    } else if(Math.abs(fusedOrientation[2]) <= 0.1) {
-                        aceZ = -gravedad_z;
+                if(!pausado) {
+                    aceX = 0;
+                    aceY = 0;
+                    aceZ = 0;
+                    // La inclinación determina la aceleración
+                    if (iniciado) {
+                        aceX = gravedad * (float) Math.sin(fusedOrientation[2]);
+                        aceY = -gravedad * (float) Math.sin(fusedOrientation[1]);
+                        if (Math.PI - Math.abs(fusedOrientation[2]) <= 0.1) {
+                            aceZ = gravedad_z;
+                        } else if (Math.abs(fusedOrientation[2]) <= 0.1) {
+                            aceZ = -gravedad_z;
+                        }
                     }
-                }
 
-                // La velocidad varía con la aceleración
-                velX += aceX;
-                velY += aceY;
-                velZ += aceZ;
+                    // La velocidad varía con la aceleración
+                    velX += aceX;
+                    velY += aceY;
+                    velZ += aceZ;
 
-                // Simulamos rozamiento
-                if(velX >= rozamiento) {
-                    velX -= rozamiento;
-                } else if(velX <= -rozamiento) {
-                    velX += rozamiento;
-                } else {
-                    velX /= 2;
-                }
-
-                if(velY >= rozamiento) {
-                    velY -= rozamiento;
-                } else if(velY <= -rozamiento){
-                    velY += rozamiento;
-                } else {
-                    velY /= 2;
-                }
-
-                // Sumamos velocidad a la posicion
-                bolaX += velX;
-                bolaY += velY;
-                bolaZ += velZ;
-
-                // Rebotes
-                if(bolaX < bolaZ) {
-                    bolaX = bolaZ;
-                    velX*=-0.75;
-                    if(Math.abs(velX) > 0.5) {
-                        mp.seekTo(0);
-                        mp.setVolume(1.0f, 0.0f);
-                        mp.start();
+                    // Simulamos rozamiento
+                    if (velX >= rozamiento) {
+                        velX -= rozamiento;
+                    } else if (velX <= -rozamiento) {
+                        velX += rozamiento;
+                    } else {
+                        velX /= 2;
                     }
-                }
-                if(bolaX > mWidth-bolaZ) {
-                    bolaX = mWidth-bolaZ;
-                    velX*=-0.75;
-                    if(Math.abs(velX) > 0.5) {
-                        mp.seekTo(0);
-                        mp.setVolume(0.0f, 1.0f);
-                        mp.start();
-                    }
-                }
-                if(bolaY < bolaZ) {
-                    bolaY = bolaZ;
-                    velY*=-0.75;
-                    if(Math.abs(velY) > 0.5) {
-                        mp.seekTo(0);
-                        mp.setVolume(0.5f, 0.5f);
-                        mp.start();
-                    }
-                }
-                if(bolaY > mHeight-bolaZ) {
-                    bolaY = mHeight-bolaZ;
-                    velY*=-0.75;
-                    if(Math.abs(velY) > 0.5) {
-                        mp.seekTo(0);
-                        mp.setVolume(0.5f, 0.5f);
-                        mp.start();
-                    }
-                }
 
-                if(bolaZ > bolaR) {
-                    bolaZ = bolaR;
-                    velZ = 0;
-                } else if(bolaZ < min_bolaR) {
-                    bolaZ = min_bolaR;
-                    velZ = 0;
+                    if (velY >= rozamiento) {
+                        velY -= rozamiento;
+                    } else if (velY <= -rozamiento) {
+                        velY += rozamiento;
+                    } else {
+                        velY /= 2;
+                    }
+
+                    // Sumamos velocidad a la posicion
+                    bolaX += velX;
+                    bolaY += velY;
+                    bolaZ += velZ;
+
+                    // Rebotes
+                    if (bolaX < bolaZ) {
+                        bolaX = bolaZ;
+                        velX *= -0.75;
+                        if (Math.abs(velX) > 0.5) {
+                            mp.seekTo(0);
+                            mp.setVolume(1.0f, 0.0f);
+                            mp.start();
+                        }
+                    }
+                    if (bolaX > mWidth - bolaZ) {
+                        bolaX = mWidth - bolaZ;
+                        velX *= -0.75;
+                        if (Math.abs(velX) > 0.5) {
+                            mp.seekTo(0);
+                            mp.setVolume(0.0f, 1.0f);
+                            mp.start();
+                        }
+                    }
+                    if (bolaY < bolaZ) {
+                        bolaY = bolaZ;
+                        velY *= -0.75;
+                        if (Math.abs(velY) > 0.5) {
+                            mp.seekTo(0);
+                            mp.setVolume(0.5f, 0.5f);
+                            mp.start();
+                        }
+                    }
+                    if (bolaY > mHeight - bolaZ) {
+                        bolaY = mHeight - bolaZ;
+                        velY *= -0.75;
+                        if (Math.abs(velY) > 0.5) {
+                            mp.seekTo(0);
+                            mp.setVolume(0.5f, 0.5f);
+                            mp.start();
+                        }
+                    }
+
+                    if (bolaZ > bolaR) {
+                        bolaZ = bolaR;
+                        velZ = 0;
+                    } else if (bolaZ < min_bolaR) {
+                        bolaZ = min_bolaR;
+                        velZ = 0;
+                    }
+
+                    anguloLuz = (float) Math.atan2(bolaY, bolaX);
                 }
-
-                anguloLuz = (float) Math.atan2(bolaY, bolaX);
-
                 try {
                     // just curious
                     if (canvas.getWidth() != mWidth || canvas.getHeight() != mHeight) {
                         Log.d(TAG, "WEIRD: width/height mismatch");
                     }
 
-                    canvas.drawPaint(degr);
+                    if(!pausado) {
+                        canvas.drawPaint(degr);
+                    } else {
+                        canvas.drawColor(mContext.getResources().getColor(R.color.fondo_about_us));
+                    }
 
                     canvas.drawText("David C. y Mary Luz M.", mWidth / 2, mHeight / 2 + 50, paintSubtitulo);
                     canvas.drawText("david.campos@rai.usc.es", mWidth / 2, mHeight / 2 + 100, paintSubtitulo);

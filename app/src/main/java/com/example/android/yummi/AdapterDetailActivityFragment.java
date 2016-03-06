@@ -306,11 +306,6 @@ public class AdapterDetailActivityFragment extends  RecyclerView.Adapter{
         return "No sé";
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-
     public interface AbridorLocalizacion {
         void openLocation (double latitud, double longitud, String label);
     }
