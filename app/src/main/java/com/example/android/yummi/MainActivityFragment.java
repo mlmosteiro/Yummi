@@ -39,17 +39,37 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         @Override
         public void onReceive(Context context, Intent intent) {
             View view = getView();
-            if ( view != null ) {
-                TextView emptyTitle = (TextView) view.findViewById(R.id.empty_label);
-                TextView emptySubtitle = (TextView) view.findViewById(R.id.empty_subtitle);
-                ProgressBar emptyPgb = (ProgressBar) view.findViewById(R.id.empty_pgb);
-                emptyTitle.setText(R.string.load_not_possible);
-                emptySubtitle.setText(R.string.check_connection);
-                emptyPgb.setVisibility(View.GONE);
-                Snackbar.make(getActivity().findViewById(android.R.id.content),
-                        R.string.comedores_desactualizados, Snackbar.LENGTH_LONG)
-                        .show();
+            // Si falló la precarga de platos no importa, aquí mostramos si falló la de comedores
+            if (intent.getIntExtra(
+                    ComedoresService.KEY_TIPO,
+                    ComedoresService.TIPO_CONSULTA_COMEDORES) ==
+                    ComedoresService.TIPO_CONSULTA_COMEDORES) {
+                if ( view != null ) {
+                    mFalloCarga = true;
+                    TextView emptyTitle = (TextView) view.findViewById(R.id.empty_label);
+                    TextView emptySubtitle = (TextView) view.findViewById(R.id.empty_subtitle);
+                    ProgressBar emptyPgb = (ProgressBar) view.findViewById(R.id.empty_pgb);
+                    emptyTitle.setText(R.string.load_not_possible);
+                    emptySubtitle.setText(R.string.check_connection);
+                    emptyPgb.setVisibility(View.GONE);
+                    if(mSnackbar == null) {
+                        mSnackbar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            R.string.comedores_desactualizados, Snackbar.LENGTH_INDEFINITE);
+                        mSnackbar.setAction(R.string.reintentar, snackReintentarClick)
+                                .setActionTextColor(getActivity().getResources().getColor(R.color.colorPrimary));
+                        mSnackbar.show();
+                    }
+                }
             }
+        }
+    };
+
+    private View.OnClickListener snackReintentarClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mSnackbar.dismiss();
+            mSnackbar = null;
+            actualizaciones();
         }
     };
 
@@ -85,8 +105,35 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private static final int LOADER_ID = 0;
 
     private boolean mPrimerLoad = true;
+    private boolean mFalloCarga = false;
+    private Snackbar mSnackbar = null;
 
     public MainActivityFragment() {
+    }
+
+    private void actualizaciones() {
+        //Comprobamos si ha actualizado los comedores este mes
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String lastAct = getActivity().getString(R.string.pref_ultima_act_comedores);
+        long lastSync = prefs.getLong(lastAct, 0);
+        if( System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
+            //Si hace un mes que no se actualiza (32 días más bien), actualizamos
+
+            mFalloCarga = false;
+            View view = getView();
+            if ( view != null ) {
+                TextView emptyTitle = (TextView) view.findViewById(R.id.empty_label);
+                TextView emptySubtitle = (TextView) view.findViewById(R.id.empty_subtitle);
+                ProgressBar emptyPgb = (ProgressBar) view.findViewById(R.id.empty_pgb);
+                emptyTitle.setText(R.string.cargando_comedores_label);
+                emptySubtitle.setText(R.string.cargando_comedores_subtitle);
+                emptyPgb.setVisibility(View.VISIBLE);
+            }
+
+            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_COMEDORES);
+            getActivity().startService(lanzarServicio);
+        }
     }
 
     @Override
@@ -94,16 +141,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        //Comprobamos si ha actualizado los comedores este mes
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String lastAct = getActivity().getString(R.string.pref_ultima_act_comedores);
-        long lastSync = prefs.getLong(lastAct, 0);
-        if( System.currentTimeMillis() - lastSync >= Utility.MES_EN_MILLIS) {
-            //Si hace un mes que no se actualiza (32 días más bien), actualizamos
-            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
-            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_COMEDORES);
-            getActivity().startService(lanzarServicio);
-        }
+        actualizaciones();
     }
 
     @Override
@@ -150,6 +188,15 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         View empty = rootView.findViewById(android.R.id.empty);
         listView.setEmptyView(empty);
+
+        if(mFalloCarga) {
+            TextView emptyTitle = (TextView) rootView.findViewById(R.id.empty_label);
+            TextView emptySubtitle = (TextView) rootView.findViewById(R.id.empty_subtitle);
+            ProgressBar emptyPgb = (ProgressBar) rootView.findViewById(R.id.empty_pgb);
+            emptyTitle.setText(R.string.load_not_possible);
+            emptySubtitle.setText(R.string.check_connection);
+            emptyPgb.setVisibility(View.GONE);
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

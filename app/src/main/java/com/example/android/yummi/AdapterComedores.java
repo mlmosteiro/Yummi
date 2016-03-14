@@ -28,11 +28,6 @@ public class AdapterComedores extends CursorAdapter {
      */
     final Random r = new Random();
 
-    public void sinConexion(boolean value) {
-        mConexion = !value;
-        notifyDataSetChanged();
-    }
-
     public static class ViewHolder {
         public final ImageView iconView;
         public final TextView tituloView;
@@ -51,7 +46,6 @@ public class AdapterComedores extends CursorAdapter {
     }
 
     private Context mContext;
-    private boolean mConexion = true;
 
     public AdapterComedores(Context context, Cursor c, int flags) {
         super(context, c, flags);

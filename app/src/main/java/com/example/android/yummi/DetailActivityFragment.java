@@ -95,18 +95,38 @@ public class DetailActivityFragment extends Fragment
     private String mComedorNombre = "null";
     private String mComedorPromo = "promo";
     private boolean mtwoPane;
+    private Snackbar mSnackbar = null;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
-                    "Platos desactualizados, comprueba tu conexion a internet", Snackbar.LENGTH_LONG)
-                    .show();
+            if (mSnackbar == null) {
+                mSnackbar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                        R.string.platos_desactualizados, Snackbar.LENGTH_INDEFINITE);
+                mSnackbar.setAction(R.string.reintentar, snackReintentarClick)
+                        .setActionTextColor(getActivity().getResources().getColor(R.color.colorPrimary));
+                mSnackbar.show();
+            }
         }
     };
 
     public DetailActivityFragment() {
     }
+
+    private View.OnClickListener snackReintentarClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mSnackbar.dismiss();
+            mSnackbar = null;
+
+            //Lanzamos el servicio de actualización de la lista de platos
+            Intent lanzarServicio = new Intent(getActivity(), ComedoresService.class);
+            lanzarServicio.putExtra(ComedoresService.KEY_TIPO, ComedoresService.TIPO_CONSULTA_PLATOS);
+            lanzarServicio.putExtra(ComedoresService.KEY_ID, mComedorId);
+            lanzarServicio.putExtra(ComedoresService.KEY_FECHA, Utility.fechaHoy());
+            getActivity().startService(lanzarServicio);
+        }
+    };
 
     @Override
     public void onPause() {

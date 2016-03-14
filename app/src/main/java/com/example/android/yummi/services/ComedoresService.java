@@ -106,10 +106,11 @@ public class ComedoresService extends IntentService {
         BufferedReader reader = null;
 
         String jsonStr;
+        int tipo = intent.getIntExtra(KEY_TIPO, TIPO_CONSULTA_PLATOS);
+        long id = intent.getLongExtra(KEY_ID, -1);
+        long fecha = intent.getLongExtra(KEY_FECHA, -1);
+
         try {
-            int tipo = intent.getIntExtra(KEY_TIPO, TIPO_CONSULTA_PLATOS);
-            long id = intent.getLongExtra(KEY_ID, -1);
-            long fecha = intent.getLongExtra(KEY_FECHA, -1);
             Uri uriConexion = Uri.parse(API_DIR).buildUpon()
                     .appendQueryParameter(KEY_TIPO, Integer.toString(tipo))
                     .appendQueryParameter(KEY_ID, Long.toString(id))
@@ -148,6 +149,9 @@ public class ComedoresService extends IntentService {
         } catch (IOException e) {
             if(!Utility.conectado(this)) {
                 Intent sinConexion = new Intent(EVENTO_SIN_CONEXION);
+                sinConexion.putExtra(KEY_TIPO, tipo);
+                sinConexion.putExtra(KEY_ID, id);
+                sinConexion.putExtra(KEY_FECHA, fecha);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(sinConexion);
             }
             Log.e(LOG_TAG, "Error ", e);

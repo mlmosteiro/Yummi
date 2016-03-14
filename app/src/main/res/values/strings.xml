@@ -48,7 +48,9 @@
     <string name="sabado">sábado</string>
     <string name="domingo">domingo</string>
     <string name="dia_desconocido">desconocido</string>
-    <string name="comedores_desactualizados">Comedores desactualizados, comprueba tu conexion a internet</string>
+    <string name="comedores_desactualizados">Puede haber comedores desactualizados, comprueba tu conexión a internet.</string>
     <string name="plato_agotado">" (agotado)"</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="platos_desactualizados">Sin conexión, los platos podrían estar desactualizados.</string>
 
 </resources>
