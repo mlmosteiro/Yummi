@@ -21,12 +21,8 @@ import android.view.ViewGroup;
 import com.example.android.yummi.data.ComedoresContract;
 import com.example.android.yummi.services.ComedoresService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class PricesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
     private static final String LOG_TAG = PricesActivityFragment.class.getSimpleName();
 
     public static final String PROMO_COMEDOR = "promo";
@@ -34,35 +30,27 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
     private static final String ARGS_MENU_ID_KEY = "menuId";
 
-    public static final String[] COLUMNAS_MENU = {
+    public static final String[] COLUMNAS_MENU_ELEMENTO = {
             ComedoresContract.TiposMenuEntry.TABLE_NAME + "." + ComedoresContract.TiposMenuEntry._ID,
-            ComedoresContract.TiposMenuEntry.COLUMN_NOMBRE,
-            ComedoresContract.TiposMenuEntry.COLUMN_PRECIO
+            ComedoresContract.TiposMenuEntry.TABLE_NAME + "." + ComedoresContract.TiposMenuEntry.COLUMN_NOMBRE,
+            ComedoresContract.TiposMenuEntry.COLUMN_PRECIO,
+            ComedoresContract.ElementosEntry.COLUMN_TIPO,
+            ComedoresContract.ElementosEntry.TABLE_NAME + "." + ComedoresContract.ElementosEntry.COLUMN_NOMBRE
     };
-
     public static final int COL_MENU_ID = 0;
     public static final int COL_MENU_NOMBRE = 1;
     public static final int COL_MENU_PRECIO = 2;
-    public static final int COL_MENU_COMEDOR = 3;
-
-    public static final String[] COLUMNAS_ELEMENTOS = {
-            ComedoresContract.ElementosEntry.COLUMN_TIPO,
-            ComedoresContract.ElementosEntry.COLUMN_NOMBRE
-    };
-
-    public static final int COL_ELEM_TIPO = 0;
-    public static final int COL_ELEM_NOMBRE = 1;
+    public static final int COL_ELEM_TIPO = 3;
+    public static final int COL_ELEM_NOMBRE = 4;
 
     private AdapterPricesActivityFragment mAdapter;
 
     private long mComedorId = -1;
     private String mComedorPromo = "null";
 
+    private static final int LOADER_MENUS = 0;
 
-    private static final int LOADER_COLUMNAS_MENU = 0;
-    private int siguienteIdLoader = 1;
-    private Map<Integer, Long> mIdsMenus;
-
+    // Error de actualizacion de menus
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -72,13 +60,12 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
         }
     };
 
-    public PricesActivityFragment() {
-        mIdsMenus = new HashMap<>();
-    }
+    public PricesActivityFragment() {/*Vacio*/}
 
     @Override
     public void onResume() {
         super.onResume();
+        // Registramos el receptor de la difusión local de sin conexión
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
                 mReceiver, new IntentFilter(ComedoresService.EVENTO_SIN_CONEXION));
     }
@@ -86,19 +73,18 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onPause() {
         super.onPause();
-        for( int loader = siguienteIdLoader; loader > LOADER_COLUMNAS_MENU; loader--) {
-            getLoaderManager().destroyLoader(loader);
-        }
+        // Adios al receptor de la difusión local del evento_sin_conexion
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        if (arguments != null) {
+        if (arguments != null) { // Esta actividad requiere que se le pase un id de comedor y su promo
             mComedorId = arguments.getLong(ID_COMEDOR);
             mComedorPromo = arguments.getString(PROMO_COMEDOR);
-            //Comprobamos si ha actualizado el comedor este mes
+            // Comprobamos si se ha actualizado el comedor este mes
+            // con una consulta a la base de comedores sobre la ultima actualizacion
             Cursor c = getActivity().getContentResolver().query(
                     ComedoresContract.ComedoresEntry.CONTENT_URI,
                     new String[]{ComedoresContract.ComedoresEntry.COLUMN_LAST_ACT},
@@ -128,76 +114,48 @@ public class PricesActivityFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(LOADER_COLUMNAS_MENU, null, this);
+        // Iniciamos el Loader que carga los menus
+        getLoaderManager().initLoader(LOADER_MENUS, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        // Se infla el xml y se busca el RecyclerView
         View rootView = inflater.inflate(R.layout.fragment_prices, container, false);
-
         RecyclerView recyclerView = ((RecyclerView) rootView.findViewById(R.id.menus_view));
+
+        // Layout manager para el RecyclerView
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-       // if(getActivity().getRequestedOrientation() == )
+        // if(getActivity().getRequestedOrientation() == )
+
+        // Adapter para el RecyclerView
         mAdapter = new AdapterPricesActivityFragment(getActivity(), mComedorPromo);
         recyclerView.setAdapter(mAdapter);
 
         return rootView;
     }
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == LOADER_COLUMNAS_MENU) {
-            return new CursorLoader(
-                    getActivity(),
-                    ComedoresContract.TiposMenuEntry.buildTipoMenuByComedorUri(mComedorId),
-                    COLUMNAS_MENU,
-                    null, null,
-                    null);
-        } else {
-            long idMenu = args.getLong(ARGS_MENU_ID_KEY);
-            mIdsMenus.put(id, idMenu);
-            return new CursorLoader(
-                    getActivity(),
-                    ComedoresContract.ElementosEntry.buildElementosByMenuUri(idMenu),
-                    COLUMNAS_ELEMENTOS,
-                    null, null,
-                    null);
-        }
-
+        return new CursorLoader(
+                getActivity(),
+                ComedoresContract.TiposMenuEntry.buildTipoMenuByComedorUri(mComedorId),
+                COLUMNAS_MENU_ELEMENTO,
+                null, null,
+                null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (loader.getId() == LOADER_COLUMNAS_MENU) {
-            if (data.moveToFirst()) {
-                //Este loader se elimina con la primera información válida que obtenga
-                while (!data.isAfterLast()) {
-                    long idMenu = data.getLong(COL_MENU_ID);
-
-                    //Iniciamos loader para cargar sus elementos
-                    Bundle bundle = new Bundle();
-                    bundle.putLong(ARGS_MENU_ID_KEY, idMenu);
-                    getLoaderManager().initLoader(siguienteIdLoader++, bundle, this);
-                    data.moveToNext();
-                }
-            }
-            mAdapter.swapCursor(data);
-        } else {
-            mAdapter.setElementosMenu(
-                    mIdsMenus.get(loader.getId()),
-                    data);
-        }
+        // Cambiamos el cursor del adapter
+        mAdapter.cargarCursor(data);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) {}
 }
 
 

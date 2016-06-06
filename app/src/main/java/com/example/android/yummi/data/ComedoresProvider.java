@@ -176,11 +176,6 @@ public class ComedoresProvider extends ContentProvider {
                 sortOrder);
     }
 
-    // comedores._id = idComedor
-    private static final String sByComedorSelection =
-            ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR+
-                    " = ?";
-
     // platos._id IN (SELECT plato FROM tener WHERE comedor = [id] AND fecha = [fecha])
     private static final String sPlatosByComedorAndFechaSelection =
             ComedoresContract.PlatosEntry.TABLE_NAME + "." + ComedoresContract.ComedoresEntry._ID +
@@ -214,14 +209,23 @@ public class ComedoresProvider extends ContentProvider {
     }
 
     private Cursor getMenusByComedor(Uri uri, String[] projection, String sortOrder) {
+        // Debe devolver un JOIN de los menus con sus elementos correspondientes
         long idComedor = ComedoresContract.getIdElemento(uri);
 
         return mOpenHelper.getReadableDatabase().query(
-                ComedoresContract.TiposMenuEntry.TABLE_NAME,
+                "(" + ComedoresContract.TiposMenuEntry.TABLE_NAME +
+                " JOIN " + ComedoresContract.TienenEntry.TABLE_NAME + " ON " +
+                        ComedoresContract.TiposMenuEntry.TABLE_NAME + "." + ComedoresContract.TiposMenuEntry._ID +
+                        " = " +
+                        ComedoresContract.TienenEntry.TABLE_NAME + "." + ComedoresContract.TienenEntry.COLUMN_MENU +
+                ") JOIN " + ComedoresContract.ElementosEntry.TABLE_NAME + " ON " +
+                        ComedoresContract.ElementosEntry.TABLE_NAME + "." + ComedoresContract.ElementosEntry._ID +
+                        " = " +
+                        ComedoresContract.TienenEntry.TABLE_NAME + "." + ComedoresContract.TienenEntry.COLUMN_ELEMENTO,
                 projection,
-                sByComedorSelection, new String[]{Long.toString(idComedor)},
-                null, null,
-                sortOrder);
+                ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR + " = ?",
+                new String[]{Long.toString(idComedor)},
+                null, null, sortOrder);
     }
 
     @Override
@@ -276,6 +280,10 @@ public class ComedoresProvider extends ContentProvider {
             }
             case ELEMENTOS: {
                 returnUri = insertarElementos(db, uri, values);
+                // Notificamos a tiposmenu también, porque la consulta 'comedores/[id]/tiposmenu/'
+                // produce una lista de menus con sus elementos, pero la uri de notificación
+                // asociada es 'tiposmenu/'
+                getContext().getContentResolver().notifyChange(ComedoresContract.TiposMenuEntry.CONTENT_URI, null);
                 break;
             }
             case TIENEN: {

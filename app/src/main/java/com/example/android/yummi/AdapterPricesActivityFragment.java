@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
@@ -21,17 +19,28 @@ public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
     private static final int TYPE_MENU = 1;
     private static final int TYPE_PROMO = 2;
 
-    private int mNumMenus;
     private Context mContext;
-    private Cursor mCursor;
+    private ArrayList<Menu> mMenus;
     private String mPromo;
-    Map<Long, Cursor> cursoresElementos;
 
+    private static class Menu {
+        public String nombre;
+        public int id;
+        public float precio;
+        public ArrayList<String> elementos;
+
+        public Menu(int id, String nombre, float precio) {
+            this.nombre = nombre;
+            this.precio = precio;
+            this.id = id;
+            elementos = new ArrayList();
+        }
+    }
 
     public AdapterPricesActivityFragment(Context context, String promo) {
         mContext = context;
         mPromo = promo;
-        cursoresElementos = new HashMap<>();
+        mMenus = new ArrayList();
     }
 
     public static class ViewHolderPromo extends RecyclerView.ViewHolder {
@@ -58,32 +67,49 @@ public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
         }
     }
 
-    public void setElementosMenu(long id, Cursor c) {
-        cursoresElementos.put(id, c);
-        notifyDataSetChanged();
-    }
+    public void cargarCursor(Cursor cursor) {
+        // Let's go
+        if (cursor != null) {
+            // Limpiamos el arrayList de menus
+            mMenus.clear();
 
-    public void swapCursor(Cursor newCursor) {
-        if (newCursor == mCursor) {
-            return;
-        }
-        mCursor = newCursor;
-        if (newCursor != null) {
-            mNumMenus = 0;
-            if (newCursor.moveToFirst()) {
-                while (!newCursor.isAfterLast()) {
-                    mNumMenus ++;
-                    newCursor.moveToNext();
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    int id = cursor.getInt(PricesActivityFragment.COL_MENU_ID);
+                    Menu men = null;
+
+                    // Comprobamos que no tenemos ya ese id, recorremos en orden inverso
+                    // porque de estar repetido es probable que el último sea la repetición
+                    for(int i=mMenus.size()-1; i >= 0; i--) {
+                        if(mMenus.get(i).id == id) {
+                            men = mMenus.get(i);
+                            break;
+                        }
+                    }
+
+                    // Si es nuevo, lo creamos y añadimos al array
+                    if( men == null ) {
+                        String nombre = cursor.getString(PricesActivityFragment.COL_MENU_NOMBRE);
+                        float precio = cursor.getFloat(PricesActivityFragment.COL_MENU_PRECIO);
+                        men = new Menu(id, nombre, precio);
+                        mMenus.add(men);
+                    }
+
+                    // Añadimos el elemento correspondiente
+                    String elemento = cursor.getString(PricesActivityFragment.COL_ELEM_NOMBRE);
+                    men.elementos.add(elemento);
+
+                    // NEXT!
+                    cursor.moveToNext();
                 }
             }
+            // Notificamos a los observadores
             notifyDataSetChanged();
         }
     }
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
         View view;
         switch(viewType) {
             case TYPE_MENU: {
@@ -100,45 +126,37 @@ public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
             }
 
         }
-
         return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
         if (holder != null) {
             int type = getItemViewType(position);
             switch (type) {
                 case TYPE_MENU: {
                     ViewHolderMenuItem vH = (ViewHolderMenuItem) holder;
-                    int posicionEnCursor = position-1;
-                    if (!mCursor.moveToPosition(posicionEnCursor)) {
-                        throw new IllegalStateException("couldn't move cursor to position " + position + "(" + posicionEnCursor + " relamente)");
-                    }
-                    vH.mViewMenuNombre.setText(mCursor.getString(PricesActivityFragment.COL_MENU_NOMBRE));
-                    long id = mCursor.getLong(PricesActivityFragment.COL_MENU_ID);
-                    Cursor elemCursor = cursoresElementos.get(id);
-                    if(elemCursor != null && elemCursor.moveToFirst()) {
-                        ArrayList<String> elemList = new ArrayList<>(elemCursor.getCount());
-                        while(!elemCursor.isAfterLast()) {
-                            elemList.add(elemCursor.getString(PricesActivityFragment.COL_ELEM_NOMBRE));
-                            elemCursor.moveToNext();
-                        }
-                        String elems = TextUtils.join(", ", elemList);
-                        vH.mViewMenuElementos.setText(Character.toUpperCase(elems.charAt(0)) + elems.substring(1));
-                    } else {
-                        vH.mViewMenuElementos.setText(R.string.cargando_info);
-                    }
-                    vH.mViewMenuPrecio.setText(
-                            mContext.getString(R.string.formato_dinero,
-                            mCursor.getString(PricesActivityFragment.COL_MENU_PRECIO)));
 
+                    // El primer hueco corresponde a la cabecera de la tabla
+                    Menu m = mMenus.get(position-1);
+
+                    // Ponemos texto de nombre del menu
+                    vH.mViewMenuNombre.setText(m.nombre);
+                    // Ponemos los elementos del menu
+                    String elems = TextUtils.join(", ", m.elementos);
+                    vH.mViewMenuElementos.setText(Character.toUpperCase(elems.charAt(0)) + elems.substring(1));
+                    // Ponemos el precio del menu
+                    vH.mViewMenuPrecio.setText(
+                            mContext.getString(R.string.formato_dinero, m.precio));
+
+                    // Dos colorsitos de fondo
+                    // TODO: mover estos colores a colors.xml
                     if(position%2 == 0) {
                         vH.mGeneralView.setBackgroundColor(Color.parseColor("#e5e4e5"));
                     } else{
                         vH.mGeneralView.setBackgroundColor(Color.parseColor("#c1bfc1"));
                     }
+
                     break;
                 }
                 case TYPE_TABLE_HEADER: {
@@ -167,7 +185,7 @@ public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
     public int getItemViewType(int position) {
         if (position == 0){
             return TYPE_TABLE_HEADER;
-        } else if (position <= mNumMenus)
+        } else if (position <= mMenus.size())
             return TYPE_MENU;
         else
             return TYPE_PROMO;
@@ -175,21 +193,18 @@ public class AdapterPricesActivityFragment extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        if(mCursor != null ) {
-            return mCursor.getCount() + 2;
-        }else {
-            return 2;
-        }
+        return mMenus.size() + 2;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        if (position == 0)
+            return -1;
+        else if (position <= mMenus.size() )
+            return mMenus.get(position-1).id;
+        else
+            return -1;
     }
-
-
-
-
 }
 
 
