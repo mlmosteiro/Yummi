@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.example.android.yummi.Utility;
 
@@ -64,7 +65,7 @@ public class ComedoresProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         final int match = sUriMatcher.match(uri);
         Cursor retCursor;
         switch (match) {
@@ -229,7 +230,7 @@ public class ComedoresProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case COMEDORES:
@@ -254,7 +255,7 @@ public class ComedoresProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Uri returnUri;
         switch (sUriMatcher.match(uri)) {
@@ -288,6 +289,10 @@ public class ComedoresProvider extends ContentProvider {
             }
             case TIENEN: {
                 returnUri = insertarTienen(db, uri, values);
+                // Notificamos a tiposmenu también, porque la consulta 'comedores/[id]/tiposmenu/'
+                // produce una lista de menus con sus elementos, pero la uri de notificación
+                // asociada es 'tiposmenu/'
+                getContext().getContentResolver().notifyChange(ComedoresContract.TiposMenuEntry.CONTENT_URI, null);
                 break;
             }
             default:
@@ -391,7 +396,7 @@ public class ComedoresProvider extends ContentProvider {
     //TODO: sobreescribir bulkInsert
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int num;
@@ -468,7 +473,7 @@ public class ComedoresProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int num;
