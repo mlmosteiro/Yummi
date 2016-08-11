@@ -35,8 +35,8 @@
     <string name="formato_dinero"><xliff:g id="val">%1$s</xliff:g>€</string>
 
     <string name="title_activity_about_us">About us!</string>
-    <string name="cargando_info">Cargando información...</string>
-    <string name="cargando_comedores_label">Cargando la lista de comedores...</string>
+    <string name="cargando_info">Cargando información…</string>
+    <string name="cargando_comedores_label">Cargando la lista de comedores…</string>
     <string name="cargando_comedores_subtitle">¡Tus comedores favoritos pronto estarán aquí!</string>
     <string name="load_not_possible">No se ha podido cargar :c</string>
     <string name="check_connection">Comprueba tu conexión a internet</string>
@@ -52,5 +52,6 @@
     <string name="plato_agotado">" (agotado)"</string>
     <string name="reintentar">Reintentar</string>
     <string name="platos_desactualizados">Sin conexión, los platos podrían estar desactualizados.</string>
+    <string name="miniatura_comedor">Miniatura del comedor</string>
 
 </resources>

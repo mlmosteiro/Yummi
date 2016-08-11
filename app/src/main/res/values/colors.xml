@@ -1,7 +1,7 @@
 <resources>
-    <color name="colorPrimary">#3fb145</color>
-    <color name="colorPrimaryDark">#309F3F</color>
-    <color name="colorAccent">#FFA000</color>
+    <color name="colorPrimary">#8bc34a</color>
+    <color name="colorPrimaryDark">#689f38</color>
+    <color name="colorAccent">#FFc107</color>
     <color name="black_overlay">#66000000</color>
     <color name="fondo_detail_activity">#e5e4e5</color>
     <color name="fondo_menu1">#e5e4e5</color>

@@ -12,7 +12,8 @@
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/miniatura_comedor" />
 
 
         <!-- TextView que contendrá el nombre de los comedores-->
@@ -22,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_toEndOf="@id/list_item_icon"
-        android:layout_alignTop="@+id/list_item_icon"
+        android:layout_alignTop="@id/list_item_icon"
         android:paddingTop="10dp"
         android:textStyle="bold"
         android:textSize="16sp"
