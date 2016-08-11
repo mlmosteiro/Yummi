@@ -44,7 +44,7 @@ public class ComedoresService extends IntentService {
         super("ComedoresService");
     }
 
-    public static final String API_DIR = "http://comedoresusc.site88.net";
+    public static final String API_DIR = "http://comedoresusc.site88.net/api/";
     /**
      * Consulta básica por los comedores disponibles en la API.
      */
@@ -173,30 +173,34 @@ public class ComedoresService extends IntentService {
     }
 
     private void obtenerInformacion(int tipo, String jsonStr, long id, long fecha) throws JSONException {
-        switch(tipo) {
-            case TIPO_CONSULTA_COMEDORES: {
-                JSONArray listaJson = new JSONArray(jsonStr);
-                guardarComedores(listaJson);
-                break;
+        JSONObject objetoJson = new JSONObject(jsonStr);
+        if( objetoJson.getString("status").equals("OK") ) {
+            switch (tipo) {
+                case TIPO_CONSULTA_COMEDORES: {
+                    JSONArray listaJson = objetoJson.getJSONArray("respuesta");
+                    guardarComedores(listaJson);
+                    break;
+                }
+                case TIPO_CONSULTA_ELEMENTOS: {
+                    JSONObject respuesta = objetoJson.getJSONObject("respuesta");
+                    guardarElementos(respuesta, id);
+                    break;
+                }
+                case TIPO_CONSULTA_MENUS: {
+                    JSONArray listaJson = objetoJson.getJSONArray("respuesta");
+                    guardarMenus(listaJson, id);
+                    break;
+                }
+                case TIPO_CONSULTA_PLATOS: {
+                    JSONArray listaJson = objetoJson.getJSONArray("respuesta");
+                    guardarPlatos(listaJson, id, fecha);
+                    break;
+                }
+                default:
+                    throw new IllegalArgumentException("Tipo de consulta no válido");
             }
-            case TIPO_CONSULTA_ELEMENTOS: {
-                JSONObject objetoJson = new JSONObject(jsonStr);
-                guardarElementos(objetoJson, id);
-                break;
-            }
-            case TIPO_CONSULTA_MENUS: {
-                JSONArray listaJson = new JSONArray(jsonStr);
-                guardarMenus(listaJson, id);
-                break;
-            }
-            case TIPO_CONSULTA_PLATOS: {
-                JSONArray listaJson = new JSONArray(jsonStr);
-                guardarPlatos(listaJson, id, fecha);
-                break;
-            }
-            default:
-                throw new IllegalArgumentException("Tipo de consulta no válido");
         }
+        //TODO: si no, avisar con una snackbar
     }
 
     private void guardarComedores(JSONArray jsonArray) throws JSONException {

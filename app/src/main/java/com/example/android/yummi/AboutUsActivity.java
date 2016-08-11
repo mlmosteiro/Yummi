@@ -65,7 +65,7 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
     private float[] gyro = new float[3];
     // matriz de rotación para la información del giroscopio
     private float[] gyroMatrix = new float[9];
-    // angulos de orientación de la matriz de giro
+    // angulos de orientación quitados de la matriz del girosc.
     private float[] gyroOrientation = new float[3];
     // vector del campo magnético
     private float[] magnet = new float[3];
@@ -80,7 +80,9 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
     // matriz de rotación basada en el acelerómetro y el magnetómetro
     private float[] rotationMatrix = new float[9];
 
+    // margen de error
     public static final float EPSILON = 0.000000001f;
+    // nanosegundos a segundos
     private static final float NS2S = 1.0f / 1000000000.0f;
     private float timestamp;
     private boolean initState = true;
@@ -91,6 +93,7 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
     public static final float FILTER_COEFFICIENT = 0.98f;
     private Timer fuseTimer = new Timer();
 
+    // Está en pausa?
     private boolean pausado;
 
     @Override
@@ -110,6 +113,7 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
+        // inicializar vector de angulos del giroscopio a 0
         gyroOrientation[0] = 0.0f;
         gyroOrientation[1] = 0.0f;
         gyroOrientation[2] = 0.0f;
@@ -177,7 +181,6 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -404,6 +407,7 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
         private Object mLock = new Object();        // guards mSurfaceTexture, mDone
         private SurfaceTexture mSurfaceTexture;
         private boolean mDone;
+
         private boolean mHaySensores;
 
         private int mWidth;     // from SurfaceTexture
@@ -545,7 +549,6 @@ public class AboutUsActivity extends Activity implements SensorEventListener{
                         }
                     }
 
-                    // La velocidad varía con la aceleración
                     velX += aceX;
                     velY += aceY;
                     velZ += aceZ;
