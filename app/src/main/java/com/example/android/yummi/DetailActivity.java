@@ -22,6 +22,7 @@ public class DetailActivity extends AppCompatActivity {
     public static final String PROMO_COMEDOR = "promo";
     public static final String IMAGENES_PATH = "imagenes";
     public static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
+    public static final int DISK_CACHE_SIZE = 5 * 1024 * 1024; // 5MB
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +51,17 @@ public class DetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, detailFragment,
                     DETAILACTIVITYFRAGMENT_TAG).commit();
+
             Uri uri = Uri.parse(ComedoresService.API_DIR).buildUpon()
                     .appendPath(IMAGENES_PATH)
                     .appendQueryParameter("id", Long.toString(comedorId))
                     .build();
 
             Picasso.with(this)
-                    .load(uri)
-                    .placeholder(R.drawable.comedor_placeholder)
-                    .into((ImageView)findViewById(R.id.image_paralax));
+                        .load(uri)
+                        .placeholder(R.drawable.comedor_placeholder)
+                        .noFade()
+                        .into((ImageView) findViewById(R.id.image_paralax));
         } else{
             NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
             getSupportFragmentManager().beginTransaction().add(

@@ -89,10 +89,10 @@ public class AdapterComedores extends CursorAdapter {
                 .build();
 
         Picasso.with(context)
-                .load(uri)
-                .placeholder(R.drawable.icono)
-                .resize(100,100)
-                .into(vH.iconView);
+                    .load(uri)
+                    .placeholder(R.drawable.icono)
+                    .noFade()
+                    .into(vH.iconView);
 
         if (abierto) {
             vH.iconView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
