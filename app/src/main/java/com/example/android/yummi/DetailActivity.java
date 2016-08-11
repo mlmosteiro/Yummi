@@ -1,6 +1,7 @@
 package com.example.android.yummi;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -9,17 +10,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.example.android.yummi.data.ManejadorImagenes;
+import com.example.android.yummi.services.ComedoresService;
+import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
 
     public static final String ID_COMEDOR = "id";
     public static final String NOMBRE_COMEDOR = "nombre";
     public static final String PROMO_COMEDOR = "promo";
+    public static final String IMAGENES_PATH = "imagenes";
     public static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
-
-    private ManejadorImagenes manejadorImagenes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,15 @@ public class DetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(
                     R.id.detail_container, detailFragment,
                     DETAILACTIVITYFRAGMENT_TAG).commit();
-            manejadorImagenes = new ManejadorImagenes(this, collapser, comedorId);
+            Uri uri = Uri.parse(ComedoresService.API_DIR).buildUpon()
+                    .appendPath(IMAGENES_PATH)
+                    .appendQueryParameter("id", Long.toString(comedorId))
+                    .build();
+
+            Picasso.with(this)
+                    .load(uri)
+                    .placeholder(R.drawable.comedor_placeholder)
+                    .into((ImageView)findViewById(R.id.image_paralax));
         } else{
             NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
             getSupportFragmentManager().beginTransaction().add(
@@ -76,15 +86,11 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        manejadorImagenes.conseguirImagen();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(manejadorImagenes != null) {
-            manejadorImagenes.shutdown();
-        }
     }
 
     @Override

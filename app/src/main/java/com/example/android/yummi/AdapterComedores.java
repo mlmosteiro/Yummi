@@ -2,11 +2,7 @@ package com.example.android.yummi;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +10,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.yummi.data.ManejadorImagenes;
+import com.example.android.yummi.services.ComedoresService;
+import com.squareup.picasso.Picasso;
 
 import java.util.Random;
 
@@ -28,6 +25,9 @@ public class AdapterComedores extends CursorAdapter {
      */
     final Random r = new Random();
 
+    private static final String LOG_TAG = AdapterComedores.class.getSimpleName();
+    public static final String MINIATURAS_PATH = "miniaturas";
+
     public static class ViewHolder {
         public final ImageView iconView;
         public final TextView tituloView;
@@ -40,25 +40,15 @@ public class AdapterComedores extends CursorAdapter {
         }
     }
 
-    public static class Tag {
-        public ViewHolder viewHolder;
-        public ManejadorImagenes manejador;
-    }
-
-    private Context mContext;
-
     public AdapterComedores(Context context, Cursor c, int flags) {
         super(context, c, flags);
-        mContext = context;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_comedores, parent, false);
 
-        Tag tag = new Tag();
-        tag.viewHolder = new ViewHolder(view);
-        view.setTag(tag);
+        view.setTag(new ViewHolder(view));
 
         return view;
     }
@@ -70,15 +60,12 @@ public class AdapterComedores extends CursorAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView != null && ((Tag)convertView.getTag()).manejador != null) {
-            ((Tag)convertView.getTag()).manejador.shutdown();
-        }
         return super.getView(position, convertView, parent);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder vH = ((Tag) view.getTag()).viewHolder;
+        ViewHolder vH = (ViewHolder) view.getTag();
 
         long ini = cursor.getLong(MainActivityFragment.COL_HORA_INI);
         long fin = cursor.getLong(MainActivityFragment.COL_HORA_FIN);
@@ -95,33 +82,22 @@ public class AdapterComedores extends CursorAdapter {
                 Utility.denormalizarHora(apertura), Utility.denormalizarHora(cierre));
         vH.subtituloView.setText(textoApertura);
 
-        ShapeDrawable sD = new ShapeDrawable(new OvalShape());
+        Uri uri = Uri.parse(ComedoresService.API_DIR).buildUpon()
+                .appendPath(MINIATURAS_PATH)
+                .appendQueryParameter("id", Long.toString(cursor.getLong(
+                        MainActivityFragment.COL_ID)))
+                .build();
 
-        int red = Math.round(r.nextFloat()*155)+100;
-        int gre = Math.round(r.nextFloat()*155)+100;
-        int blu = Math.round(r.nextFloat()*155)+100;
-
-        LinearGradient lg = new LinearGradient(
-                0, 0,
-                100, 100,
-                Color.rgb(red,gre, blu),
-                Color.rgb(red-100, gre-100, blu-100),
-                Shader.TileMode.CLAMP);
-        sD.getPaint().setDither(true);
-        sD.getPaint().setShader(lg);
-        sD.setIntrinsicHeight(100);
-        sD.setIntrinsicWidth(100);
-        vH.iconView.setImageDrawable(sD);
-
-        ManejadorImagenes miManejador = new ManejadorImagenes(
-                context, vH.iconView, cursor.getLong(MainActivityFragment.COL_ID), true);
-        miManejador.conseguirImagen();
-        ((Tag) view.getTag()).manejador = miManejador;
+        Picasso.with(context)
+                .load(uri)
+                .placeholder(R.drawable.icono)
+                .resize(100,100)
+                .into(vH.iconView);
 
         if (abierto) {
-            vH.iconView.setBackgroundColor(Color.rgb(200, 240, 160));
+            vH.iconView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
         } else {
-            vH.iconView.setBackgroundColor(Color.rgb(240, 160, 160));
+            vH.iconView.setBackgroundColor(context.getResources().getColor(R.color.plato_agotado));
         }
     }
 }
