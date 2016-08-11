@@ -14,7 +14,6 @@ import android.util.Log;
 import com.example.android.yummi.R;
 import com.example.android.yummi.Utility;
 import com.example.android.yummi.data.ComedoresContract;
-import com.example.android.yummi.data.ManejadorImagenes;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -293,9 +292,6 @@ public class ComedoresService extends IntentService {
         int actualizados = 0;
         //Eliminamos de la tabla los comedores sobrantes
         if(ids.size() > 0) {
-            for(String idAborrar : ids) {
-                ManejadorImagenes.borrarImagenesSiExisten(this, idAborrar);
-            }
             eliminados = getContentResolver().delete(
                     ComedoresContract.ComedoresEntry.CONTENT_URI,
                     ComedoresContract.ComedoresEntry._ID + " NOT IN (" +
@@ -437,9 +433,6 @@ public class ComedoresService extends IntentService {
         int actualizados = 0;
         //Eliminamos de la tabla los menús de este comedor sobrantes
         if(ids.size() > 0) {
-            for(String idAborrar : ids) {
-                ManejadorImagenes.borrarImagenesSiExisten(this, idAborrar);
-            }
             eliminados = getContentResolver().delete(
                     ComedoresContract.TiposMenuEntry.CONTENT_URI,
                     ComedoresContract.TiposMenuEntry.COLUMN_COMEDOR + " = ?" +

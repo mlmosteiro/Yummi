@@ -59,9 +59,6 @@
         <service
             android:name=".services.ComedoresService"
             android:exported="false" />
-        <service
-            android:name=".services.ImagenesService"
-            android:exported="false" />
 
         <activity
             android:name=".AboutUsActivity"

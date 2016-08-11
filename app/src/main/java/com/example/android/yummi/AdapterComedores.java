@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.android.yummi.services.ComedoresService;
 import com.squareup.picasso.Picasso;
 
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -85,14 +86,13 @@ public class AdapterComedores extends CursorAdapter {
 
         Uri uri = Uri.parse(ComedoresService.API_DIR).buildUpon()
                 .appendPath(MINIATURAS_PATH)
-                .appendPath(String.format(MINIATURAS_PATTERN, cursor.getLong(
+                .appendPath(String.format(Locale.ENGLISH, MINIATURAS_PATTERN, cursor.getLong(
                         MainActivityFragment.COL_ID)))
                 .build();
 
         Picasso.with(context)
                     .load(uri)
                     .placeholder(R.drawable.icono)
-                    .noFade()
                     .into(vH.iconView);
 
         if (abierto) {
