@@ -27,6 +27,7 @@ public class AdapterComedores extends CursorAdapter {
 
     private static final String LOG_TAG = AdapterComedores.class.getSimpleName();
     public static final String MINIATURAS_PATH = "miniaturas";
+    public static final String MINIATURAS_PATTERN = "mini_%d.png";
 
     public static class ViewHolder {
         public final ImageView iconView;
@@ -84,7 +85,7 @@ public class AdapterComedores extends CursorAdapter {
 
         Uri uri = Uri.parse(ComedoresService.API_DIR).buildUpon()
                 .appendPath(MINIATURAS_PATH)
-                .appendQueryParameter("id", Long.toString(cursor.getLong(
+                .appendPath(String.format(MINIATURAS_PATTERN, cursor.getLong(
                         MainActivityFragment.COL_ID)))
                 .build();
 

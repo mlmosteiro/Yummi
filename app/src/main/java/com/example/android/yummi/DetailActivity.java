@@ -21,8 +21,8 @@ public class DetailActivity extends AppCompatActivity {
     public static final String NOMBRE_COMEDOR = "nombre";
     public static final String PROMO_COMEDOR = "promo";
     public static final String IMAGENES_PATH = "imagenes";
+    public static final String IMAGENES_PATTERN = "detail_%d.png";
     public static final String DETAILACTIVITYFRAGMENT_TAG = "DAFTAG";
-    public static final int DISK_CACHE_SIZE = 5 * 1024 * 1024; // 5MB
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
 
             Uri uri = Uri.parse(ComedoresService.API_DIR).buildUpon()
                     .appendPath(IMAGENES_PATH)
-                    .appendQueryParameter("id", Long.toString(comedorId))
+                    .appendPath(String.format(IMAGENES_PATTERN, comedorId))
                     .build();
 
             Picasso.with(this)
