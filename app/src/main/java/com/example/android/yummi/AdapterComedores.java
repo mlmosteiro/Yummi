@@ -1,8 +1,10 @@
 package com.example.android.yummi;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.yummi.services.ComedoresService;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.Locale;
 import java.util.Random;
@@ -90,10 +94,13 @@ public class AdapterComedores extends CursorAdapter {
                         MainActivityFragment.COL_ID)))
                 .build();
 
-        Picasso.with(context)
-                    .load(uri)
-                    .placeholder(R.drawable.icono)
-                    .into(vH.iconView);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Boolean soloEnWifi = sharedPref.getBoolean(context.getString(R.string.pref_downloadOnWifi_key), false);
+        RequestCreator rq = Picasso.with(context)
+                .load(uri);
+        if(soloEnWifi && !Utility.conectadoWifi(context))
+                rq.networkPolicy(NetworkPolicy.OFFLINE);
+        rq.placeholder(R.drawable.icono).into(vH.iconView);
 
         if (abierto) {
             vH.iconView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));

@@ -1,8 +1,10 @@
 package com.example.android.yummi;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +15,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.android.yummi.services.ComedoresService;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -57,11 +61,15 @@ public class DetailActivity extends AppCompatActivity {
                     .appendPath(String.format(IMAGENES_PATTERN, comedorId))
                     .build();
 
-            Picasso.with(this)
-                        .load(uri)
-                        .placeholder(R.drawable.comedor_placeholder)
-                        .noFade()
-                        .into((ImageView) findViewById(R.id.image_paralax));
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            Boolean soloEnWifi = sharedPref.getBoolean(getString(R.string.pref_downloadOnWifi_key), false);
+            RequestCreator rq = Picasso.with(this)
+                        .load(uri);
+            if(soloEnWifi && !Utility.conectadoWifi(this))
+                rq.networkPolicy(NetworkPolicy.OFFLINE);
+            rq.placeholder(R.drawable.comedor_placeholder)
+                .noFade()
+                .into((ImageView) findViewById(R.id.image_paralax));
         } else{
             NotSelectedFragment notSelectedFragment = new NotSelectedFragment();
             getSupportFragmentManager().beginTransaction().add(
