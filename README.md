@@ -6,4 +6,4 @@ La idea, que nació para el concurso de Android Study Jams (2016), fue presentad
 
 No se descarta la replicación de la misma en otras universidades si estas así lo desean, en cualquier caso sería un tema a tratar más adelante. Finalizo este texto con la línea que mi compañera, a gesto de broma, escribió el día que creó este proyecto:
 
-Ojalá pusieran tacos :( 
+Ojalá pusieran tacos y tamales :( 
